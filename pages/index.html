@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TowerClub - Smart Financial Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/footer.css">
+    <link rel="icon" type="image/png" href="../assets/images/towerclub_logo.png">
+    <style>
+        /* Updated Navigation Bar with Improved Contrast */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: transparent; /* Transparent border on hover */
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                right: 0;
+                background-color: #22c55e; /* Green background for dropdown */
+                width: 100%;
+                padding: 10px 0;
+                border-radius: 0 0 10px 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-links.show {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 20px; /* Increased padding for better spacing */
+            text-align: center;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem; /* Increased font size */
+            margin-bottom: 30px; /* Added spacing below heading */
+        }
+
+        .hero-section p {
+            font-size: 1.5rem; /* Increased font size */
+            margin-bottom: 40px; /* Added spacing below paragraph */
+        }
+
+        .hero-actions .btn {
+            padding: 15px 30px; /* Increased button size */
+            font-size: 1.2rem; /* Adjusted font size */
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 80px 20px; /* Increased padding for better spacing */
+        }
+
+        .features-grid {
+            gap: 30px; /* Increased gap between cards */
+        }
+
+        .feature-card {
+            padding: 30px; /* Increased padding for better spacing */
+            border-radius: 15px; /* More rounded corners */
+        }
+
+        .feature-icon {
+            font-size: 4rem; /* Increased icon size */
+            margin-bottom: 20px; /* Added spacing below icon */
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: #1f2937; /* Dark gray background */
+            color: white; /* White text for contrast */
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .footer-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af; /* Light gray for description text */
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white; /* White headings for better contrast */
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af; /* Light gray for links */
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white; /* White on hover for better visibility */
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151; /* Subtle border for separation */
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af; /* Light gray for bottom text */
+        }
+
+        @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5rem; /* Adjusted font size for smaller screens */
+            }
+
+            .hero-section p {
+                font-size: 1.2rem; /* Adjusted font size for smaller screens */
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr; /* Single column layout for smaller screens */
+            }
+
+            .footer-content {
+                flex-direction: column; /* Stack footer content vertically */
+                text-align: center;
+            }
+
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-links-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <nav class="main-nav">
+            <div class="nav-content">
+                <!-- Brand Section -->
+                <div class="nav-brand">
+                    <a href="#" class="brand-link">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                        <span class="brand-name">TowerClub</span>
+                    </a>
+                </div>
+
+                <!-- Navigation Links -->
+                <div class="nav-links">
+                    <a href="#features" class="nav-link">Features</a>
+                    <a href="#pricing" class="nav-link">Pricing</a>
+                    <a href="#about" class="nav-link">About</a>
+                </div>
+
+                <!-- Navigation Actions -->
+                <div class="nav-actions">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="pay.html" class="btn btn-primary">Get Started</a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="landing-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1>Take Control of Your Financial Future</h1>
+                    <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub.</p>
+                    <div class="hero-actions">
+                        <a href="pay.html" class="btn btn-primary btn-large">Start Free Trial</a>
+                        <a href="#demo" class="btn btn-outline btn-large">Watch Demo</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section id="features" class="features-section">
+                <h2>Powerful Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">analytics</span>
+                        </div>
+                        <h3>Smart Analytics</h3>
+                        <p>Get detailed insights into your spending patterns and financial health with our advanced analytics.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">account_balance_wallet</span>
+                        </div>
+                        <h3>Build Financial Social Network</h3>
+                        <p>Set and monitor your financial social Network with real-time updates and smart notifications.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">savings</span>
+                        </div>
+                        <h3>Budget & Saving Goals</h3>
+                        <p>Create and track your savings goals with personalized recommendations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <span class="material-icons">security</span>
+                        </div>
+                        <h3>Secure & Private</h3>
+                        <p>Your financial data is protected with bank-level security and encryption.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pricing Section -->
+            <section id="pricing" class="pricing-section">
+                <h2>Simple, Transparent Pricing</h2>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Basic</h3>
+                            <div class="price">$11.95<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Basic expenses tracking</li>
+                            <li>Monthly budget planning</li>
+                            <li>Basic analytics</li>
+                            <li>Build Financial social Network</li>
+                            <li>Transfers between Members</li>
+                            <li>Profile and Chats</li>
+                            <li>7 days Free trial</li>
+                        </ul>
+                        <a href="pay.html" class="btn btn-outline btn-block">Get Started</a>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="pricing-header">
+                            <h3>VIP Member</h3>
+                            <div class="price">$14.95<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>Advanced analytics</li>
+                            <li>Build Financial social Network</li>
+                            <li>Unlimited budgets</li>
+                            <li>Saving goals</li>
+                            <li>Priority support</li>
+                            <li>Transfers between Members</li>
+                            <li>Profile and Chats</li>
+                        </ul>
+                        <a href="pay.html" class="btn btn-primary btn-block">Get Started</a>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="pricing-header">
+                            <h3>Business</h3>
+                            <div class="price">Custom</div>
+                        </div>
+                        <ul class="pricing-features">
+                            <li>All Pro features</li>
+                            <li>Team management</li>
+                            <li>Dedicated support</li>
+                            <li>Custom integrations</li>
+                        </ul>
+                        <a href="pay.html" class="btn btn-outline btn-block">Contact Sales</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="about-section">
+                <div class="about-content">
+                    <h2>About TowerClub</h2>
+                    <p>TowerClub is built by financial experts and tech innovators who understand the challenges of managing personal finances. Our mission is to make financial management accessible, intuitive, and effective for everyone.</p>
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">50K+</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">$100M+</div>
+                            <div class="stat-label">Tracked Assets</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">4.8/5</div>
+                            <div class="stat-label">User Rating</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section">
+                <div class="cta-content">
+                    <h2>Ready to Transform Your Financial Management?</h2>
+                    <p>Join thousands of users who are already taking control of their finances with TowerClub.</p>
+                    <a href="pay.html" class="btn btn-primary btn-large">Get Started Now</a>
+                </div>
+            </section>
+
+            <!-- Contact Tools Section -->
+            <section class="contact-tools-section">
+                <div class="tools-container">
+                    <div class="tool-card calculator">
+                        <div class="tool-icon">
+                            <span class="material-icons">calculate</span>
+                        </div>
+                        <h3>Financial Calculator</h3>
+                        <p>Use our advanced calculators to plan your investments and savings</p>
+                        <a href="#calculator" class="btn btn-outline">Open Calculator</a>
+                    </div>
+                    <div class="tool-card phone">
+                        <div class="tool-icon">
+                            <span class="material-icons">phone</span>
+                        </div>
+                        <h3>Contact Support</h3>
+                        <p>Get in touch with our expert support team</p>
+                        <a href="tel:+1234567890" class="btn btn-outline">Call Now</a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="main-footer">
+            <div class="footer-content">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <div class="brand-wrapper">
+                            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
+                            <span class="brand-name">TowerClub</span>
+                        </div>
+                        <p class="brand-description">
+                            Your trusted platform for financial growth and investment opportunities.
+                        </p>
+                    </div>
+                    <div class="footer-links-section">
+                        <div class="footer-column">
+                            <h4>Company</h4>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Careers</a></li>
+                                <li><a href="#">Press</a></li>
+                                <li><a href="#">Blog</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Resources</h4>
+                            <ul>
+                                <li><a href="#">Help Center</a></li>
+                                <li><a href="#">Guides</a></li>
+                                <li><a href="#">API</a></li>
+                                <li><a href="#">Status</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Legal</h4>
+                            <ul>
+                                <li><a href="#">Privacy</a></li>
+                                <li><a href="#">Terms</a></li>
+                                <li><a href="#">Security</a></li>
+                                <li><a href="#">Cookies</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h4>Social</h4>
+                            <ul>
+                                <li><a href="#">Twitter</a></li>
+                                <li><a href="#">LinkedIn</a></li>
+                                <li><a href="#">Facebook</a></li>
+                                <li><a href="#">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+    </script>
+    <script src="../scripts/main.js"></script>
+</body>
+</html>

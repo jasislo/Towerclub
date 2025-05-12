@@ -1,0 +1,12 @@
+{
+  "paypal": {
+    "clientId": "YOUR_PAYPAL_CLIENT_ID",
+    "clientSecret": "YOUR_PAYPAL_CLIENT_SECRET",
+    "apiUrl": "https://api.paypal.com"
+  },
+  "visa": {
+    "apiKey": "YOUR_VISA_API_KEY",
+    "apiUrl": "https://api.visa.com"
+  },
+  "environment": "development"
+}

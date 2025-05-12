@@ -1,0 +1,10 @@
+https://towerclubapp.herokuapp.com
+
+nslookup -type=TXT _github-pages-challenge-jasislo.towerclubapp.com
+
+<link rel="stylesheet" href="styles/main.css">
+<img src="images/towerclub_logo.png" alt="Logo">
+
+www.towerclubapp.com
+
+web: gunicorn app:app
