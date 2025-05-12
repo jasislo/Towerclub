@@ -274,4 +274,28 @@ document.addEventListener('DOMContentLoaded', () => {
             cashOutModal.style.display = 'none';
         };
     }
+
+    // Referral Code Form Logic (add this if not already present)
+    // If you have a referral code input form:
+    const referralInput = document.getElementById('referralCodeInput');
+    const referralMsg = document.getElementById('referralCodeMessage');
+    if (referralInput && referralMsg) {
+        document.getElementById('referralCodeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = referralInput.value.trim().toLowerCase();
+            if (code === '#jonatthanasis' || code === 'jonatthanasis') {
+                referralMsg.style.display = 'block';
+                referralMsg.style.color = '#22c55e';
+                referralMsg.textContent = 'Referral code applied! You get 2 months free of charge membership.';
+            } else if (code.length < 3) {
+                referralMsg.style.display = 'block';
+                referralMsg.style.color = '#F06A6A';
+                referralMsg.textContent = 'Please enter a valid referral code.';
+            } else {
+                referralMsg.style.display = 'block';
+                referralMsg.style.color = '#22c55e';
+                referralMsg.textContent = 'Referral code applied!';
+            }
+        });
+    }
 });
