@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Phone Number</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4B39EF;
+            --secondary-color: #2196F3;
+            --background-color: #1A1F24;
+            --card-background: #1D2428;
+            --text-color: #FFFFFF;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --input-background: rgba(255, 255, 255, 0.1);
+            --input-border: rgba(255, 255, 255, 0.2);
+            --error-color: #FF3B30;
+            --success-color: #4CAF50;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, var(--background-color), #2C3338);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .auth-container {
+            background: var(--card-background);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            transition: transform 0.3s ease;
+            filter: brightness(1.1);
+            object-fit: contain;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .back-button {
+            background: var(--input-background);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--primary-color);
+        }
+
+        .back-button .material-icons {
+            color: var(--text-color);
+            font-size: 24px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .phone-number {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .change-number {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .change-number:hover {
+            color: var(--primary-color);
+        }
+
+        .pin-code-container {
+            margin-bottom: 24px;
+        }
+
+        .pin-code-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .pin-input {
+            width: 48px;
+            height: 48px;
+            background: var(--input-background);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(75, 57, 239, 0.2);
+        }
+
+        .verify-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .verify-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .verify-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(75, 57, 239, 0.3);
+        }
+
+        .verify-button:hover::before {
+            left: 100%;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="auth-container">
+            <div class="header">
+                <div class="logo-container">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="logo-text">TowerClub</span>
+                </div>
+            </div>
+            
+            <div class="content">
+                <button class="back-button">
+                    <span class="material-icons">arrow_back_rounded</span>
+                </button>
+                
+                <h1 class="title">Verification Code</h1>
+                <p class="subtitle">
+                    Enter the 6 digit code that you received at 
+                    <span class="phone-number" id="phoneNumberDisplay"></span>
+                    <a href="#" class="change-number">change number?</a>
+                </p>
+                
+                <div class="pin-code-container">
+                    <div class="pin-code-inputs">
+                        <input type="text" maxlength="1" class="pin-input" data-index="0">
+                        <input type="text" maxlength="1" class="pin-input" data-index="1">
+                        <input type="text" maxlength="1" class="pin-input" data-index="2">
+                        <input type="text" maxlength="1" class="pin-input" data-index="3">
+                        <input type="text" maxlength="1" class="pin-input" data-index="4">
+                        <input type="text" maxlength="1" class="pin-input" data-index="5">
+                    </div>
+                </div>
+                
+                <button class="verify-button">Verify Code</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const pinInputs = document.querySelectorAll('.pin-input');
+            const verifyButton = document.querySelector('.verify-button');
+            const backButton = document.querySelector('.back-button');
+            const changeNumberLink = document.querySelector('.change-number');
+            const authContainer = document.querySelector('.auth-container');
+            const phoneNumberDisplay = document.getElementById('phoneNumberDisplay');
+
+            // Add fade-in animation
+            authContainer.classList.add('fade-in');
+
+            // Get phone number from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const phoneNumber = urlParams.get('phone');
+            
+            if (phoneNumber) {
+                phoneNumberDisplay.textContent = phoneNumber;
+            }
+
+            // Handle PIN input
+            pinInputs.forEach((input, index) => {
+                // Handle input
+                input.addEventListener('input', (e) => {
+                    if (e.target.value.length === 1) {
+                        // Move to next input
+                        if (index < pinInputs.length - 1) {
+                            pinInputs[index + 1].focus();
+                        }
+                    }
+                });
+
+                // Handle backspace
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value) {
+                        // Move to previous input
+                        if (index > 0) {
+                            pinInputs[index - 1].focus();
+                        }
+                    }
+                });
+
+                // Handle paste
+                input.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                    if (/^\d+$/.test(pastedData)) {
+                        pastedData.split('').forEach((digit, i) => {
+                            if (pinInputs[i]) {
+                                pinInputs[i].value = digit;
+                            }
+                        });
+                        if (pinInputs[pastedData.length]) {
+                            pinInputs[pastedData.length].focus();
+                        }
+                    }
+                });
+            });
+
+            // Handle verify button click
+            verifyButton.addEventListener('click', () => {
+                const code = Array.from(pinInputs).map(input => input.value).join('');
+                
+                if (code.length !== 6) {
+                    pinInputs.forEach(input => {
+                        input.style.borderColor = 'var(--error-color)';
+                    });
+                    return;
+                }
+
+                // Here you would typically make an API call to verify the code
+                console.log('Verification code submitted:', code);
+                // Redirect to profile page
+                window.location.href = '/profile.html';
+            });
+
+            // Handle back button click
+            backButton.addEventListener('click', () => {
+                window.history.back();
+            });
+
+            // Handle change number link click
+            changeNumberLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/auth_phone.html';
+            });
+
+            // Remove error styling on input
+            pinInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.style.borderColor = 'var(--primary-color)';
+                });
+
+                input.addEventListener('blur', () => {
+                    if (input.value) {
+                        input.style.borderColor = 'var(--secondary-background)';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

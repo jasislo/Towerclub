@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Payment Methods</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&components=buttons,marks,funding-eligibility"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
+    <style>
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --positive-color: #39D2C0;
+            --negative-color: #F06A6A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            padding-top: 100px; /* Adjust for fixed header */
+            flex: 1;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the payment options */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .payment-option {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background-color: #f0f0f0;
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .payment-form {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto; /* Center the payment forms */
+            max-width: 400px; /* Optional: Limit the width of the forms */
+        }
+
+        .payment-form h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center; /* Center the form title */
+        }
+
+        .paypal-button-container {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group button:hover {
+            background-color: #00796B;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .btn-paypal {
+            background-color: #ffc439; /* PayPal yellow */
+            color: #111827; /* Dark text for contrast */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px; /* Add spacing under the heading */
+            display: inline-block;
+        }
+
+        .btn-paypal:hover {
+            background-color: #e0a800; /* Darker yellow on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 20px;
+            background-color: #f9fafb; /* Light background */
+            text-align: center;
+            margin-top: 200px; /* Increased spacing from the previous section */
+        }
+
+        .pricing-section h2 {
+            margin-bottom: 30px; /* Reduced spacing below the heading */
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 0; /* Remove any extra top margin for the grid */
+        }
+
+        .pricing-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .pricing-header {
+            margin-bottom: 20px;
+        }
+
+        .pricing-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6b7280;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            margin-bottom: 10px;
+            color: #4b5563;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        /* Center the Make Payment header */
+        .app-header {
+            text-align: center; /* Center the text */
+            margin-bottom: 20px; /* Add spacing below the header */
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero-section {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-actions .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .hero-actions .btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="brand-name">TowerClub</span>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+                <a href="index.html#about" class="nav-link">About</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="register.html" class="btn btn-primary btn-large">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Make Payment</h1>
+        </header>
+
+        <!-- Payment Options -->
+        <div class="payment-options">
+            <div class="payment-option" onclick="showCardPaymentForm()">
+                <i class="material-icons">credit_card</i>
+                <span>Pay with Credit/Debit Card</span>
+            </div>
+            <div class="payment-option" onclick="showPayPalPaymentForm()">
+                <i class="material-icons">account_balance_wallet</i>
+                <span>Pay with PayPal</span>
+            </div>
+        </div>
+
+        <!-- Payment Forms -->
+        <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
+            <h2>Pay with Credit/Debit Card</h2>
+            <form id="cardPaymentForm">
+                <div class="form-group">
+                    <label for="cardNumber">Card Number</label>
+                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardExpiry">Expiry Date</label>
+                    <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardCVC">CVC/CVV</label>
+                    <input type="text" id="cardCVC" placeholder="123" required>
+                </div>
+                <div class="form-group">
+                    <label for="cardHolder">Cardholder Name</label>
+                    <input type="text" id="cardHolder" placeholder="John Doe" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit">Pay Now</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="payment-form" id="paypalPaymentFormContainer" style="display: none;">
+            <h2>Pay with PayPal</h2>
+            <button class="btn-paypal" onclick="startPayPalPayment()">Login with PayPal</button>
+            <div class="paypal-button-container" id="paypal-button-container"></div>
+        </div>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <h2>Simple, Transparent Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Basic</h3>
+                        <div class="price">$11.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Basic expenses tracking</li>
+                        <li>Monthly budget planning</li>
+                        <li>Basic analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                        <li>7 days Free Trial</li>
+                    </ul>
+                    <!-- Pricing Section Buttons -->
+                    <a href="register.html" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h3>VIP Member</h3>
+                        <div class="price">$14.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Advanced analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Unlimited budgets</li>
+                        <li>Saving goals</li>
+                        <li>Priority support</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                    </ul>
+                    <!-- Pricing Section Buttons -->
+                    <a href="register.html" class="btn btn-primary btn-block">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Business</h3>
+                        <div class="price">$16.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>All Pro features</li>
+                        <li>Team management</li>
+                        <li>Dedicated support</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Contact Sales</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Hero Section -->
+    <main class="landing-content">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Take Control of Your Financial Future</h1>
+                <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub.</p>
+                <div class="hero-actions">
+                    <a href="register.html" class="btn btn-primary btn-large">Get Started</a>
+                    <a href="#demo" class="btn btn-outline btn-large">Watch Demo</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Handle Credit/Debit Card Payment
+        document.getElementById('cardPaymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            const cardCVC = document.getElementById('cardCVC').value;
+            const cardHolder = document.getElementById('cardHolder').value;
+
+            // Simulate payment processing
+            alert(`Processing payment for ${cardHolder} with card ending in ${cardNumber.slice(-4)}.`);
+        });
+
+        // PayPal Payment Integration with API
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                // Call your server to set up the transaction
+                return fetch('/api/create-paypal-transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        amount: '50.00' // Example amount
+                    })
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    return orderData.id; // Use the order ID returned by your server
+                });
+            },
+            onApprove: function(data, actions) {
+                // Call your server to capture the transaction
+                return fetch('/api/capture-paypal-transaction', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        orderID: data.orderID
+                    })
+                }).then(function(res) {
+                    return res.json();
+                }).then(function(orderData) {
+                    alert('Transaction completed by ' + orderData.payer.name.given_name);
+                });
+            },
+            onError: function(err) {
+                console.error('PayPal error:', err);
+                alert('An error occurred during the transaction.');
+            }
+        }).render('#paypal-button-container');
+
+        function showCardPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'block';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'none';
+        }
+
+        function showPayPalPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'none';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'block';
+        }
+
+        function startPayPalPayment() {
+            const returnUrl = encodeURIComponent(window.location.href); // Current page URL
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Phone - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #22c55e; /* Green */
+            --secondary-color: #a855f7; /* Fuchsia */
+            --background-color: #ffffff; /* White */
+            --card-background: #f3f4f6; /* Light Gray */
+            --text-color: #1a1f24; /* Dark Gray */
+            --text-secondary: #6b7280; /* Medium Gray */
+            --input-border: #d1d5db; /* Light Gray Border */
+            --error-color: #ef4444; /* Red */
+            --success-color: #10b981; /* Green */
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Lexend', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem;
+        }
+
+        .auth-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .logo {
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .content h1 {
+            color: var(--text-color);
+            font-size: 1.75rem;
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0 0 2rem;
+        }
+
+        .highlight {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .verification-code {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .verification-code input {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 500;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .verification-code input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+
+        .resend-timer {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .primary-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .primary-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .primary-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                margin: 1rem;
+            }
+
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .verification-code {
+                gap: 0.5rem;
+            }
+
+            .verification-code input {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="header">
+                <button class="back-button" onclick="history.back()">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+            </div>
+
+            <div class="content">
+                <h1>Verification Code</h1>
+                <p class="subtitle">Enter the 6-digit code sent to <span id="phoneNumber" class="highlight"></span>. <a href="#" onclick="history.back()">Change number?</a></p>
+
+                <div class="verification-code">
+                    <input type="text" maxlength="1" class="code-input" data-index="0">
+                    <input type="text" maxlength="1" class="code-input" data-index="1">
+                    <input type="text" maxlength="1" class="code-input" data-index="2">
+                    <input type="text" maxlength="1" class="code-input" data-index="3">
+                    <input type="text" maxlength="1" class="code-input" data-index="4">
+                    <input type="text" maxlength="1" class="code-input" data-index="5">
+                </div>
+
+                <div class="resend-timer">
+                    <p>Resend code in <span id="timer">60</span> seconds</p>
+                </div>
+
+                <button id="verifyButton" class="primary-button" disabled>
+                    Verify Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.code-input');
+            const verifyButton = document.getElementById('verifyButton');
+            const timerElement = document.getElementById('timer');
+            let timer = 60;
+            let timerInterval;
+
+            // Get phone number from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const phoneNumber = urlParams.get('phone');
+            if (phoneNumber) {
+                document.getElementById('phoneNumber').textContent = phoneNumber;
+            }
+
+            // Handle input focus and value changes
+            inputs.forEach((input, index) => {
+                input.addEventListener('input', function(e) {
+                    if (e.target.value.length === 1) {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        }
+                        checkAllInputs();
+                    }
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                        inputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Check if all inputs are filled
+            function checkAllInputs() {
+                const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+                verifyButton.disabled = !allFilled;
+            }
+
+            // Start countdown timer
+            function startTimer() {
+                timerInterval = setInterval(() => {
+                    timer--;
+                    timerElement.textContent = timer;
+                    
+                    if (timer <= 0) {
+                        clearInterval(timerInterval);
+                        document.querySelector('.resend-timer').innerHTML = 
+                            '<p>Didn\'t receive the code? <a href="#" onclick="resendCode()">Resend</a></p>';
+                    }
+                }, 1000);
+            }
+
+            // Resend code function
+            window.resendCode = function() {
+                // Add your resend code logic here
+                timer = 60;
+                timerElement.textContent = timer;
+                document.querySelector('.resend-timer').innerHTML = 
+                    '<p>Resend code in <span id="timer">60</span> seconds</p>';
+                startTimer();
+            };
+
+            // Start the timer when page loads
+            startTimer();
+
+            // Handle verification
+            verifyButton.addEventListener('click', function() {
+                const code = Array.from(inputs).map(input => input.value).join('');
+                // Add your verification logic here
+                console.log('Verifying code:', code);
+            });
+        });
+    </script>
+</body>
+</html>
