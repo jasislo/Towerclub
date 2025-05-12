@@ -517,11 +517,82 @@
 
     <!-- Main Content -->
     <div class="app-container">
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section" style="margin-top:80px; padding-top:40px;">
+            <h2>Simple, Transparent Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Basic</h3>
+                        <div class="price">$11.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Basic expenses tracking</li>
+                        <li>Monthly budget planning</li>
+                        <li>Basic analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                        <li>7 days Free Trial</li>
+                    </ul>
+                    <a href="register.html" class="btn btn-outline btn-block get-started-btn" data-plan="Basic">Get Started</a>
+                </div>
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h3>VIP Member</h3>
+                        <div class="price">$14.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Advanced analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Unlimited budgets</li>
+                        <li>Saving goals</li>
+                        <li>Priority support</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                    </ul>
+                    <a href="register.html" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member">Get Started</a>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Business</h3>
+                        <div class="price">$16.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>All Pro features</li>
+                        <li>Team management</li>
+                        <li>Dedicated support</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline btn-block get-started-btn" data-plan="Business">Get Started</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Referral Code Section (after Pricing and before Payment) -->
+        <div style="max-width:400px;margin:32px auto 40px auto;padding:20px;background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+            <form id="referralCodeForm" style="display:flex;flex-direction:column;gap:12px;">
+                <label for="referralCodeInput" style="font-weight:500;">Have a referral code?</label>
+                <input
+                    type="text"
+                    id="referralCodeInput"
+                    name="referralCode"
+                    placeholder="Enter referral code"
+                    style="padding:10px;border-radius:6px;border:1px solid #ccc;font-size:1rem;"
+                    autocomplete="off"
+                />
+                <button type="submit" style="background:#22c55e;color:#fff;border:none;padding:10px 0;border-radius:6px;font-size:1rem;cursor:pointer;">
+                    Apply Code
+                </button>
+                <span id="referralCodeMessage" style="color:#22c55e;font-size:0.95rem;display:none;"></span>
+            </form>
+        </div>
+
+        <!-- Make Payment Section -->
         <header class="app-header">
             <h1>Make Payment</h1>
         </header>
 
-        <!-- Payment Options -->
         <div class="payment-options">
             <div class="payment-option" onclick="showCardPaymentForm()">
                 <i class="material-icons">credit_card</i>
@@ -533,7 +604,6 @@
             </div>
         </div>
 
-        <!-- Payment Forms -->
         <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
             <h2>Pay with Credit/Debit Card</h2>
             <form id="cardPaymentForm">
@@ -564,60 +634,6 @@
             <button class="btn-paypal" onclick="startPayPalPayment()">Login with PayPal</button>
             <div class="paypal-button-container" id="paypal-button-container"></div>
         </div>
-
-        <!-- Pricing Section -->
-        <section id="pricing" class="pricing-section">
-            <h2>Simple, Transparent Pricing</h2>
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Basic</h3>
-                        <div class="price">$11.95<span>/month</span></div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Basic expenses tracking</li>
-                        <li>Monthly budget planning</li>
-                        <li>Basic analytics</li>
-                        <li>Build Financial social Network</li>
-                        <li>Transfers between Members</li>
-                        <li>Profile and Chats</li>
-                        <li>7 days Free Trial</li>
-                    </ul>
-                    <!-- Pricing Section Buttons -->
-                    <a href="register.html" class="btn btn-outline btn-block">Get Started</a>
-                </div>
-                <div class="pricing-card featured">
-                    <div class="pricing-header">
-                        <h3>VIP Member</h3>
-                        <div class="price">$14.95<span>/month</span></div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Advanced analytics</li>
-                        <li>Build Financial social Network</li>
-                        <li>Unlimited budgets</li>
-                        <li>Saving goals</li>
-                        <li>Priority support</li>
-                        <li>Transfers between Members</li>
-                        <li>Profile and Chats</li>
-                    </ul>
-                    <!-- Pricing Section Buttons -->
-                    <a href="register.html" class="btn btn-primary btn-block">Get Started</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Business</h3>
-                        <div class="price">$16.95<span>/month</span></div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>All Pro features</li>
-                        <li>Team management</li>
-                        <li>Dedicated support</li>
-                        <li>Custom integrations</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-outline btn-block">Contact Sales</a>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- Footer -->
@@ -759,6 +775,76 @@
             const returnUrl = encodeURIComponent(window.location.href); // Current page URL
             window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
         }
+
+        // Referral Code Form Logic
+        document.getElementById('referralCodeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const codeInput = document.getElementById('referralCodeInput');
+            const message = document.getElementById('referralCodeMessage');
+            const code = codeInput.value.trim();
+
+            if (code.length < 3) {
+                message.style.display = 'block';
+                message.style.color = '#F06A6A';
+                message.textContent = 'Please enter a valid referral code.';
+                return;
+            }
+
+            // Simulate referral code validation (replace with real API call if needed)
+            message.style.display = 'block';
+            message.style.color = '#22c55e';
+            message.textContent = 'Referral code applied!';
+            // Optionally: Save code to localStorage/session or send to backend
+        });
+
+        // Membership selection algorithm for "Get Started" buttons
+        let selectedPlan = null;
+        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                // Prevent navigation for demo, remove this line if you want to allow navigation
+                e.preventDefault();
+
+                // Remove "Selected" from all buttons and reset text
+                document.querySelectorAll('.get-started-btn').forEach(function(b) {
+                    b.textContent = 'Get Started';
+                    b.classList.remove('selected-plan');
+                });
+
+                // Set this button as selected
+                btn.textContent = 'Selected';
+                btn.classList.add('selected-plan');
+                selectedPlan = btn.getAttribute('data-plan');
+            });
+        });
+
+        // Prevent navigation to register or contact until payment is made/secured
+        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                // Already handled above
+            });
+            btn.addEventListener('mousedown', function(e) {
+                // Prevent navigation on mousedown as well
+                e.preventDefault();
+            });
+            btn.addEventListener('mouseup', function(e) {
+                // Prevent navigation on mouseup as well
+                e.preventDefault();
+            });
+        });
+
+        // Prevent navigation for "Get Started" and "Contact Sales" until payment is made
+        document.querySelectorAll('.get-started-btn, .btn.btn-outline.btn-block.get-started-btn[data-plan="Business"]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                // If payment is not made/secured, show alert and prevent navigation
+                if (!window.paymentSecured) {
+                    e.preventDefault();
+                    alert('Please complete your payment before proceeding.');
+                }
+            });
+        });
+
+        // Example: Set window.paymentSecured = true; after successful payment
+        // window.paymentSecured = true;
     </script>
 </body>
 </html>
