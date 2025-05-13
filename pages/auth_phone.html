@@ -351,8 +351,8 @@
         continueButton.innerHTML = `<div class="spinner"></div>`;
 
         setTimeout(() => {
-          console.log('Phone number submitted:', phoneNumber);
-          window.location.href = '/auth3-verify-phone.html';
+          // Save phone number if needed: localStorage.setItem('phone', phoneNumber);
+          window.location.href = 'auth_verify_phone.html';
         }, 1000);
       });
 
@@ -366,6 +366,15 @@
           phoneInput.parentElement.style.borderColor = 'var(--input-border)';
         }
       });
+
+      // Redirect to pay.html when "Sign Up" is clicked in the auth footer
+      const signUpLink = document.querySelector('.auth-footer a[href="register.html"]');
+      if (signUpLink) {
+        signUpLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = 'pay.html';
+        });
+      }
     });
   </script>
 </body>

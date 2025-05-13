@@ -349,10 +349,38 @@
     </div>
 
     <script>
-        // Redirect to onboarding.html on form submission
         document.getElementById('registerForm').addEventListener('submit', function (event) {
             event.preventDefault(); // Prevent the default form submission
-            window.location.href = 'onboarding.html'; // Redirect to onboarding.html
+
+            // Get form values
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsChecked = document.querySelector('input[name="terms"]').checked;
+
+            // Simple validation (you can expand as needed)
+            if (!fullName || !email || !phone || !password || !confirmPassword || !termsChecked) {
+                alert('Please fill out all fields and agree to the Terms & Conditions.');
+                return;
+            }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            // Save info to localStorage (or send to backend)
+            const memberProfile = {
+                fullName,
+                email,
+                phone,
+                password // In production, never store plain passwords!
+            };
+            localStorage.setItem('memberProfile', JSON.stringify(memberProfile));
+
+            // Redirect to onboarding.html
+            window.location.href = 'onboarding.html';
         });
     </script>
 </body>
