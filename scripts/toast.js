@@ -192,4 +192,51 @@ style.textContent = `
     }
 `;
 
-document.head.appendChild(style); 
+document.head.appendChild(style);
+
+// Dark mode sync logic for all pages
+const darkModeToggle = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Apply dark mode from localStorage on page load
+if (localStorage.getItem('darkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    darkModeToggle && (darkModeToggle.textContent = 'Light Mode');
+} else {
+    darkModeToggle && (darkModeToggle.textContent = 'Dark Mode');
+}
+
+// Toggle dark mode on button click and sync across app
+if (darkModeToggle) {
+    darkModeToggle.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('darkMode', 'enabled');
+            darkModeToggle.textContent = 'Light Mode';
+        } else {
+            localStorage.setItem('darkMode', 'disabled');
+            darkModeToggle.textContent = 'Dark Mode';
+        }
+    });
+}
+
+// Add dark mode styles for toast notifications
+const darkModeToastStyle = document.createElement('style');
+darkModeToastStyle.textContent = `
+    body.dark-mode .toast {
+        background: #23272f !important;
+        color: #fff !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+    }
+    body.dark-mode .toast.success {
+        background: #357a38 !important;
+    }
+    body.dark-mode .toast.error {
+        background: #b71c1c !important;
+    }
+    body.dark-mode .toast.loading,
+    body.dark-mode .toast.info {
+        background: #1565c0 !important;
+    }
+`;
+document.head.appendChild(darkModeToastStyle);
