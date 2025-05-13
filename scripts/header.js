@@ -130,3 +130,40 @@ darkModeToggle.addEventListener('click', () => {
         });
     });
 </script>
+
+<script>
+    // Sync profile picture everywhere on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedPic = localStorage.getItem('profilePicture');
+        if (savedPic) {
+            const headerPic = document.getElementById('profilePicture');
+            if (headerPic) headerPic.src = savedPic;
+            const mainPic = document.getElementById('profileImage');
+            if (mainPic) mainPic.src = savedPic;
+            const mainPic2 = document.getElementById('profileImg');
+            if (mainPic2) mainPic2.src = savedPic;
+        }
+    });
+</script>
+
+<script>
+    // Log Out Button Functionality
+    const logoutBtn = document.querySelector('.nav-actions a[href="/pages/logout.html"]');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            // Clear all member-related data from localStorage/sessionStorage
+            localStorage.removeItem('memberProfile');
+            localStorage.removeItem('profilePicture');
+            localStorage.removeItem('paymentMethod');
+            localStorage.removeItem('cardDetails');
+            localStorage.removeItem('selectedPlan');
+            // Add any other keys you use for user session/info
+
+            // Optionally clear all localStorage (uncomment if you want a full reset)
+            // localStorage.clear();
+
+            // Proceed to logout page
+            // (Default behavior: goes to /pages/logout.html)
+        });
+    }
+</script>

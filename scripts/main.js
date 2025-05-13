@@ -158,3 +158,59 @@ function formatCurrency(amount) {
         currency: 'USD'
     }).format(amount);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Add upload input if not present
+    let profilePicInput = document.getElementById('profilePicInput');
+    if (!profilePicInput) {
+        profilePicInput = document.createElement('input');
+        profilePicInput.type = 'file';
+        profilePicInput.accept = 'image/*';
+        profilePicInput.id = 'profilePicInput';
+        profilePicInput.style.display = 'none';
+        document.body.appendChild(profilePicInput);
+    }
+
+    // Get all profile picture elements
+    function syncProfilePicture(src) {
+        // Header
+        const headerPic = document.querySelector('.profile-picture-container img');
+        if (headerPic) headerPic.src = src;
+        // Add more selectors if you have more profile images elsewhere
+    }
+
+    // On page load, sync profile picture everywhere
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedPic) {
+        syncProfilePicture(savedPic);
+    }
+
+    // Click on profile picture opens file input
+    const headerPicContainer = document.querySelector('.profile-picture-container');
+    if (headerPicContainer) {
+        headerPicContainer.addEventListener('click', () => {
+            profilePicInput.click();
+        });
+    }
+
+    // When a new photo is selected, update and sync everywhere
+    profilePicInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const src = e.target.result;
+                // Save to localStorage
+                localStorage.setItem('profilePicture', src);
+                // Sync everywhere
+                syncProfilePicture(src);
+
+                // Also update memberProfile if exists
+                const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+                memberProfile.profilePicture = src;
+                localStorage.setItem('memberProfile', JSON.stringify(memberProfile));
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});

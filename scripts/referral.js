@@ -38,7 +38,7 @@ class ReferralProfile {
             
             // Update stats
             this.totalFollowers.textContent = this.formatNumber(data.followers);
-            this.level.textContent = getAccountLevel(data.followers, data.referrals);
+            this.level.textContent = getAccountLevel(data.followers, data.referrals, data.plan);
             this.rewardAmount.textContent = this.formatCurrency(data.rewardAmount);
         } catch (error) {
             console.error('Error loading profile data:', error);
@@ -132,24 +132,38 @@ class ReferralProfile {
 }
 
 /**
- * Get account level based on followers and referrals.
+ * Get account level based on followers, referrals, and membership plan.
  * @param {number} followers
  * @param {number} referrals
+ * @param {string} plan - Membership plan (e.g., "Basic", "VIP Member", "Business")
  * @returns {string} Account level
  */
-function getAccountLevel(followers, referrals) {
+function getAccountLevel(followers, referrals, plan) {
+    // If Basic plan and not enough followers/referrals for higher levels, show "Member"
+    if (plan === 'Basic') {
+        if (followers < 1000 && referrals < 100) return 'Member';
+    }
     if (followers >= 100000 && referrals >= 50000) return 'Platinum';
     if (followers >= 50000 && referrals >= 10000) return 'Gold';
     if (followers >= 10000 && referrals >= 1000) return 'Silver';
-    if (followers >= 1000 && referrals >= 100) return 'VIP Member'; // Changed from 'Bronze' to 'VIP Member'
-    return 'Starter';
+    if (followers >= 1000 && referrals >= 100) return 'VIP Member';
+    return plan === 'Basic' ? 'Member' : 'Starter';
 }
 
 // Example usage:
 const followers = 24000; // Replace with actual value
 const referrals = 1200;  // Replace with actual value
 
-const accountLevel = getAccountLevel(followers, referrals);
+// Get selected plan from localStorage (set during onboarding/payment)
+let selectedPlan = 'Basic';
+const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+if (memberProfile && memberProfile.selectedPlan) {
+    selectedPlan = memberProfile.selectedPlan;
+} else if (localStorage.getItem('selectedPlan')) {
+    selectedPlan = localStorage.getItem('selectedPlan');
+}
+
+const accountLevel = getAccountLevel(followers, referrals, selectedPlan);
 document.getElementById('accountLevel').textContent = accountLevel;
 
 /**

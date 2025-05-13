@@ -20,178 +20,281 @@
     }
 </style>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Carousel Logic (if present) ---
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
     const primaryButton = document.querySelector('.primary-button');
     const secondaryButton = document.querySelector('.secondary-button');
     let currentSlide = 0;
 
-    // Function to update the active slide and dot
     function updateSlide(index) {
         slides.forEach(slide => slide.classList.remove('active'));
         dots.forEach(dot => dot.classList.remove('active'));
-        
         slides[index].classList.add('active');
         dots[index].classList.add('active');
         currentSlide = index;
     }
 
-    // Add click event listeners to dots
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => {
             updateSlide(index);
         });
     });
 
-    // Add touch swipe functionality
     let touchStartX = 0;
     let touchEndX = 0;
-
-    document.querySelector('.carousel').addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-    });
-
-    document.querySelector('.carousel').addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    });
+    const carousel = document.querySelector('.carousel');
+    if (carousel) {
+        carousel.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        carousel.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+    }
 
     function handleSwipe() {
         const swipeThreshold = 50;
         if (touchEndX < touchStartX - swipeThreshold) {
-            // Swipe left
             if (currentSlide < slides.length - 1) {
                 updateSlide(currentSlide + 1);
             }
         } else if (touchEndX > touchStartX + swipeThreshold) {
-            // Swipe right
             if (currentSlide > 0) {
                 updateSlide(currentSlide - 1);
             }
         }
     }
 
-    // Add click event listeners to buttons
-    primaryButton.addEventListener('click', () => {
-        // Navigate to create budget page
-        window.location.href = 'create-budget.html';
-    });
+    if (primaryButton) {
+        primaryButton.addEventListener('click', () => {
+            window.location.href = 'create-budget.html';
+        });
+    }
+    if (secondaryButton) {
+        secondaryButton.addEventListener('click', () => {
+            window.location.href = 'subscription-payment.html';
+        });
+    }
 
-    secondaryButton.addEventListener('click', () => {
-        // Navigate to subscription payment page
-        window.location.href = 'subscription-payment.html';
-    });
+    if (slides.length > 0) {
+        setInterval(() => {
+            if (currentSlide < slides.length - 1) {
+                updateSlide(currentSlide + 1);
+            } else {
+                updateSlide(0);
+            }
+        }, 5000);
+    }
 
-    // Auto-advance slides every 5 seconds
-    setInterval(() => {
-        if (currentSlide < slides.length - 1) {
-            updateSlide(currentSlide + 1);
-        } else {
-            updateSlide(0);
+    // --- Payment Info Persistence Logic ---
+    const cardPaymentForm = document.getElementById('cardPaymentForm');
+    const paypalBtn = document.getElementById('paypalButton');
+    const cardNumberInput = document.getElementById('cardNumber');
+    const cardExpiryInput = document.getElementById('cardExpiry');
+    const cardCVCInput = document.getElementById('cardCVC');
+    const cardHolderInput = document.getElementById('cardHolder');
+
+    // Restore card info if available
+    if (localStorage.getItem('paymentMethod') === 'creditCard' && cardNumberInput && cardExpiryInput && cardCVCInput && cardHolderInput) {
+        const cardDetails = JSON.parse(localStorage.getItem('cardDetails') || '{}');
+        if (cardDetails.number) cardNumberInput.value = cardDetails.number;
+        if (cardDetails.expiry) cardExpiryInput.value = cardDetails.expiry;
+        if (cardDetails.cvc) cardCVCInput.value = cardDetails.cvc;
+        if (cardDetails.holder) cardHolderInput.value = cardDetails.holder;
+    }
+
+    // Restore PayPal info if available
+    if (localStorage.getItem('paymentMethod') === 'paypal' && paypalBtn) {
+        paypalBtn.textContent = 'Logged with PayPal';
+        paypalBtn.style.backgroundColor = '#ffc439'; // PayPal yellow
+        paypalBtn.style.color = '#111827'; // Dark text for contrast
+        paypalBtn.style.cursor = 'not-allowed';
+        paypalBtn.disabled = true;
+    }
+
+    // Save card info on submit
+    if (cardPaymentForm) {
+        cardPaymentForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            localStorage.setItem('paymentMethod', 'creditCard');
+            localStorage.setItem('cardDetails', JSON.stringify({
+                number: cardNumberInput ? cardNumberInput.value : '',
+                expiry: cardExpiryInput ? cardExpiryInput.value : '',
+                cvc: cardCVCInput ? cardCVCInput.value : '',
+                holder: cardHolderInput ? cardHolderInput.value : ''
+            }));
+            alert('Payment successful!');
+            window.location.href = 'payment methods.html';
+        });
+    }
+
+    // Save PayPal info on click
+    if (paypalBtn) {
+        paypalBtn.addEventListener('click', function () {
+            localStorage.setItem('paymentMethod', 'paypal');
+            alert('PayPal payment successful!');
+            window.location.href = 'payment methods.html';
+        });
+    }
+
+    // Prefill Complete Profile section with info from register.html if available
+    const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+    if (memberProfile) {
+        if (memberProfile.fullName && document.getElementById('name')) {
+            document.getElementById('name').value = memberProfile.fullName;
         }
-    }, 5000);
+        if (memberProfile.email && document.getElementById('email')) {
+            document.getElementById('email').value = memberProfile.email;
+        }
+        if (memberProfile.phone && document.getElementById('phone')) {
+            document.getElementById('phone').value = memberProfile.phone;
+        }
+        if (memberProfile.username && document.getElementById('username')) {
+            document.getElementById('username').value = memberProfile.username;
+        }
+        if (memberProfile.age && document.getElementById('age')) {
+            document.getElementById('age').value = memberProfile.age;
+        }
+    }
 
+    // Handle Complete Profile Form Submission
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            // Collect profile info
+            const name = document.getElementById('name')?.value || '';
+            const username = document.getElementById('username')?.value || '';
+            const age = document.getElementById('age')?.value || '';
+            const email = document.getElementById('email')?.value || '';
+            const phone = document.getElementById('phone')?.value || '';
+            const profilePicture = localStorage.getItem('profilePicture') || '';
+
+            // Save profile info to localStorage
+            const updatedProfile = {
+                fullName: name,
+                username,
+                age,
+                email,
+                phone,
+                profilePicture
+            };
+            localStorage.setItem('memberProfile', JSON.stringify(updatedProfile));
+
+            // Always proceed to mainpage.html when Complete Profile is clicked
+            window.location.href = 'mainpage.html';
+        });
+    }
+
+    // Profile image upload logic (sync everywhere)
     const profileImage = document.getElementById('profileImage');
     const profileImg = document.getElementById('profileImg');
     const profileImageInput = document.getElementById('profileImageInput');
 
-    // Handle profile image click
-    profileImage.addEventListener('click', () => {
-        profileImageInput.click();
-    });
-
-    // Handle file selection
-    profileImageInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                profileImg.src = e.target.result; // Update the profile picture preview
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-
-    // Handle Profile Form Submission
-    document.getElementById('profileForm').addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        // Collect profile data
-        const profileData = {
-            name: document.getElementById('name').value,
-            username: document.getElementById('username').value,
-            age: document.getElementById('age').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-        };
-
-        try {
-            // Send profile data to the TowerClub LLC API
-            const response = await fetch('https://api.towerclub.com/profile', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(profileData),
-            });
-
-            if (response.ok) {
-                alert('Profile saved successfully!');
-            } else {
-                alert('Failed to save profile. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error saving profile:', error);
-            alert('An error occurred while saving your profile.');
-        }
-    });
-
-    // Handle Credit/Debit Card Payment
-    document.getElementById('cardPaymentForm').addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        // Collect payment data
-        const paymentData = {
-            cardNumber: document.getElementById('cardNumber').value,
-            cardExpiry: document.getElementById('cardExpiry').value,
-            cardCVC: document.getElementById('cardCVC').value,
-            cardHolder: document.getElementById('cardHolder').value,
-        };
-
-        try {
-            // Simulate sending payment data to the API
-            const response = await fetch('https://api.towerclub.com/payment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(paymentData),
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                if (result.success) {
-                    alert('Payment successful!');
-                    window.location.href = 'mainpage.html'; // Redirect to mainpage.html
-                } else {
-                    alert('Payment failed. Please try again.');
-                }
-            } else {
-                alert('Failed to process payment. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error processing payment:', error);
-            alert('An error occurred while processing your payment.');
-        }
-    });
-
-    // Handle PayPal Payment
-    function startPayPalPayment() {
-        // Simulate a successful PayPal payment
-        alert('PayPal payment successful!');
-        window.location.href = 'mainpage.html'; // Redirect to mainpage.html
+    function syncProfilePicture(src) {
+        // Save to localStorage
+        localStorage.setItem('profilePicture', src);
+        // Update all profile picture elements
+        if (profileImage) profileImage.src = src;
+        if (profileImg) profileImg.src = src;
+        const headerPic = document.getElementById('profilePicture');
+        if (headerPic) headerPic.src = src;
     }
 
-    // Attach the PayPal payment function to the button
-    document.querySelector('.btn-paypal').addEventListener('click', startPayPalPayment);
+    if (profileImage && profileImageInput) {
+        profileImage.addEventListener('click', () => {
+            profileImageInput.click();
+        });
+
+        profileImageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    syncProfilePicture(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    // On page load, sync profile picture everywhere
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedPic) {
+        syncProfilePicture(savedPic);
+    }
+
+    // Budget form logic
+    const budgetForm = document.getElementById('budgetForm');
+    if (budgetForm) {
+        const amountInput = document.getElementById('amount');
+        const budgetNameInput = document.getElementById('budgetName');
+        const descriptionInput = document.getElementById('description');
+
+        // Format amount input with commas (optional)
+        amountInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/,/g, '');
+            if (value) {
+                value = parseInt(value).toLocaleString();
+                e.target.value = value;
+            }
+        });
+
+        budgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const budgetData = {
+                amount: amountInput.value.replace(/,/g, ''),
+                name: budgetNameInput.value,
+                description: descriptionInput.value,
+                createdAt: new Date().toISOString(),
+                timeLeft: '45 days left'
+            };
+            // Simulate budget creation
+            alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
+            budgetForm.reset();
+            // Optionally redirect or update UI here
+        });
+    }
+
+    // Change header to "Payment Method Selected" if payment was made on pay.html
+    const paymentHeader = document.getElementById('paymentSectionHeader');
+    if (
+        (localStorage.getItem('paymentMethod') === 'creditCard' && localStorage.getItem('cardDetails')) ||
+        localStorage.getItem('paymentMethod') === 'paypal'
+    ) {
+        if (paymentHeader) {
+            paymentHeader.textContent = 'Payment Method Selected';
+        }
+    }
 });
+
+// Show/Hide payment forms
+function showCardPaymentForm() {
+    document.getElementById('cardPaymentFormContainer').style.display = 'block';
+    document.getElementById('paypalPaymentFormContainer').style.display = 'none';
+
+    // Add active class to Credit/Debit Card option
+    document.getElementById('creditCardOption').classList.add('active');
+    document.getElementById('paypalOption').classList.remove('active');
+}
+
+function showPayPalPaymentForm() {
+    document.getElementById('cardPaymentFormContainer').style.display = 'none';
+    document.getElementById('paypalPaymentFormContainer').style.display = 'block';
+
+    // Add active class to PayPal option
+    document.getElementById('paypalOption').classList.add('active');
+    document.getElementById('creditCardOption').classList.remove('active');
+}
+
+// Hide Create Budget section when skipping
+function skipForNow() {
+    const budgetSection = document.querySelector('.profile-section h1')?.textContent === 'Create Budget'
+        ? document.querySelector('.profile-section h1').closest('.profile-section')
+        : null;
+    if (budgetSection) {
+        budgetSection.style.display = 'none';
+    }
+}
