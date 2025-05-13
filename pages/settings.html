@@ -509,10 +509,24 @@
         const darkModeToggle = document.getElementById('darkModeToggle');
         const body = document.body;
 
-        // Toggle dark mode on button click
+        // Apply dark mode from localStorage on page load
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'Light Mode';
+        } else {
+            darkModeToggle.textContent = 'Dark Mode';
+        }
+
+        // Toggle dark mode on button click and sync across app
         darkModeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
-            darkModeToggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.textContent = 'Light Mode';
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeToggle.textContent = 'Dark Mode';
+            }
         });
 
         // Example: Replace with actual API call or backend data
