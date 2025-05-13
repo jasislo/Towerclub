@@ -201,11 +201,23 @@
             </div>
             <button type="submit">Login</button>
             <div class="separator">OR</div>
-            <button type="button">Log in with Phone Number</button>
+            <button type="button" id="loginWithPhoneBtn">Log in with Phone Number</button>
         </form>
         <div class="auth-footer">
-            <p>Don't have an account? <a href="register.html">Sign up</a></p>
+            <p>Don't have an account? <a href="register.html" id="signUpLink">Sign up</a></p>
         </div>
     </div>
+    <script>
+document.getElementById('loginWithPhoneBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = 'auth_phone.html';
+});
+
+// Redirect to pay.html when "Sign up" is clicked
+document.getElementById('signUpLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.href = 'pay.html';
+});
+</script>
 </body>
 </html>

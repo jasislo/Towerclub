@@ -486,6 +486,101 @@
         .hero-actions .btn:hover {
             transform: translateY(-2px);
         }
+
+        /* Payment Section Styles */
+        .payment-section {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-option {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .btn-credit-card {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-credit-card:hover {
+            background-color: #00796B;
+        }
+
+        /* PayPal Button Styles */
+        .paypal-button-container {
+            margin-top: 20px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .payment-section {
+                padding: 30px 15px;
+            }
+
+            .section-header {
+                font-size: 1.5rem;
+            }
+
+            .payment-option {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .payment-option i {
+                margin-bottom: 10px;
+            }
+
+            .btn-credit-card {
+                padding: 12px 24px;
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -589,50 +684,58 @@
         </div>
 
         <!-- Make Payment Section -->
-        <header class="app-header">
-            <h1>Make Payment</h1>
-        </header>
+        <div class="payment-section">
+            <header>
+                <h1 class="section-header">Make Payment</h1>
+            </header>
+            <div class="payment-options">
+                <!-- Pay with Credit/Debit Card -->
+                <div class="payment-option" id="creditCardOption">
+                    <i class="material-icons">credit_card</i>
+                    <span>Pay with Credit/Debit Card</span>
+                </div>
 
-        <div class="payment-options">
-            <div class="payment-option" onclick="showCardPaymentForm()">
-                <i class="material-icons">credit_card</i>
-                <span>Pay with Credit/Debit Card</span>
+                <!-- Credit/Debit Card Form -->
+                <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
+                    <h2>Pay with Credit/Debit Card</h2>
+                    <form id="cardPaymentForm">
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardExpiry">Expiry Date</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardCVC">CVC/CVV</label>
+                            <input type="text" id="cardCVC" placeholder="123" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolder">Cardholder Name</label>
+                            <input type="text" id="cardHolder" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn-credit-card">Pay Now</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Separator -->
+                <hr style="border: 1px solid #e2e8f0; margin: 30px 0;">
+
+                <!-- Pay with PayPal -->
+                <div class="payment-option" id="paypalOption">
+                    <i class="material-icons">account_balance_wallet</i>
+                    <span>Pay with PayPal</span>
+                </div>
+
+                <!-- PayPal Form -->
+                <div class="payment-form" id="paypalPaymentFormContainer" style="display: none;">
+                    <button class="btn-paypal" id="paypalButton" type="button">Login with PayPal</button>
+                    <div class="paypal-button-container" id="paypal-button-container"></div>
+                </div>
             </div>
-            <div class="payment-option" onclick="showPayPalPaymentForm()">
-                <i class="material-icons">account_balance_wallet</i>
-                <span>Pay with PayPal</span>
-            </div>
-        </div>
-
-        <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
-            <h2>Pay with Credit/Debit Card</h2>
-            <form id="cardPaymentForm">
-                <div class="form-group">
-                    <label for="cardNumber">Card Number</label>
-                    <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardExpiry">Expiry Date</label>
-                    <input type="text" id="cardExpiry" placeholder="MM/YY" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardCVC">CVC/CVV</label>
-                    <input type="text" id="cardCVC" placeholder="123" required>
-                </div>
-                <div class="form-group">
-                    <label for="cardHolder">Cardholder Name</label>
-                    <input type="text" id="cardHolder" placeholder="John Doe" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit">Pay Now</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="payment-form" id="paypalPaymentFormContainer" style="display: none;">
-            <h2>Pay with PayPal</h2>
-            <button class="btn-paypal" onclick="startPayPalPayment()">Login with PayPal</button>
-            <div class="paypal-button-container" id="paypal-button-container"></div>
         </div>
     </div>
 
@@ -709,72 +812,123 @@
     </main>
 
     <script>
-        // Handle Credit/Debit Card Payment
+        // Track selected plan and payment status
+        let selectedPlan = null;
+        let selectedPlanAmount = null;
+        window.paymentSecured = false;
+
+        // Pricing for each plan (must match your pricing section)
+        const planPrices = {
+            "Basic": 11.95,
+            "VIP Member": 14.95,
+            "Business": 16.95
+        };
+
+        // Membership selection algorithm for "Get Started" buttons
+        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Remove "Selected" from all buttons and reset text
+                document.querySelectorAll('.get-started-btn').forEach(function(b) {
+                    b.textContent = 'Get Started';
+                    b.classList.remove('selected-plan');
+                });
+
+                // Set this button as selected
+                btn.textContent = 'Selected';
+                btn.classList.add('selected-plan');
+                selectedPlan = btn.getAttribute('data-plan');
+                selectedPlanAmount = planPrices[selectedPlan];
+
+                // Optionally, scroll to payment section
+                document.querySelector('.payment-section').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Payment logic for card
         document.getElementById('cardPaymentForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            if (!selectedPlan || !selectedPlanAmount) {
+                alert('Please select a membership plan before making payment.');
+                return;
+            }
             const cardNumber = document.getElementById('cardNumber').value;
             const cardExpiry = document.getElementById('cardExpiry').value;
             const cardCVC = document.getElementById('cardCVC').value;
             const cardHolder = document.getElementById('cardHolder').value;
 
-            // Simulate payment processing
-            alert(`Processing payment for ${cardHolder} with card ending in ${cardNumber.slice(-4)}.`);
+            // Simulate payment processing for the selected plan
+            alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} membership for ${cardHolder} with card ending in ${cardNumber.slice(-4)}.`);
+            window.paymentSecured = true;
+            // Redirect to register.html after payment
+            window.location.href = 'register.html';
         });
 
-        // PayPal Payment Integration with API
-        paypal.Buttons({
-            createOrder: function(data, actions) {
-                // Call your server to set up the transaction
-                return fetch('/api/create-paypal-transaction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        amount: '50.00' // Example amount
-                    })
-                }).then(function(res) {
-                    return res.json();
-                }).then(function(orderData) {
-                    return orderData.id; // Use the order ID returned by your server
-                });
-            },
-            onApprove: function(data, actions) {
-                // Call your server to capture the transaction
-                return fetch('/api/capture-paypal-transaction', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        orderID: data.orderID
-                    })
-                }).then(function(res) {
-                    return res.json();
-                }).then(function(orderData) {
-                    alert('Transaction completed by ' + orderData.payer.name.given_name);
-                });
-            },
-            onError: function(err) {
-                console.error('PayPal error:', err);
-                alert('An error occurred during the transaction.');
+        // PayPal Payment Button Logic
+        document.getElementById('paypalButton').addEventListener('click', function () {
+            if (!selectedPlan || !selectedPlanAmount) {
+                alert('Please select a membership plan before making payment.');
+                return;
             }
-        }).render('#paypal-button-container');
+            // Redirect to PayPal login, then to register.html after payment
+            window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/register.html");
+        });
 
-        function showCardPaymentForm() {
-            document.getElementById('cardPaymentFormContainer').style.display = 'block';
-            document.getElementById('paypalPaymentFormContainer').style.display = 'none';
+        // Only allow navigation with header/footer Get Started after payment
+        function enableHeaderFooterGetStarted() {
+            document.querySelectorAll('.btn.btn-primary.btn-large, .btn.btn-primary.btn-large-footer').forEach(function(btn) {
+                btn.classList.add('payment-complete');
+                btn.onclick = function(e) {
+                    if (window.paymentSecured) {
+                        // Allow navigation
+                        return true;
+                    } else {
+                        e.preventDefault();
+                        alert('Please complete your payment before proceeding.');
+                        return false;
+                    }
+                };
+            });
         }
 
-        function showPayPalPaymentForm() {
-            document.getElementById('cardPaymentFormContainer').style.display = 'none';
-            document.getElementById('paypalPaymentFormContainer').style.display = 'block';
-        }
+        // Prevent navigation until payment is secured
+        document.querySelectorAll('.btn.btn-primary.btn-large, .btn.btn-primary.btn-large-footer').forEach(function(btn) {
+            btn.onclick = function(e) {
+                if (!window.paymentSecured) {
+                    e.preventDefault();
+                    alert('Please complete your payment before proceeding.');
+                    return false;
+                }
+            };
+        });
 
-        function startPayPalPayment() {
-            const returnUrl = encodeURIComponent(window.location.href); // Current page URL
-            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
-        }
+        // Payment Option Show/Hide Logic (matches onboarding.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const creditCardOption = document.getElementById('creditCardOption');
+            const paypalOption = document.getElementById('paypalOption');
+            const cardForm = document.getElementById('cardPaymentFormContainer');
+            const paypalForm = document.getElementById('paypalPaymentFormContainer');
+            const paypalButton = document.getElementById('paypalButton');
+
+            if (creditCardOption && cardForm && paypalForm) {
+                creditCardOption.addEventListener('click', function() {
+                    cardForm.style.display = 'block';
+                    paypalForm.style.display = 'none';
+                    creditCardOption.classList.add('active');
+                    paypalOption.classList.remove('active');
+                });
+            }
+
+            if (paypalOption && cardForm && paypalForm) {
+                paypalOption.addEventListener('click', function() {
+                    cardForm.style.display = 'none';
+                    paypalForm.style.display = 'block';
+                    paypalOption.classList.add('active');
+                    creditCardOption.classList.remove('active');
+                });
+            }
+        });
 
         // Referral Code Form Logic
         document.getElementById('referralCodeForm').addEventListener('submit', function(e) {
@@ -796,55 +950,6 @@
             message.textContent = 'Referral code applied!';
             // Optionally: Save code to localStorage/session or send to backend
         });
-
-        // Membership selection algorithm for "Get Started" buttons
-        let selectedPlan = null;
-        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                // Prevent navigation for demo, remove this line if you want to allow navigation
-                e.preventDefault();
-
-                // Remove "Selected" from all buttons and reset text
-                document.querySelectorAll('.get-started-btn').forEach(function(b) {
-                    b.textContent = 'Get Started';
-                    b.classList.remove('selected-plan');
-                });
-
-                // Set this button as selected
-                btn.textContent = 'Selected';
-                btn.classList.add('selected-plan');
-                selectedPlan = btn.getAttribute('data-plan');
-            });
-        });
-
-        // Prevent navigation to register or contact until payment is made/secured
-        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                // Already handled above
-            });
-            btn.addEventListener('mousedown', function(e) {
-                // Prevent navigation on mousedown as well
-                e.preventDefault();
-            });
-            btn.addEventListener('mouseup', function(e) {
-                // Prevent navigation on mouseup as well
-                e.preventDefault();
-            });
-        });
-
-        // Prevent navigation for "Get Started" and "Contact Sales" until payment is made
-        document.querySelectorAll('.get-started-btn, .btn.btn-outline.btn-block.get-started-btn[data-plan="Business"]').forEach(function(btn) {
-            btn.addEventListener('click', function(e) {
-                // If payment is not made/secured, show alert and prevent navigation
-                if (!window.paymentSecured) {
-                    e.preventDefault();
-                    alert('Please complete your payment before proceeding.');
-                }
-            });
-        });
-
-        // Example: Set window.paymentSecured = true; after successful payment
-        // window.paymentSecured = true;
     </script>
 </body>
 </html>

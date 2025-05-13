@@ -290,10 +290,14 @@
             // Add fade-in animation
             authContainer.classList.add('fade-in');
 
-            // Get phone number from URL parameters
+            // Get phone number from URL parameters or localStorage
             const urlParams = new URLSearchParams(window.location.search);
-            const phoneNumber = urlParams.get('phone');
-            
+            let phoneNumber = urlParams.get('phone');
+            if (!phoneNumber) {
+                phoneNumber = localStorage.getItem('phone');
+            } else {
+                localStorage.setItem('phone', phoneNumber);
+            }
             if (phoneNumber) {
                 phoneNumberDisplay.textContent = phoneNumber;
             }
@@ -340,7 +344,9 @@
             // Handle verify button click
             verifyButton.addEventListener('click', () => {
                 const code = Array.from(pinInputs).map(input => input.value).join('');
-                
+                // For demo: use a static code, e.g. "123456"
+                const expectedCode = "123456"; // Replace with actual SMS code logic in production
+
                 if (code.length !== 6) {
                     pinInputs.forEach(input => {
                         input.style.borderColor = 'var(--error-color)';
@@ -348,10 +354,17 @@
                     return;
                 }
 
-                // Here you would typically make an API call to verify the code
-                console.log('Verification code submitted:', code);
-                // Redirect to profile page
-                window.location.href = '/profile.html';
+                if (code === expectedCode) {
+                    // Save phone as verified (optional)
+                    localStorage.setItem('phoneVerified', 'true');
+                    // Redirect to member account main page
+                    window.location.href = 'mainpage.html';
+                } else {
+                    pinInputs.forEach(input => {
+                        input.style.borderColor = 'var(--error-color)';
+                    });
+                    alert('Incorrect verification code. Please try again.');
+                }
             });
 
             // Handle back button click
@@ -362,7 +375,7 @@
             // Handle change number link click
             changeNumberLink.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = '/auth_phone.html';
+                window.location.href = 'auth_phone.html';
             });
 
             // Remove error styling on input
@@ -380,4 +393,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
