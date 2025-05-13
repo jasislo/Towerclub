@@ -423,6 +423,26 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
+/* Responsive adjustments for mobile */
+@media (max-width: 600px) {
+  .main-nav, .footer-content, .auth-container, .profile-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .nav-links, .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-picture, .logo {
+    width: 48px;
+    height: 48px;
+  }
+  .btn, button, input, select {
+    font-size: 1rem;
+    padding: 12px;
+  }
+}
+
 /* Main Content Styles */
 .main-content {
     flex: 1;
@@ -1031,4 +1051,4 @@ p {
 .brand-link:hover {
     opacity: 0.9;
     transition: opacity 0.3s ease;
-} 
+}

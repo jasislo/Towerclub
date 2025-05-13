@@ -194,6 +194,22 @@ body {
     }
 }
 
+@media (max-width: 600px) {
+  .main-nav, .footer-content, .auth-container, .profile-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .nav-links, .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-picture, .logo {
+    width: 48px;
+    height: 48px;
+  }
+  /* Add more mobile-specific styles as needed */
+}
+
 /* Loading spinner */
 .spinner {
     width: 20px;
@@ -337,4 +353,4 @@ body {
 
 .toast.error .material-icons {
     color: var(--error-color);
-} 
+}
