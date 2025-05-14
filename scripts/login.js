@@ -86,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.removeItem('rememberMe');
                 localStorage.removeItem('email');
             }
-            window.location.href = '../index.html';
+            // Redirect to mainpage.html on successful login
+            window.location.href = 'mainpage.html';
         } catch (error) {
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error-message';
