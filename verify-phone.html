@@ -6,6 +6,7 @@
     <title>Verify Phone - TowerClub</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
     <style>
         :root {
             --primary-color: #22c55e; /* Green */
@@ -190,7 +191,10 @@
 
             <div class="content">
                 <h1>Verification Code</h1>
-                <p class="subtitle">Enter the 6-digit code sent to <span id="phoneNumber" class="highlight"></span>. <a href="#" onclick="history.back()">Change number?</a></p>
+                <p class="subtitle">
+                    Enter the 6-digit code sent to <span id="phoneNumber" class="highlight"></span>.
+                    <a href="auth_verify_phone.html">Change number?</a>
+                </p>
 
                 <div class="verification-code">
                     <input type="text" maxlength="1" class="code-input" data-index="0">
@@ -220,6 +224,9 @@
             let timer = 60;
             let timerInterval;
 
+            // Example correct code (replace with your backend logic as needed)
+            const CORRECT_CODE = "123456";
+
             // Get phone number from URL parameters
             const urlParams = new URLSearchParams(window.location.search);
             const phoneNumber = urlParams.get('phone');
@@ -235,6 +242,10 @@
                             inputs[index + 1].focus();
                         }
                         checkAllInputs();
+                        // If last input, check code and redirect if correct
+                        if (index === inputs.length - 1) {
+                            tryAutoLogin();
+                        }
                     }
                 });
 
@@ -248,19 +259,31 @@
             // Check if all inputs are filled
             function checkAllInputs() {
                 const allFilled = Array.from(inputs).every(input => input.value.length === 1);
-                verifyButton.disabled = !allFilled;
+                if (verifyButton) verifyButton.disabled = !allFilled;
+            }
+
+            // Try to auto-login if code is correct
+            function tryAutoLogin() {
+                const code = Array.from(inputs).map(input => input.value).join('');
+                if (code.length === inputs.length && code.toLowerCase() === CORRECT_CODE.toLowerCase()) {
+                    // Redirect to mainpage.html
+                    window.location.href = "mainpage.html";
+                }
             }
 
             // Start countdown timer
             function startTimer() {
                 timerInterval = setInterval(() => {
                     timer--;
-                    timerElement.textContent = timer;
+                    if (timerElement) timerElement.textContent = timer;
                     
                     if (timer <= 0) {
                         clearInterval(timerInterval);
-                        document.querySelector('.resend-timer').innerHTML = 
-                            '<p>Didn\'t receive the code? <a href="#" onclick="resendCode()">Resend</a></p>';
+                        const resendDiv = document.querySelector('.resend-timer');
+                        if (resendDiv) {
+                            resendDiv.innerHTML = 
+                                '<p>Didn\'t receive the code? <a href="#" onclick="resendCode()">Resend</a></p>';
+                        }
                     }
                 }, 1000);
             }
@@ -269,21 +292,30 @@
             window.resendCode = function() {
                 // Add your resend code logic here
                 timer = 60;
-                timerElement.textContent = timer;
-                document.querySelector('.resend-timer').innerHTML = 
-                    '<p>Resend code in <span id="timer">60</span> seconds</p>';
+                if (timerElement) timerElement.textContent = timer;
+                const resendDiv = document.querySelector('.resend-timer');
+                if (resendDiv) {
+                    resendDiv.innerHTML = 
+                        '<p>Resend code in <span id="timer">60</span> seconds</p>';
+                }
                 startTimer();
             };
 
             // Start the timer when page loads
             startTimer();
 
-            // Handle verification
-            verifyButton.addEventListener('click', function() {
-                const code = Array.from(inputs).map(input => input.value).join('');
-                // Add your verification logic here
-                console.log('Verifying code:', code);
-            });
+            // Handle verification button click
+            if (verifyButton) {
+                verifyButton.addEventListener('click', function() {
+                    const code = Array.from(inputs).map(input => input.value).join('');
+                    if (code.length === inputs.length && code.toLowerCase() === CORRECT_CODE.toLowerCase()) {
+                        window.location.href = "mainpage.html";
+                    } else {
+                        // Optionally show error
+                        alert("Incorrect code. Please try again.");
+                    }
+                });
+            }
         });
     </script>
 </body>
