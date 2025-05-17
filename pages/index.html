@@ -288,6 +288,14 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .language-select {
+            padding: 6px 12px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
     </style>
 </head>
 <body>
@@ -313,6 +321,13 @@
                 <div class="nav-actions">
                     <a href="login.html" class="btn btn-outline">Login</a>
                     <a href="pay.html" class="btn btn-primary">Get Started</a>
+                    <select id="languageSelect" class="language-select" aria-label="Select Language">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                        <option value="zh">中文</option>
+                        <option value="ar">العربية</option>
+                    </select>
                 </div>
             </div>
         </nav>
@@ -533,7 +548,54 @@
             const navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
         }
+
+        // Language translation logic using a translation API
+        document.getElementById('languageSelect').addEventListener('change', async function() {
+            const lang = this.value;
+            // Collect all elements with text to translate
+            const elementsToTranslate = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, button, span, li, label, th, td');
+            const texts = Array.from(elementsToTranslate).map(el => el.textContent);
+
+            try {
+                // Call your translation API (replace '/api/translate' with your actual endpoint)
+                const response = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        texts: texts,
+                        targetLang: lang
+                    })
+                });
+                if (!response.ok) throw new Error('Translation API error');
+                const translated = await response.json();
+
+                // Update the page with translated texts
+                elementsToTranslate.forEach((el, idx) => {
+                    el.textContent = translated[idx];
+                });
+
+                // Optionally, save the selection to localStorage
+                localStorage.setItem('selectedLanguage', lang);
+            } catch (error) {
+                alert('Translation failed. Please try again.');
+            }
+        });
+
+        // On page load, set language if previously selected
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('selectedLanguage');
+            if (savedLang) {
+                const languageSelect = document.getElementById('languageSelect');
+                if (languageSelect) {
+                    languageSelect.value = savedLang;
+                    languageSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        });
     </script>
     <script src="../scripts/main.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/login.js"></script>
 </body>
 </html>
