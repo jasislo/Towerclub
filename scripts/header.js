@@ -151,6 +151,8 @@ darkModeToggle.addEventListener('click', () => {
     const logoutBtn = document.querySelector('.nav-actions a[href="/pages/logout.html"]');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default link navigation
+
             // Clear all member-related data from localStorage/sessionStorage
             localStorage.removeItem('memberProfile');
             localStorage.removeItem('profilePicture');
@@ -162,8 +164,67 @@ darkModeToggle.addEventListener('click', () => {
             // Optionally clear all localStorage (uncomment if you want a full reset)
             // localStorage.clear();
 
-            // Proceed to logout page
-            // (Default behavior: goes to /pages/logout.html)
+            // Redirect to login.html
+            window.location.href = '/pages/login.html';
         });
     }
 </script>
+
+// Add Language Selector to the header (add to .nav-actions)
+const navActions = document.querySelector('.nav-actions');
+if (navActions && !document.getElementById('languageSelect')) {
+    const languageSelect = document.createElement('select');
+    languageSelect.id = 'languageSelect';
+    languageSelect.className = 'language-select';
+    languageSelect.setAttribute('aria-label', 'Select Language');
+    languageSelect.innerHTML = `
+        <option value="es">Español</option>
+        <option value="en">English</option>
+        <option value="fr">Français</option>
+        <option value="zh">中文</option>
+        <option value="ar">العربية</option>
+    `;
+    navActions.appendChild(languageSelect);
+}
+
+// Language Selector Functionality with API integration
+const languageSelect = document.getElementById('languageSelect');
+if (languageSelect) {
+    languageSelect.addEventListener('change', async function () {
+        const selectedLang = this.value;
+        // Collect all text nodes to translate
+        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
+        const texts = Array.from(elementsToTranslate).map(el => el.textContent);
+
+        try {
+            // Call your translation API (replace '/api/translate' with your actual endpoint)
+            const response = await fetch('/api/translate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    texts: texts,
+                    targetLang: selectedLang
+                })
+            });
+            if (!response.ok) throw new Error('Translation API error');
+            const translated = await response.json();
+
+            // Update the page with translated texts
+            elementsToTranslate.forEach((el, idx) => {
+                el.textContent = translated[idx];
+            });
+
+            // Optionally, save selected language to localStorage
+            localStorage.setItem('selectedLanguage', selectedLang);
+        } catch (error) {
+            alert('Translation failed. Please try again.');
+        }
+    });
+
+    // On page load, set language if previously selected
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if (savedLang) {
+        languageSelect.value = savedLang;
+        languageSelect.dispatchEvent(new Event('change'));
+    }
+}

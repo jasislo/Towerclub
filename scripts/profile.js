@@ -113,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
         profilePictures.forEach(picture => {
             picture.src = newSrc;
         });
+        // Save to localStorage for cross-page sync
+        localStorage.setItem('profilePicture', newSrc);
     };
 
     // Handle profile picture upload
@@ -129,4 +131,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // On page load, set profile picture from localStorage if available
+    const savedProfilePicture = localStorage.getItem('profilePicture');
+    if (savedProfilePicture) {
+        profilePictures.forEach(picture => {
+            picture.src = savedProfilePicture;
+        });
+    }
+
+    // Save analytics data
+    function saveAnalytics(data) {
+        localStorage.setItem('analytics', JSON.stringify(data));
+    }
+
+    // Load analytics data
+    function loadAnalytics() {
+        return JSON.parse(localStorage.getItem('analytics')) || {};
+    }
+
+    // On analytics page
+    const analytics = loadAnalytics();
+    updateAnalyticsUI(analytics);
 });

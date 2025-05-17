@@ -148,3 +148,107 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('.code-input');
+        const verifyButton = document.getElementById('verifyButton');
+        const timerElement = document.getElementById('timer');
+        let timer = 60;
+        let timerInterval;
+
+        // Example correct code (replace with your backend logic as needed)
+        const CORRECT_CODE = "123456";
+
+        // Get phone number from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const phoneNumber = urlParams.get('phone');
+        if (phoneNumber) {
+            const phoneSpan = document.getElementById('phoneNumber');
+            if (phoneSpan) phoneSpan.textContent = phoneNumber;
+        }
+
+        // Handle input focus and value changes
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', function(e) {
+                if (e.target.value.length === 1) {
+                    if (index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    checkAllInputs();
+                    // If last input, check code and redirect if correct
+                    if (index === inputs.length - 1) {
+                        tryAutoLogin();
+                    }
+                }
+            });
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+        });
+
+        // Check if all inputs are filled
+        function checkAllInputs() {
+            const allFilled = Array.from(inputs).every(input => input.value.length === 1);
+            if (verifyButton) verifyButton.disabled = !allFilled;
+        }
+
+        // Try to auto-login if code is correct
+        function tryAutoLogin() {
+            const code = Array.from(inputs).map(input => input.value).join('');
+            if (code.length === inputs.length && code.toLowerCase() === CORRECT_CODE.toLowerCase()) {
+                // Redirect to mainpage.html
+                window.location.href = "mainpage.html";
+            }
+        }
+
+        // Start countdown timer
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timer--;
+                if (timerElement) timerElement.textContent = timer;
+
+                if (timer <= 0) {
+                    clearInterval(timerInterval);
+                    const resendDiv = document.querySelector('.resend-timer');
+                    if (resendDiv) {
+                        resendDiv.innerHTML =
+                            '<p>Didn\'t receive the code? <a href="#" onclick="resendCode()">Resend</a></p>';
+                    }
+                }
+            }, 1000);
+        }
+
+        // Resend code function
+        window.resendCode = function() {
+            // Add your resend code logic here
+            timer = 60;
+            if (timerElement) timerElement.textContent = timer;
+            const resendDiv = document.querySelector('.resend-timer');
+            if (resendDiv) {
+                resendDiv.innerHTML =
+                    '<p>Resend code in <span id="timer">60</span> seconds</p>';
+            }
+            startTimer();
+        };
+
+        // Start the timer when page loads
+        startTimer();
+
+        // Handle verification button click
+        if (verifyButton) {
+            verifyButton.addEventListener('click', function() {
+                const code = Array.from(inputs).map(input => input.value).join('');
+                if (code.length === inputs.length && code.toLowerCase() === CORRECT_CODE.toLowerCase()) {
+                    window.location.href = "mainpage.html";
+                } else {
+                    // Optionally show error
+                    alert("Incorrect code. Please try again.");
+                }
+            });
+        }
+    });
+</script>

@@ -131,6 +131,11 @@ class ReferralProfile {
     }
 }
 
+// Load followers count
+const followers = JSON.parse(localStorage.getItem('followers')) || [];
+document.getElementById('followersCount').textContent = followers.length;
+// Repeat for other data types...
+
 /**
  * Get account level based on followers, referrals, and membership plan.
  * @param {number} followers
