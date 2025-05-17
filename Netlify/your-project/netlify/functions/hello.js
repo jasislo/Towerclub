@@ -1,11 +1,49 @@
 exports.handler = async (event, context) => {
-  try {
-    const subject = event.queryStringParameters.name || 'World';
+  if (event.httpMethod === 'GET') {
+    // Handle GET request with query parameter
+    const subject = event.queryStringParameters && event.queryStringParameters.name
+      ? event.queryStringParameters.name
+      : 'World';
     return {
       statusCode: 200,
       body: JSON.stringify({ message: `Hello, ${subject}!` }),
     };
-  } catch (err) {
-    return { statusCode: 500, body: err.toString() };
+  } else if (event.httpMethod === 'POST') {
+    try {
+      const data = JSON.parse(event.body);
+      // Process the data (e.g., save to a database)
+      console.log('Received data:', data);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ message: 'Data submitted successfully!' }),
+      };
+    } catch (error) {
+      return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON' }) };
+    }
+  } else {
+    return { statusCode: 405, body: 'Method Not Allowed' };
   }
 };
+
+// Example frontend code (place in your frontend JS file)
+// GET request example:
+fetch('/.netlify/functions/hello?name=User')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data.message); // Hello, User!
+  })
+  .catch(error => console.error('Error fetching data:', error));
+
+// POST request example:
+// fetch('/.netlify/functions/hello', {
+//   method: 'POST',
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+//   body: JSON.stringify({ name: 'User' }),
+// })
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data.message);
+//   })
+//   .catch(error => console.error('Error fetching data:', error));
