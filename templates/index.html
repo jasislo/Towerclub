@@ -9,30 +9,143 @@
 <body>
     <header>
         <h1>Welcome to TowerClub</h1>
-        <nav class="main-nav">
-            <div class="nav-content">
-                <!-- Brand Section -->
-                <a href="/pages/mainpage.html" class="nav-brand">
-                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo">
-                    <span class="brand-name">TowerClub</span>
-                </a>
-
-                <!-- Navigation Actions -->
-                <div class="nav-actions">
-                    <!-- Profile Picture -->
-                    <div class="profile-picture-container">
-                        <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                    </div>
-                </div>
-            </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
         </nav>
     </header>
     <main>
-        <p>Smart financial management for everyone.</p>
+        <section class="user-registration">
+            <h2>Register New User</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </section>
+
+        <section class="profile-update">
+            <h2>Update Profile</h2>
+            <form id="profileForm">
+                <div class="form-group">
+                    <label for="profileEmail">Email:</label>
+                    <input type="email" id="profileEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio:</label>
+                    <textarea id="bio" name="bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone">
+                </div>
+                <button type="submit">Update Profile</button>
+            </form>
+        </section>
+
+        <section class="user-list">
+            <h2>Registered Users</h2>
+            <div id="userList"></div>
+        </section>
     </main>
+
     <footer>
         <p>&copy; 2025 TowerClub. All rights reserved.</p>
     </footer>
+
+    <script>
+        // Fetch and display users
+        async function loadUsers() {
+            try {
+                const response = await fetch('/users');
+                const users = await response.json();
+                const userList = document.getElementById('userList');
+                userList.innerHTML = users.map(user => `
+                    <div class="user-card">
+                        <h3>${user.name}</h3>
+                        <p>Email: ${user.email}</p>
+                        ${user.profile ? `
+                            <p>Bio: ${user.profile.bio || 'No bio'}</p>
+                            <p>Phone: ${user.profile.phone || 'No phone'}</p>
+                        ` : ''}
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Register new user
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value
+            };
+
+            try {
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('User registered successfully!');
+                    loadUsers();
+                    e.target.reset();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error registering user:', error);
+                alert('Error registering user');
+            }
+        });
+
+        // Update profile
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                email: document.getElementById('profileEmail').value,
+                bio: document.getElementById('bio').value,
+                phone: document.getElementById('phone').value
+            };
+
+            try {
+                const response = await fetch('/update-profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    alert('Profile updated successfully!');
+                    loadUsers();
+                    e.target.reset();
+                } else {
+                    const error = await response.json();
+                    alert(`Error: ${error.error}`);
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                alert('Error updating profile');
+            }
+        });
+
+        // Load users when page loads
+        document.addEventListener('DOMContentLoaded', loadUsers);
+    </script>
 </body>
 </html>

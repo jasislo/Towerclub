@@ -1052,3 +1052,28 @@ p {
     opacity: 0.9;
     transition: opacity 0.3s ease;
 }
+
+/* Profile Picture Loading States */
+.profile-picture-loading {
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+    cursor: wait;
+}
+
+.profile-picture-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture-container img {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.profile-picture-container img:hover {
+    opacity: 0.8;
+}
+
+.profile-picture-container input[type="file"] {
+    display: none;
+}
