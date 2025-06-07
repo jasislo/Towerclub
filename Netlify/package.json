@@ -8,11 +8,23 @@
     "build": "echo 'Build command here'",
     "test": "echo 'Test command here'"
   },
-  "dependencies": {},
+  "dependencies": {
+    "firebase": "^10.8.0"
+  },
   "devDependencies": {
     "netlify-cli": "^3.0.0"
   },
   "keywords": [],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "firebase": {
+    "apiKey": "AIzaSyCLuxhWskLzVZTwLkYCFSI4YaMJ0HCrr9s",
+    "authDomain": "towerclub-b33dc.firebaseapp.com",
+    "projectId": "towerclub-b33dc",
+    "storageBucket": "towerclub-b33dc.firebasestorage.app",
+    "messagingSenderId": "176994227269",
+    "appId": "1:176994227269:web:2005920c1bba944cf6ff2c",
+    "measurementId": "G-E5BPE8P2YN"
+  },
+  "site": "towerclub-b33dc-d9bdb"
 }

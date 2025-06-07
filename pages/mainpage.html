@@ -188,6 +188,28 @@
             font-weight: 300;
         }
 
+        .wallet-balance .portfolio {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .wallet-balance .progress-bar {
+            background: rgba(255, 255, 255, 0.3);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .wallet-balance .progress {
+            background: #ffffff;
+            height: 100%;
+        }
+
+        .wallet-balance .progress {
+            width: 32%;
+        }
+
         .quick-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -509,6 +531,35 @@
     <script src="/scripts/header.js"></script>
     <script src="/scripts/lang.js"></script>
     <script>
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (!rememberedEmail) {
+                // If no remembered email, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Update welcome message with email
+            const welcomeMessage = document.querySelector('.welcome-message');
+            if (welcomeMessage) {
+                const email = rememberedEmail.split('@')[0]; // Get username part of email
+                welcomeMessage.textContent = `Welcome back, ${email}!`;
+            }
+
+            // Handle logout
+            const logoutButton = document.querySelector('.btn-outline');
+            if (logoutButton) {
+                logoutButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Clear any session data
+                    localStorage.removeItem('rememberedEmail');
+                    // Redirect to login
+                    window.location.href = 'login.html';
+                });
+            }
+        });
+
         applyTranslations(); // Call this on page load
     </script>
 </body>

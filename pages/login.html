@@ -98,17 +98,20 @@
             gap: 0.5rem;
             margin-bottom: 1.5rem;
             justify-content: flex-start; /* Align to the left */
+            flex-direction: row; /* Ensure horizontal layout */
         }
 
         .remember-me input {
             width: 16px; /* Size of the checkbox */
             height: 16px;
+            order: 2; /* Place checkbox after label */
         }
 
         .remember-me label {
             margin: 0;
             font-size: 1rem;
             color: #15161E;
+            order: 1; /* Place label before checkbox */
         }
 
         .separator {
@@ -181,9 +184,9 @@
             <h1>Welcome Back</h1>
             <p>Login to access your account below.</p>
         </div>
-        <form>
+        <form id="loginForm">
             <div class="form-group">
-                <label for="email">Email Address</label>
+                <label for="email">Email Address or Username</label>
                 <div class="input-group">
                     <span class="material-icons">mail</span>
                     <input type="email" id="email" placeholder="you@example.com" required>
@@ -197,8 +200,8 @@
                 </div>
             </div>
             <div class="remember-me">
-                <label for="remember-me">Remember Me</label>
                 <input type="checkbox" id="remember-me">
+                <label for="remember-me">Remember Me</label>
             </div>
             <button type="submit">Login</button>
             <div class="separator">OR</div>
@@ -209,15 +212,56 @@
         </div>
     </div>
     <script>
-document.getElementById('loginWithPhoneBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = 'auth_phone.html';
-});
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const rememberMeCheckbox = document.getElementById('remember-me');
 
-// Redirect to pay.html when "Sign up" is clicked
-document.getElementById('signUpLink').addEventListener('click', function(e) {
-    e.preventDefault();
-    window.location.href = 'pay.html';
+    // Check if there's a saved email
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+        emailInput.value = savedEmail;
+        rememberMeCheckbox.checked = true;
+    }
+
+    // Handle form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = emailInput.value;
+        const password = document.getElementById('password').value;
+
+        // If remember me is checked, save the email
+        if (rememberMeCheckbox.checked) {
+            localStorage.setItem('rememberedEmail', email);
+        } else {
+            // If unchecked, remove the saved email
+            localStorage.removeItem('rememberedEmail');
+        }
+
+        // Here you would typically handle the login authentication
+        // For now, we'll just redirect to mainpage
+        window.location.href = 'mainpage.html';
+    });
+
+    // Handle remember me checkbox change
+    rememberMeCheckbox.addEventListener('change', function() {
+        if (!this.checked) {
+            localStorage.removeItem('rememberedEmail');
+        }
+    });
+
+    // Handle phone login button
+    document.getElementById('loginWithPhoneBtn').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'auth_phone.html';
+    });
+
+    // Handle sign up link
+    document.getElementById('signUpLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'pay.html';
+    });
 });
 </script>
 <script src="/scripts/profile-picture-sync.js"></script>
