@@ -9,9 +9,23 @@
 <body>
     <header>
         <h1>Welcome to TowerClub</h1>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/about">About Us</a>
+        <nav class="main-nav">
+            <div class="nav-content">
+                <!-- Brand Section -->
+                <a href="/pages/mainpage.html" class="nav-brand">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo">
+                    <span class="brand-name">TowerClub</span>
+                </a>
+
+                <!-- Navigation Actions -->
+                <div class="nav-actions">
+                    <!-- Profile Picture -->
+                    <div class="profile-picture-container">
+                        <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                        <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
         </nav>
     </header>
     <main>
