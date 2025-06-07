@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TowerClub - Smart Financial Management</title>
+    <meta name="description" content="TowerClub - Smart Financial Management Platform" data-i18n="meta-description">
+    <title data-i18n="page-title">TowerClub - Smart Financial Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="../styles/main.css">
@@ -297,6 +298,11 @@
             margin-left: 10px;
         }
     </style>
+
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -305,28 +311,28 @@
                 <!-- Brand Section -->
                 <div class="nav-brand">
                     <a href="#" class="brand-link">
-                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
-                        <span class="brand-name">TowerClub</span>
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" data-i18n="logo-alt">
+                        <span class="brand-name" data-i18n="brand-name">TowerClub</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="nav-links">
-                    <a href="#features" class="nav-link">Features</a>
-                    <a href="#pricing" class="nav-link">Pricing</a>
-                    <a href="#about" class="nav-link">About</a>
+                    <a href="#features" class="nav-link" data-i18n="nav-features">Features</a>
+                    <a href="#pricing" class="nav-link" data-i18n="nav-pricing">Pricing</a>
+                    <a href="#about" class="nav-link" data-i18n="nav-about">About</a>
                 </div>
 
                 <!-- Navigation Actions -->
                 <div class="nav-actions">
-                    <a href="login.html" class="btn btn-outline">Login</a>
-                    <a href="pay.html" class="btn btn-primary">Get Started</a>
+                    <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Login</a>
+                    <a href="pay.html" class="btn btn-primary" data-i18n="nav-get-started">Get Started</a>
                     <select id="languageSelect" class="language-select" aria-label="Select Language">
-                        <option value="es">Español</option>
-                        <option value="en">English</option>
-                        <option value="fr">Français</option>
-                        <option value="zh">中文</option>
-                        <option value="ar">العربية</option>
+                        <option value="es" data-i18n="lang-es">Español</option>
+                        <option value="en" data-i18n="lang-en">English</option>
+                        <option value="fr" data-i18n="lang-fr">Français</option>
+                        <option value="zh" data-i18n="lang-zh">中文</option>
+                        <option value="ar" data-i18n="lang-ar">العربية</option>
                     </select>
                 </div>
             </div>
@@ -336,96 +342,96 @@
             <!-- Hero Section -->
             <section class="hero-section">
                 <div class="hero-content">
-                    <h1>Take Control of Your Financial Future</h1>
-                    <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub.</p>
+                    <h1 data-i18n="hero-title">Take Control of Your Financial Future</h1>
+                    <p class="hero-subtitle" data-i18n="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub.</p>
                     <div class="hero-actions">
-                        <a href="pay.html" class="btn btn-primary btn-large">Start Free Trial</a>
-                        <a href="#demo" class="btn btn-outline btn-large">Watch Demo</a>
+                        <a href="pay.html" class="btn btn-primary btn-large" data-i18n="hero-start-trial">Start Free Trial</a>
+                        <a href="#demo" class="btn btn-outline btn-large" data-i18n="hero-watch-demo">Watch Demo</a>
                     </div>
                 </div>
             </section>
 
             <!-- Features Section -->
             <section id="features" class="features-section">
-                <h2>Powerful Features</h2>
+                <h2 data-i18n="features-title">Powerful Features</h2>
                 <div class="features-grid">
                     <div class="feature-card">
                         <div class="feature-icon">
                             <span class="material-icons">analytics</span>
                         </div>
-                        <h3>Smart Analytics</h3>
-                        <p>Get detailed insights into your spending patterns and financial health with our advanced analytics.</p>
+                        <h3 data-i18n="feature-analytics-title">Smart Analytics</h3>
+                        <p data-i18n="feature-analytics-desc">Get detailed insights into your spending patterns and financial health with our advanced analytics.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <span class="material-icons">account_balance_wallet</span>
                         </div>
-                        <h3>Build Financial Social Network</h3>
-                        <p>Set and monitor your financial social Network with real-time updates and smart notifications.</p>
+                        <h3 data-i18n="feature-network-title">Build Financial Social Network</h3>
+                        <p data-i18n="feature-network-desc">Set and monitor your financial social Network with real-time updates and smart notifications.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <span class="material-icons">savings</span>
                         </div>
-                        <h3>Budget & Saving Goals</h3>
-                        <p>Create and track your savings goals with personalized recommendations.</p>
+                        <h3 data-i18n="feature-savings-title">Budget & Saving Goals</h3>
+                        <p data-i18n="feature-savings-desc">Create and track your savings goals with personalized recommendations.</p>
                     </div>
                     <div class="feature-card">
                         <div class="feature-icon">
                             <span class="material-icons">security</span>
                         </div>
-                        <h3>Secure & Private</h3>
-                        <p>Your financial data is protected with bank-level security and encryption.</p>
+                        <h3 data-i18n="feature-security-title">Secure & Private</h3>
+                        <p data-i18n="feature-security-desc">Your financial data is protected with bank-level security and encryption.</p>
                     </div>
                 </div>
             </section>
 
             <!-- Pricing Section -->
             <section id="pricing" class="pricing-section">
-                <h2>Simple, Transparent Pricing</h2>
+                <h2 data-i18n="pricing-title">Simple, Transparent Pricing</h2>
                 <div class="pricing-grid">
                     <div class="pricing-card">
                         <div class="pricing-header">
-                            <h3>Basic</h3>
-                            <div class="price">$11.95<span>/month</span></div>
+                            <h3 data-i18n="pricing-basic-title">Basic</h3>
+                            <div class="price">$11.95<span data-i18n="pricing-per-month">/month</span></div>
                         </div>
                         <ul class="pricing-features">
-                            <li>Basic expenses tracking</li>
-                            <li>Monthly budget planning</li>
-                            <li>Basic analytics</li>
-                            <li>Build Financial social Network</li>
-                            <li>Transfers between Members</li>
-                            <li>Profile and Chats</li>
-                            <li>7 days Free trial</li>
+                            <li data-i18n="pricing-basic-feature-1">Basic expenses tracking</li>
+                            <li data-i18n="pricing-basic-feature-2">Monthly budget planning</li>
+                            <li data-i18n="pricing-basic-feature-3">Basic analytics</li>
+                            <li data-i18n="pricing-basic-feature-4">Build Financial social Network</li>
+                            <li data-i18n="pricing-basic-feature-5">Transfers between Members</li>
+                            <li data-i18n="pricing-basic-feature-6">Profile and Chats</li>
+                            <li data-i18n="pricing-basic-feature-7">7 days Free trial</li>
                         </ul>
-                        <a href="pay.html" class="btn btn-outline btn-block">Get Started</a>
+                        <a href="pay.html" class="btn btn-outline btn-block" data-i18n="pricing-get-started">Get Started</a>
                     </div>
                     <div class="pricing-card featured">
                         <div class="pricing-header">
-                            <h3>VIP Member</h3>
-                            <div class="price">$14.95<span>/month</span></div>
+                            <h3 data-i18n="pricing-vip-title">VIP Member</h3>
+                            <div class="price">$14.95<span data-i18n="pricing-per-month">/month</span></div>
                         </div>
                         <ul class="pricing-features">
-                            <li>Advanced analytics</li>
-                            <li>Build Financial social Network</li>
-                            <li>Unlimited budgets</li>
-                            <li>Saving goals</li>
-                            <li>Priority support</li>
-                            <li>Transfers between Members</li>
-                            <li>Profile and Chats</li>
+                            <li data-i18n="pricing-vip-feature-1">Advanced analytics</li>
+                            <li data-i18n="pricing-vip-feature-2">Build Financial social Network</li>
+                            <li data-i18n="pricing-vip-feature-3">Unlimited budgets</li>
+                            <li data-i18n="pricing-vip-feature-4">Saving goals</li>
+                            <li data-i18n="pricing-vip-feature-5">Priority support</li>
+                            <li data-i18n="pricing-vip-feature-6">Transfers between Members</li>
+                            <li data-i18n="pricing-vip-feature-7">Profile and Chats</li>
                         </ul>
                         <a href="pay.html" class="btn btn-primary btn-block">Get Started</a>
                     </div>
                     <div class="pricing-card">
                         <div class="pricing-header">
-                            <h3>Business</h3>
+                            <h3 data-i18n="pricing-business-title">Business</h3>
                             <div class="price">Custom</div>
                         </div>
                         <ul class="pricing-features">
-                            <li>All Pro features</li>
-                            <li>Team management</li>
-                            <li>Dedicated support</li>
-                            <li>Custom integrations</li>
+                            <li data-i18n="pricing-business-feature-1">All Pro features</li>
+                            <li data-i18n="pricing-business-feature-2">Team management</li>
+                            <li data-i18n="pricing-business-feature-3">Dedicated support</li>
+                            <li data-i18n="pricing-business-feature-4">Custom integrations</li>
                         </ul>
                         <a href="pay.html" class="btn btn-outline btn-block">Contact Sales</a>
                     </div>
@@ -435,8 +441,8 @@
             <!-- About Section -->
             <section id="about" class="about-section">
                 <div class="about-content">
-                    <h2>About TowerClub</h2>
-                    <p>TowerClub is built by financial experts and tech innovators who understand the challenges of managing personal finances. Our mission is to make financial management accessible, intuitive, and effective for everyone.</p>
+                    <h2 data-i18n="about-title">About TowerClub</h2>
+                    <p data-i18n="about-description">TowerClub is built by financial experts and tech innovators who understand the challenges of managing personal finances. Our mission is to make financial management accessible, intuitive, and effective for everyone.</p>
                     <div class="about-stats">
                         <div class="stat-item">
                             <div class="stat-number">50K+</div>
@@ -490,10 +496,10 @@
                 <div class="footer-top">
                     <div class="footer-brand">
                         <div class="brand-wrapper">
-                            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
-                            <span class="brand-name">TowerClub</span>
+                            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                            <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
                         </div>
-                        <p class="brand-description">
+                        <p class="brand-description" data-i18n="footer-description">
                             Your trusted platform for financial growth and investment opportunities.
                         </p>
                     </div>
@@ -543,56 +549,8 @@
         </footer>
     </div>
 
-    <script>
-        function toggleMenu() {
-            const navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-        }
-
-        // Language translation logic using a translation API
-        document.getElementById('languageSelect').addEventListener('change', async function() {
-            const lang = this.value;
-            // Collect all elements with text to translate
-            const elementsToTranslate = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, a, button, span, li, label, th, td');
-            const texts = Array.from(elementsToTranslate).map(el => el.textContent);
-
-            try {
-                // Call your translation API (replace '/api/translate' with your actual endpoint)
-                const response = await fetch('/api/translate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        texts: texts,
-                        targetLang: lang
-                    })
-                });
-                if (!response.ok) throw new Error('Translation API error');
-                const translated = await response.json();
-
-                // Update the page with translated texts
-                elementsToTranslate.forEach((el, idx) => {
-                    el.textContent = translated[idx];
-                });
-
-                // Optionally, save the selection to localStorage
-                localStorage.setItem('selectedLanguage', lang);
-            } catch (error) {
-                alert('Translation failed. Please try again.');
-            }
-        });
-
-        // On page load, set language if previously selected
-        document.addEventListener('DOMContentLoaded', function() {
-            const savedLang = localStorage.getItem('selectedLanguage');
-            if (savedLang) {
-                const languageSelect = document.getElementById('languageSelect');
-                if (languageSelect) {
-                    languageSelect.value = savedLang;
-                    languageSelect.dispatchEvent(new Event('change'));
-                }
-            }
-        });
-    </script>
+    <!-- Remove old translation script and use the new translation manager -->
+    <script type="module" src="../scripts/translation-manager.js"></script>
     <script src="../scripts/main.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>

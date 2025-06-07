@@ -675,6 +675,7 @@
         </div>
     </footer>
 
+    <script src="/scripts/profile-picture-sync.js"></script>
     <script>
         const profilePicture = document.querySelector('.profile-picture-container img');
         const profilePictureInput = document.createElement('input');
@@ -746,6 +747,12 @@
             alert('Start a new message (feature to be implemented)');
             // You can open a modal or redirect to a new message page here
         };
+    </script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
     </script>
 </body>
 </html>

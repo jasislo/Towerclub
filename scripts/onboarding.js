@@ -19,6 +19,8 @@
         transform: scale(1.05); /* Slightly enlarge on hover */
     }
 </style>
+import profilePictureManager from './profile-picture-manager.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Carousel Logic (if present) ---
     const slides = document.querySelectorAll('.slide');
@@ -188,43 +190,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Profile image upload logic (sync everywhere)
+    // Register profile pictures
     const profileImage = document.getElementById('profileImage');
     const profileImg = document.getElementById('profileImg');
-    const profileImageInput = document.getElementById('profileImageInput');
-
-    function syncProfilePicture(src) {
-        // Save to localStorage
-        localStorage.setItem('profilePicture', src);
-        // Update all profile picture elements
-        if (profileImage) profileImage.src = src;
-        if (profileImg) profileImg.src = src;
-        const headerPic = document.getElementById('profilePicture');
-        if (headerPic) headerPic.src = src;
+    
+    if (profileImage) {
+        profilePictureManager.registerProfilePicture(profileImage);
     }
-
-    if (profileImage && profileImageInput) {
-        profileImage.addEventListener('click', () => {
-            profileImageInput.click();
-        });
-
-        profileImageInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    syncProfilePicture(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
+    if (profileImg) {
+        profilePictureManager.registerProfilePicture(profileImg);
     }
-
-    // On page load, sync profile picture everywhere
-    const savedPic = localStorage.getItem('profilePicture');
-    if (savedPic) {
-        syncProfilePicture(savedPic);
-    }
+    
+    // Sync all profile pictures
+    profilePictureManager.syncProfilePictures();
 
     // Budget form logic
     const budgetForm = document.getElementById('budgetForm');

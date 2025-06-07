@@ -774,6 +774,9 @@
         </div>
     </footer>
 
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const profilePicture = document.getElementById('profilePicture');
@@ -832,7 +835,10 @@
                     window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
                 });
             });
+
+            applyTranslations(); // Call this on page load
         });
     </script>
+    <script src="/scripts/sync.js"></script>
 </body>
 </html>

@@ -228,3 +228,17 @@ if (languageSelect) {
         languageSelect.dispatchEvent(new Event('change'));
     }
 }
+
+import profilePictureManager from './profile-picture-manager.js';
+
+// Initialize profile picture manager
+document.addEventListener('DOMContentLoaded', () => {
+    // Register the header profile picture
+    const profilePicture = document.getElementById('profilePicture');
+    if (profilePicture) {
+        profilePictureManager.registerProfilePicture(profilePicture);
+    }
+    
+    // Sync all profile pictures
+    profilePictureManager.syncProfilePictures();
+});
