@@ -1,13 +1,16 @@
 from flask import Flask, render_template, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from models import db, User, Profile
+from config import Config
 import os
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
+app.config.from_object(Config)
+db.init_app(app)
 
-# Load configuration from .env file
-app.config.from_mapping(
-    SECRET_KEY=os.environ.get('SECRET_KEY', 'dev_key'),
-    DEBUG=os.environ.get('DEBUG', False)  # Set DEBUG to False for production
-)
+# Create database tables
+with app.app_context():
+    db.create_all()
 
 # Route for the homepage
 @app.route('/')
@@ -19,12 +22,48 @@ def home():
 def about():
     return render_template('about.html')
 
-# Route to handle form submissions
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([user.to_dict() for user in users])
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    try:
+        user = User(
+            email=data['email'],
+            name=data['name']
+        )
+        db.session.add(user)
+        db.session.commit()
+        return jsonify(user.to_dict()), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
+
 @app.route('/update-profile', methods=['POST'])
 def update_profile():
-    name = request.form.get('name')
-    email = request.form.get('email')
-    return jsonify({"message": f"Profile updated for {name} with email {email}!"})
+    data = request.get_json()
+    try:
+        user = User.query.filter_by(email=data['email']).first()
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        if not user.profile:
+            profile = Profile(user=user)
+            db.session.add(profile)
+        else:
+            profile = user.profile
+
+        profile.bio = data.get('bio', profile.bio)
+        profile.phone = data.get('phone', profile.phone)
+        
+        db.session.commit()
+        return jsonify(user.to_dict())
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
