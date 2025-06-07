@@ -779,24 +779,11 @@
     <script src="/scripts/lang.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const profilePicture = document.getElementById('profilePicture');
-            const profilePictureInput = document.getElementById('profilePictureInput');
-
-            // Make the profile picture clickable
-            profilePicture.addEventListener('click', () => {
-                profilePictureInput.click();
-            });
-
-            // Handle the file input change event
-            profilePictureInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        profilePicture.src = e.target.result; // Update the profile picture preview
-                    };
-                    reader.readAsDataURL(file);
-                }
+            // Redirect to mainpage.html when clicking TowerClub in header
+            const navBrand = document.querySelector('.nav-brand');
+            navBrand.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/pages/mainpage.html';
             });
 
             const recentTransactionsCard = document.querySelector('.recent-transactions');

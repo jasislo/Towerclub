@@ -546,62 +546,6 @@ header p {
                             <td>New Shoes</td>
                             <td>-$80.00</td>
                         </tr>
-<tr>
-<td>2024-07-26</td>
-                            <td>Expense</td>
-                            <td>Utilities</td>
-                            <td>Electricity Bill</td>
-                            <td>-$75.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-25</td>
-                            <td>Expense</td>
-                            <td>Transportation</td>
-                            <td>Gasoline</td>
-                            <td>-$30.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-24</td>
-                            <td>Income</td>
-                            <td>Investment</td>
-                            <td>Stock Sale</td>
-                            <td>$500.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-23</td>
-                            <td>Expense</td>
-                            <td>Entertainment</td>
-                            <td>Movie Tickets</td>
-                            <td>-$20.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-22</td>
-                            <td>Expense</td>
-                            <td>Housing</td>
-                            <td>Rent</td>
-                            <td>-$1200.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-21</td>
-                            <td>Income</td>
-                            <td>Freelance</td>
-                            <td>Web Design Project</td>
-                            <td>$300.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-20</td>
-                            <td>Expense</td>
-                            <td>Dining</td>
-                            <td>Restaurant</td>
-                            <td>-$40.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-19</td>
-                            <td>Expense</td>
-                            <td>Clothing</td>
-                            <td>New Shoes</td>
-                            <td>-$80.00</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -796,6 +740,19 @@ header p {
                 currency: 'USD'
             }).format(amount);
         }
+
+        // Common authentication check pattern
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+            const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+            
+            if (!authToken || !memberProfile) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+                return;
+            }
+        });
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>

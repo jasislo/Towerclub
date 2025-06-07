@@ -164,8 +164,8 @@ darkModeToggle.addEventListener('click', () => {
             // Optionally clear all localStorage (uncomment if you want a full reset)
             // localStorage.clear();
 
-            // Redirect to login.html
-            window.location.href = '/pages/login.html';
+            // Redirect to index.html
+            window.location.href = '/index.html';
         });
     }
 </script>
