@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="TowerClub Transaction History" data-i18n="meta-description">
+    <title data-i18n="page-title">Transaction History - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/analytics.css">
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/footer.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Header Styles */
+.main-nav {
+    background: linear-gradient(90deg, #22c55e, #a855f7);
+    padding: 15px 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.nav-brand img {
+    height: 40px;
+    width: auto;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.nav-link:hover {
+    background: #ffffff;
+    color: #22c55e;
+    border-color: #ffffff;
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.profile-picture-container {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #ffffff;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.profile-picture-container:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+.profile-picture-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-outline:hover {
+    background: #ffffff;
+    color: #22c55e;
+}
+
+/* Updated Footer */
+.main-footer {
+    background-color: #1f2937;
+    color: white;
+    padding: 60px 0 30px;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand {
+    max-width: 300px;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.brand-wrapper img {
+    height: 40px;
+    width: auto;
+}
+
+.brand-description {
+    color: #9ca3af;
+    line-height: 1.6;
+}
+
+.footer-links-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footer-column h4 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer-column ul {
+    list-style: none;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-column ul li a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    border-top: 1px solid #374151;
+    padding-top: 30px;
+    text-align: center;
+    color: #9ca3af;
+}
+
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-links-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* General Styles */
+body {
+    padding-top: 80px;
+    font-family: 'Lexend', sans-serif;
+    background-color: #f9fafb;
+    color: #333333;
+}
+
+.app-container {
+    max-width: 1400px; /* Increased width for horizontal view */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.data-section {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-section h2 {
+    margin-bottom: 20px;
+    color: #333333;
+}
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Ensure cards are aligned horizontally */
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.summary-cards .card {
+    background-color: #e0f7fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.filter-options {
+    display: flex;
+    justify-content: space-between; /* Spread filters horizontally */
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#transaction-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#transaction-table thead th {
+    background-color: #f0f4c3;
+    color: #333333;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 2px solid #cccccc;
+}
+
+#transaction-table tbody tr:nth-child(odd) {
+    background-color: #f5f5f5;
+}
+
+#transaction-table tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+#transaction-table tbody td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #cccccc;
+}
+
+#transaction-table tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+.chart-container {
+    width: 100%;
+    height: 300px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .summary-cards {
+        grid-template-columns: 1fr 1fr; /* Adjust for smaller screens */
+    }
+
+    .filter-options {
+        flex-direction: column; /* Stack filters vertically */
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-cards {
+        grid-template-columns: 1fr; /* Single column for very small screens */
+    }
+}
+
+header {
+    text-align: center; /* Center align the text */
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+header p {
+    font-size: 1.2rem;
+    color: #666666;
+}
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link active" data-i18n="nav-activities">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <header>
+            <h1 data-i18n="activities-title">Transaction History</h1>
+            <p>Your recent transactions and financial activity are displayed here.</p>
+        </header>
+
+        <section id="activity-summary" class="data-section">
+            <h2>Activity Summary</h2>
+            <div class="summary-cards">
+                <div class="card">
+                    <h3 data-i18n="activities-total-income">Total Income</h3>
+                    <p id="total-income">$<span id="totalIncome">0.00</span></p>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="activities-total-expenses">Total Expenses</h3>
+                    <p id="total-expenses">$<span id="totalExpenses">0.00</span></p>
+                </div>
+                <div class="card">
+                    <h3 data-i18n="activities-net-flow">Net Flow</h3>
+                    <p id="net-balance">$<span id="netFlow">0.00</span></p>
+                </div>
+            </div>
+            <div class="filter-options">
+                <label for="date-filter">Filter by Date:</label>
+                <input type="date" id="date-filter">
+                <label for="type-filter">Filter by Type:</label>
+                <select id="type-filter">
+                    <option value="all">All</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+                <button id="filter-button">Apply Filter</button>
+            </div>
+        </section>
+
+        <section id="transaction-history" class="data-section">
+            <h2>Transaction History</h2>
+            <p>Here are your most recent transactions:</p>
+            <div class="table-container">
+                <table id="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2024-07-28</td>
+                            <td>Expense</td>
+                            <td>Food</td>
+                            <td>Grocery Shopping</td>
+                            <td>-$50.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-27</td>
+                            <td>Income</td>
+                            <td>Salary</td>
+                            <td>Paycheck</td>
+                            <td>$2000.00</td>
+                        </tr>
+<tr>
+<td>2024-07-26</td>
+                            <td>Expense</td>
+                            <td>Utilities</td>
+                            <td>Electricity Bill</td>
+                            <td>-$75.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-25</td>
+                            <td>Expense</td>
+                            <td>Transportation</td>
+                            <td>Gasoline</td>
+                            <td>-$30.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-24</td>
+                            <td>Income</td>
+                            <td>Investment</td>
+                            <td>Stock Sale</td>
+                            <td>$500.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-23</td>
+                            <td>Expense</td>
+                            <td>Entertainment</td>
+                            <td>Movie Tickets</td>
+                            <td>-$20.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-22</td>
+                            <td>Expense</td>
+                            <td>Housing</td>
+                            <td>Rent</td>
+                            <td>-$1200.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-21</td>
+                            <td>Income</td>
+                            <td>Freelance</td>
+                            <td>Web Design Project</td>
+                            <td>$300.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-20</td>
+                            <td>Expense</td>
+                            <td>Dining</td>
+                            <td>Restaurant</td>
+                            <td>-$40.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-19</td>
+                            <td>Expense</td>
+                            <td>Clothing</td>
+                            <td>New Shoes</td>
+                            <td>-$80.00</td>
+                        </tr>
+<tr>
+<td>2024-07-26</td>
+                            <td>Expense</td>
+                            <td>Utilities</td>
+                            <td>Electricity Bill</td>
+                            <td>-$75.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-25</td>
+                            <td>Expense</td>
+                            <td>Transportation</td>
+                            <td>Gasoline</td>
+                            <td>-$30.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-24</td>
+                            <td>Income</td>
+                            <td>Investment</td>
+                            <td>Stock Sale</td>
+                            <td>$500.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-23</td>
+                            <td>Expense</td>
+                            <td>Entertainment</td>
+                            <td>Movie Tickets</td>
+                            <td>-$20.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-22</td>
+                            <td>Expense</td>
+                            <td>Housing</td>
+                            <td>Rent</td>
+                            <td>-$1200.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-21</td>
+                            <td>Income</td>
+                            <td>Freelance</td>
+                            <td>Web Design Project</td>
+                            <td>$300.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-20</td>
+                            <td>Expense</td>
+                            <td>Dining</td>
+                            <td>Restaurant</td>
+                            <td>-$40.00</td>
+                        </tr>
+                        <tr>
+                            <td>2024-07-19</td>
+                            <td>Expense</td>
+                            <td>Clothing</td>
+                            <td>New Shoes</td>
+                            <td>-$80.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="income-analysis" class="data-section">
+            <h2>Income Analysis</h2>
+            <div class="chart-container">
+                <canvas id="income-chart"></canvas>
+            </div>
+        </section>
+
+        <section id="expense-analysis" class="data-section">
+            <h2>Expense Analysis</h2>
+            <div class="chart-container">
+                <canvas id="expense-chart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2024 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { requireAuth, handleLogout } from '/scripts/auth-utils.js';
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is authenticated
+            if (!requireAuth()) {
+                return; // Page will redirect if not authenticated
+            }
+
+            // Set up logout button
+            const logoutBtn = document.querySelector('.nav-actions a[href="/pages/logout.html"]');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    await handleLogout();
+                });
+            }
+
+            // Load page data
+            loadActivitySummary();
+            loadTransactionHistory();
+            loadIncomeAnalysis();
+            loadExpenseAnalysis();
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

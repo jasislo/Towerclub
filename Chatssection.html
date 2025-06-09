@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chats Section</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2; /* Blue from finance profile */
+            --secondary-background: #F5F5F5; /* Light gray background */
+            --primary-text: #333333; /* Dark gray text */
+            --success-color: #4CAF50; /* Green for success */
+            --error-color: #FF3B30; /* Red for errors */
+            --chat-background: #ffffff; /* White chat background */
+            --chat-border: #e5e7eb; /* Light gray border */
+            --chat-hover: #f9fafb; /* Slightly lighter gray for hover */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Light gradient background */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styling */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to purple gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for links */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: var(--primary-color); /* Blue text on hover */
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+        }
+
+        /* Profile Picture Styling */
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture-container input[type="file"] {
+            display: none; /* Hide the file input */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 16px;
+            margin: 80px auto; /* Center horizontally and adjust for fixed header */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+        }
+
+        .profile-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px; /* Limit the width for better centering */
+        }
+
+        .header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            width: 140px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .chats-container {
+            display: flex;
+            gap: 24px;
+            margin-top: 32px;
+            justify-content: center; /* Center chat sections horizontally */
+        }
+
+        /* Chat List Styling */
+        .chat-list {
+            flex: 1;
+            background: var(--chat-background);
+            border: 1px solid var(--chat-border);
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 500px;
+        }
+
+        .chat-list-header {
+            background: var(--primary-color); /* Blue header for chat list */
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--chat-border);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-item:hover {
+            background-color: var(--chat-hover); /* Light gray hover effect */
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 12px;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-bottom: 4px;
+        }
+
+        .chat-message {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Chat Interface Styling */
+        .chat-interface {
+            flex: 2;
+            background: var(--chat-background);
+            border: 1px solid var(--chat-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-interface-header {
+            background: var(--primary-color); /* Blue header for chat interface */
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 16px;
+        }
+
+        .message.sent {
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: var(--primary-color); /* Blue for sent messages */
+            color: white;
+            max-width: 70%;
+        }
+
+        .message.received .message-content {
+            background: var(--chat-hover); /* Light gray for received messages */
+            color: var(--primary-text); /* Dark gray text */
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 16px;
+            border-top: 1px solid var(--chat-border);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--chat-border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .send-button {
+            background: var(--primary-color); /* Blue send button */
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            margin-left: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send-button:hover {
+            background: #357ABD; /* Darker blue on hover */
+        }
+
+        /* Footer Styling */
+        .main-footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 40px 20px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-brand {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-description {
+            font-size: 14px;
+            color: #e0e0e0;
+            margin-top: 8px;
+        }
+
+        .footer-links-section {
+            display: flex;
+            flex: 2;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-column {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .footer-column h4 {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #ffffff;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column li {
+            margin-bottom: 8px;
+        }
+
+        .footer-column a {
+            color: #f0f0f0; /* Light gray text for footer links */
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: var(--success-color); /* Green on hover */
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #f0f0f0; /* Light gray text */
+        }
+
+        .footer-brand img {
+            height: 30px; /* Adjust the height as needed */
+            width: auto; /* Maintain aspect ratio */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-links-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-column {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link">Transfer</a>
+                <a href="activities.html" class="nav-link">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <div class="profile-picture-container">
+                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                </div>
+                <a href="logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="profile-container">
+            <div class="header">
+                <div class="logo-container">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="logo-text">TowerClub</span>
+                </div>
+            </div>
+            
+            <div class="content">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                    <h1 class="title" style="margin: 0;">Chats</h1>
+                    <!-- Group Chat Creation Button (moved next to Chats) -->
+                    <button id="createGroupChatBtn" title="Create Group Chat" style="
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        background: #4A90E2;
+                        color: #fff;
+                        font-size: 1.6rem;
+                        border: none;
+                        box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        margin-left: 4px;
+                    ">
+                        +
+                    </button>
+                </div>
+                <div class="chats-container">
+                    <!-- Chat List -->
+                    <div class="chat-list">
+                        <div class="chat-list-header">Messages</div>
+                        <!-- Search bar for contacts -->
+                        <div style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: #fafbfc;">
+                            <input
+                                id="contactSearchInput"
+                                type="text"
+                                placeholder="Search contacts or start new message..."
+                                style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px;"
+                            />
+                            <button
+                                id="startNewMessageBtn"
+                                title="Start new message"
+                                style="margin-top: 8px; width: 100%; background: #4A90E2; color: #fff; border: none; border-radius: 8px; padding: 8px 0; font-size: 15px; cursor: pointer;"
+                            >
+                                New Message
+                            </button>
+                        </div>
+                        <div class="chat-item">
+                            <div class="chat-avatar"></div>
+                            <div class="chat-info">
+                                <p class="chat-name">John Doe</p>
+                                <p class="chat-message">Hey, how are you?</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <div class="chat-avatar"></div>
+                            <div class="chat-info">
+                                <p class="chat-name">Jane Smith</p>
+                                <p class="chat-message">Let's catch up later!</p>
+                            </div>
+                        </div>
+                        <div class="chat-item">
+                            <div class="chat-avatar"></div>
+                            <div class="chat-info">
+                                <p class="chat-name">Mike Johnson</p>
+                                <p class="chat-message">Got it, thanks!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chat Interface -->
+                    <div class="chat-interface">
+                        <div class="chat-interface-header">John Doe</div>
+                        <div class="chat-messages">
+                            <div class="message received">
+                                <div class="message-content">Hey, how are you?</div>
+                            </div>
+                            <div class="message sent">
+                                <div class="message-content">I'm good, thanks! How about you?</div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" class="chat-input" placeholder="Type a message...">
+                            <button class="send-button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Chat Creation Floating Button -->
+    <!-- Removed duplicate floating button from the corner -->
+    <!--
+    <button id="createGroupChatBtn" title="Create Group Chat" style="
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #4A90E2;
+        color: #fff;
+        font-size: 2.2rem;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        cursor: pointer;
+        z-index: 2000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">
+        +
+    </button>
+    -->
+
+    <!-- Group Chat Modal (hidden by default) -->
+    <div id="groupChatModal" style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #fff;
+        padding: 32px 24px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+        z-index: 3000;
+        min-width: 320px;
+        max-width: 90vw;
+    ">
+        <h3 style="margin-bottom: 16px;">Create Group Chat</h3>
+        <input id="groupNameInput" type="text" placeholder="Group Name" style="width:100%;margin-bottom:12px;padding:8px;border-radius:6px;border:1px solid #ccc;" />
+        <textarea id="groupMembersInput" placeholder="Enter usernames, comma separated" style="width:100%;margin-bottom:12px;padding:8px;border-radius:6px;border:1px solid #ccc;"></textarea>
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button id="createGroupBtn" style="background:#4A90E2;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;">Create</button>
+            <button id="closeGroupModalBtn" style="background:#eee;color:#333;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script>
+        const profilePicture = document.querySelector('.profile-picture-container img');
+        const profilePictureInput = document.createElement('input');
+        profilePictureInput.type = 'file';
+        profilePictureInput.accept = 'image/*';
+
+        // Append the hidden file input to the profile picture container
+        document.querySelector('.profile-picture-container').appendChild(profilePictureInput);
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Floating "+" button opens the modal
+        document.getElementById('createGroupChatBtn').onclick = function() {
+            document.getElementById('groupChatModal').style.display = 'block';
+        };
+
+        // Close modal
+        document.getElementById('closeGroupModalBtn').onclick = function() {
+            document.getElementById('groupChatModal').style.display = 'none';
+        };
+
+        // Create group chat logic
+        document.getElementById('createGroupBtn').onclick = function() {
+            const name = document.getElementById('groupNameInput').value.trim();
+            const members = document.getElementById('groupMembersInput').value.split(',').map(m => m.trim()).filter(Boolean);
+            if (!name || members.length < 2) {
+                alert('Please enter a group name and at least two members.');
+                return;
+            }
+            // Here you would send the group chat data to your backend or update the UI as needed
+            alert(`Group "${name}" created with members: ${members.join(', ')}`);
+            document.getElementById('groupChatModal').style.display = 'none';
+            // Optionally, reset fields
+            document.getElementById('groupNameInput').value = '';
+            document.getElementById('groupMembersInput').value = '';
+        };
+
+        // Simple contact search filter for chat list
+        document.getElementById('contactSearchInput').addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+            document.querySelectorAll('.chat-item').forEach(function (item) {
+                const name = item.querySelector('.chat-name').textContent.toLowerCase();
+                const message = item.querySelector('.chat-message').textContent.toLowerCase();
+                if (name.includes(filter) || message.includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // New Message button logic (example: open modal or alert)
+        document.getElementById('startNewMessageBtn').onclick = function () {
+            alert('Start a new message (feature to be implemented)');
+            // You can open a modal or redirect to a new message page here
+        };
+    </script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>
