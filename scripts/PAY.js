@@ -38,12 +38,16 @@ document.querySelectorAll('.get-started-btn').forEach(function(btn) {
     btn.addEventListener('mouseenter', function() {
         if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
             btn.textContent = 'Selected';
+        } else {
+            btn.textContent = 'Get Started';
         }
     });
 
     btn.addEventListener('mouseleave', function() {
         if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
             btn.textContent = 'Selected';
+        } else {
+            btn.textContent = 'Get Started';
         }
     });
 
