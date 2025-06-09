@@ -1,0 +1,201 @@
+/* Dark Mode Theme Variables */
+:root {
+    /* Light Mode (Default) */
+    --primary-color: #00968A;
+    --secondary-color: #F2A384;
+    --background-color: #F4F4F4;
+    --text-color: #15161E;
+    --secondary-text-color: #6B7280;
+    --card-background: #FFFFFF;
+    --border-color: #E5E7EB;
+    --button-color: #3B82F6;
+    --button-text-color: #FFFFFF;
+    --header-bg: linear-gradient(90deg, #22c55e, #a855f7);
+    --header-text-color: #ffffff;
+    --footer-bg: #1f2937;
+    --footer-text: #9ca3af;
+    --hover-bg: rgba(0, 150, 138, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --input-bg: #FFFFFF;
+    --input-border: #E5E7EB;
+    --input-text: #15161E;
+    --menu-hover: rgba(0, 150, 138, 0.1);
+    --menu-hover-text: #00968A;
+    --menu-hover-border: #00968A;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    --primary-color: #00B4A6;
+    --secondary-color: #FFB088;
+    --background-color: #15161E;
+    --text-color: #F4F4F4;
+    --secondary-text-color: #9CA3AF;
+    --card-background: #1F2937;
+    --border-color: #374151;
+    --button-color: #2563EB;
+    --button-text-color: #FFFFFF;
+    --header-bg: linear-gradient(90deg, #4B5563, #1F2937);
+    --header-text-color: #F4F4F4;
+    --footer-bg: #111827;
+    --footer-text: #6B7280;
+    --hover-bg: rgba(0, 180, 166, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    --input-bg: #374151;
+    --input-border: #4B5563;
+    --input-text: #F4F4F4;
+    --menu-hover: rgba(0, 180, 166, 0.2);
+    --menu-hover-text: #00B4A6;
+    --menu-hover-border: #00B4A6;
+}
+
+/* Dark Mode Specific Styles */
+body.dark-mode {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+body.dark-mode .main-nav {
+    background: var(--header-bg);
+    box-shadow: 0 4px 8px var(--shadow-color);
+}
+
+body.dark-mode .nav-link {
+    color: var(--header-text-color);
+}
+
+body.dark-mode .nav-link:hover {
+    background: var(--hover-bg);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+body.dark-mode .profile-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: var(--card-shadow);
+}
+
+body.dark-mode .menu-item {
+    background-color: var(--card-background);
+    border-color: var(--border-color);
+    box-shadow: var(--card-shadow);
+}
+
+body.dark-mode .menu-item:hover {
+    background-color: var(--menu-hover);
+    color: var(--menu-hover-text);
+    border-color: var(--menu-hover-border);
+}
+
+body.dark-mode .menu-item i {
+    color: var(--secondary-text-color);
+}
+
+body.dark-mode .button {
+    background-color: var(--button-color);
+    color: var(--button-text-color);
+    box-shadow: var(--card-shadow);
+}
+
+body.dark-mode .button:hover {
+    background-color: #1D4ED8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
+body.dark-mode .main-footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+}
+
+body.dark-mode .footer-column h4 {
+    color: var(--text-color);
+}
+
+body.dark-mode .footer-column ul li a {
+    color: var(--footer-text);
+}
+
+body.dark-mode .footer-column ul li a:hover {
+    color: var(--text-color);
+}
+
+body.dark-mode .footer-bottom {
+    border-top-color: var(--border-color);
+}
+
+/* Form Elements in Dark Mode */
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+    color: var(--input-text);
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+    color: var(--secondary-text-color);
+}
+
+/* Profile Picture Container in Dark Mode */
+body.dark-mode .profile-picture-container {
+    border-color: var(--header-text-color);
+    box-shadow: 0 0 8px var(--shadow-color);
+}
+
+body.dark-mode .profile-picture-container:hover {
+    box-shadow: 0 0 12px var(--shadow-color);
+}
+
+/* Profile Avatar in Dark Mode */
+body.dark-mode .profile-avatar {
+    box-shadow: var(--card-shadow);
+}
+
+body.dark-mode .profile-avatar:hover {
+    box-shadow: 0 6px 12px var(--shadow-color);
+}
+
+/* Responsive Dark Mode Styles */
+@media (max-width: 768px) {
+    body.dark-mode .nav-content {
+        background-color: var(--card-background);
+    }
+
+    body.dark-mode .menu-item {
+        margin: 10px 0;
+    }
+}
+
+/* Dark Mode Transitions */
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-item,
+.button,
+.profile-picture-container,
+.profile-avatar {
+    transition: all 0.3s ease;
+}
+
+/* Dark Mode Scrollbar */
+body.dark-mode::-webkit-scrollbar {
+    width: 12px;
+}
+
+body.dark-mode::-webkit-scrollbar-track {
+    background: var(--card-background);
+}
+
+body.dark-mode::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 6px;
+}
+
+body.dark-mode::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text-color);
+}

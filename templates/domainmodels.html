@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Models</title>
+    <link rel="stylesheet" href="/static/styles/main.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        form {
+            margin: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to TowerClub</h1>
+    <a href="/about">About Us</a>
+    <img src="/static/images/towerclub_logo.png" alt="Logo">
+    <form action="/update-profile" method="POST">
+        <input type="text" name="name" placeholder="Your Name">
+        <input type="email" name="email" placeholder="Your Email">
+        <button type="submit">Update Profile</button>
+    </form>
+    <script src="/static/scripts/app.js"></script>
+</body>
+</html>

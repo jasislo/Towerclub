@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaction - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/transactions.css">
+    <link rel="stylesheet" href="../styles/header.css"> <!-- Include header.css -->
+    <style>
+        body {
+            padding-top: 70px; /* Add padding to prevent content from hiding behind fixed nav */
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background */
+            padding: 15px 30px; /* Adjust padding for better spacing */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2); /* Subtle hover effect */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff; /* Optional border for better visibility */
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+            transform: scale(1.1); /* Slightly enlarge the profile picture */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            --background-color: #15161E;
+            --text-color: #F4F4F4;
+            --secondary-text-color: #9CA3AF;
+            --card-background: #1F2937;
+            --border-color: #374151;
+            --button-color: #2563EB;
+            --button-text-color: #FFFFFF;
+            --header-bg: linear-gradient(90deg, #4B5563, #1F2937);
+            --header-text-color: #F4F4F4;
+            --footer-bg: #111827;
+            --footer-text: #6B7280;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Lexend', sans-serif;
+            margin: 0;
+            padding: 70px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: row;
+                align-items: stretch;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+                gap: 0;
+            }
+
+            .nav-links {
+                flex-direction: row;
+                gap: 10px;
+                margin-top: 0;
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+                scrollbar-width: thin;
+            }
+
+            .nav-link {
+                display: inline-block;
+                white-space: nowrap;
+            }
+
+            .nav-actions {
+                margin-top: 0;
+                flex-shrink: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-nav, .footer-content, .auth-container, .profile-section {
+                padding: 10px;
+                font-size: 1rem;
+            }
+            .nav-links, .footer-column {
+                flex-direction: row;
+                align-items: center;
+                overflow-x: auto;
+                white-space: nowrap;
+                width: 100%;
+            }
+            .profile-picture, .logo {
+                width: 48px;
+                height: 48px;
+            }
+            /* Add more mobile-specific styles as needed */
+        }
+
+        /* Optional: Hide scrollbar for a cleaner look */
+        .nav-links::-webkit-scrollbar,
+        .nav-content::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/" class="nav-brand">
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/wallet.html" class="nav-link">Wallet</a>
+                <a href="/add-transaction.html" class="nav-link">Transfer</a>
+                <a href="/activities.html" class="nav-link">Activities</a>
+                <a href="/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Your existing content here -->
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <!-- Footer content here -->
+        </div>
+    </footer>
+
+    <!-- Include header.js -->
+    <script src="../scripts/header.js"></script>
+    <script type="module" src="/scripts/transactions/edit-transaction.js"></script>
+    <script>
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>

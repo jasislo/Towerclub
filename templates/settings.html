@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - TowerClub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/dark-mode.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <script type="module">
+        import DarkMode from "{{ url_for('static', filename='js/dark-mode.js') }}";
+        
+        // Listen for dark mode changes if needed
+        document.addEventListener('darkModeChange', (e) => {
+            console.log('Dark mode changed:', e.detail.isDarkMode);
+            // Add any additional dark mode change handling here
+        });
+    </script>
+</body>
+</html> 
