@@ -416,14 +416,60 @@
                     // Store authentication data
                     storeAuthData(result.token, result.user, false);
 
+                    // Store comprehensive user data for onboarding and subsequent pages
+                    const onboardingData = {
+                        // Basic user info
+                        fullName, firstName, lastName, email, phone,
+                        
+                        // Registration metadata
+                        registrationDate: new Date().toISOString(),
+                        registrationSource: 'web_registration',
+                        
+                        // Onboarding progress
+                        onboardingStep: 1,
+                        onboardingCompleted: false,
+                        
+                        // User preferences
+                        preferences: {
+                            notifications: true,
+                            marketingEmails: false,
+                            language: 'en',
+                            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                            currency: 'USD'
+                        },
+                        
+                        // Status tracking
+                        profileComplete: false,
+                        phoneVerified: false,
+                        emailVerified: false,
+                        
+                        // Session data
+                        sessionId: Date.now().toString(),
+                        lastActivity: new Date().toISOString()
+                    };
+
+                    // Store onboarding data in localStorage
+                    localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
+                    localStorage.setItem('userRegistrationData', JSON.stringify(userData));
+                    localStorage.setItem('currentUser', JSON.stringify(result.user));
+                    
                     // Store phone number for verification
                     localStorage.setItem('phone', phone);
+                    
+                    // Store user ID for tracking
+                    localStorage.setItem('userId', result.user.id);
+                    
+                    // Set onboarding flag
+                    localStorage.setItem('needsOnboarding', 'true');
+                    
+                    // Store registration timestamp
+                    localStorage.setItem('registrationTimestamp', Date.now().toString());
 
                     // Show success message
-                    alert('Registration successful! Please verify your phone number.');
+                    alert('Account created successfully! Welcome to TowerClub. Let\'s get you set up.');
                     
-                    // Redirect to phone verification
-                    window.location.href = 'auth_verify_phone.html?phone=' + encodeURIComponent(phone);
+                    // Redirect to onboarding
+                    window.location.href = 'onboarding.html';
                 } else {
                     throw new Error(result.error || 'Registration failed');
                 }
