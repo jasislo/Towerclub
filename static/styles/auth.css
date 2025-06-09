@@ -1,0 +1,127 @@
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.auth-tabs {
+    display: flex;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #eee;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #3498db;
+    border-bottom-color: #3498db;
+}
+
+.auth-forms {
+    position: relative;
+}
+
+.auth-form {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.auth-form.active {
+    display: block;
+    opacity: 1;
+}
+
+.auth-form h2 {
+    margin-bottom: 1.5rem;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+.auth-message {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.auth-message.error {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+
+.auth-message.success {
+    background-color: #dcfce7;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+/* Password strength indicator */
+.password-strength {
+    height: 4px;
+    margin-top: 0.5rem;
+    border-radius: 2px;
+    background-color: #eee;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.password-strength-bar.weak {
+    width: 33.33%;
+    background-color: #ef4444;
+}
+
+.password-strength-bar.medium {
+    width: 66.66%;
+    background-color: #f59e0b;
+}
+
+.password-strength-bar.strong {
+    width: 100%;
+    background-color: #22c55e;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .auth-container {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .tab-btn {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+} 

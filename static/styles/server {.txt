@@ -1,0 +1,13 @@
+server {
+    server_name www.towerclubapp.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+
+    location /static/ {
+        alias /path/to/your/project/static/;
+    }
+}
