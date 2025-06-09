@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Social Network - Advanced Features" data-i18n="meta-description">
+    <title data-i18n="page-title">Social Network - Advanced Features - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        /* Root Variables */
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #22c55e;
+            --text-color: #333333;
+            --background-color: #f9fafb;
+            --card-background: #ffffff;
+            --border-color: #E5E7EB;
+            --error-color: #FF4D4F;
+            --success-color: #22c55e;
+            --chat-background: #ffffff;
+            --chat-border: #e5e7eb;
+            --chat-hover: #f9fafb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .main-nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Messages on the left, Crypto on the right */
+            gap: 20px;
+        }
+
+        /* Chats Section */
+        .chats-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Messages List on the left, Chat Interface on the right */
+            gap: 20px;
+        }
+
+        .chat-list {
+            background: var(--chat-background);
+            border: 1px solid var(--chat-border);
+            border-radius: 12px;
+            overflow: hidden;
+            max-height: 500px;
+        }
+
+        .chat-list-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none; /* Remove underline */
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .chat-list-header:hover {
+            background-color: #357ABD; /* Slightly darker blue on hover */
+            cursor: pointer;
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--chat-border);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-item:hover {
+            background-color: var(--chat-hover);
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin-right: 12px;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-name {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .chat-message {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .chat-interface {
+            background: var(--chat-background);
+            border: 1px solid var(--chat-border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-interface-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .chat-input-container {
+            display: flex;
+            padding: 16px;
+            border-top: 1px solid var(--chat-border);
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--chat-border);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .send-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            margin-left: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .send-button:hover {
+            background: #357ABD;
+        }
+
+        /* Crypto Section */
+        .crypto-section {
+            flex: 1;
+            background: #000000; /* Black background */
+            border: 1px solid #22c55e; /* Green border */
+            border-radius: 12px;
+            padding: 20px;
+            color: #22c55e; /* Green text color */
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #22c55e; /* Green header text */
+            text-align: center; /* Center the text */
+            margin: 0; /* Remove default margin */
+        }
+
+        .cards {
+            display: flex;
+            flex-direction: column; /* Stack cards vertically */
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .card {
+            width: 100%;
+            background: #1a1a1a; /* Dark gray card background */
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            color: #22c55e; /* Green text color */
+            cursor: pointer; /* Make the card clickable */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 255, 0, 0.3); /* Green glow on hover */
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #22c55e; /* Green card title */
+        }
+
+        .card .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #22c55e; /* Green amount text */
+        }
+
+        .card .percentage {
+            font-size: 0.9rem;
+            color: #9ca3af; /* Light gray for percentage text */
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link">Transfer</a>
+                <a href="activities.html" class="nav-link">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+            <div class="nav-actions">
+                <div class="profile-picture-container">
+                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture">
+                </div>
+                <a href="logout.html" class="btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Messages Section -->
+        <section class="chats-container">
+            <!-- Messages List -->
+            <div class="chat-list">
+                <a href="Chatssection.html" class="chat-list-header">
+                    Messages
+                </a>
+                <div class="chat-item">
+                    <div class="chat-avatar"></div>
+                    <div class="chat-info">
+                        <p class="chat-name">John Doe</p>
+                        <p class="chat-message">Hey, how are you?</p>
+                    </div>
+                </div>
+                <div class="chat-item">
+                    <div class="chat-avatar"></div>
+                    <div class="chat-info">
+                        <p class="chat-name">Jane Smith</p>
+                        <p class="chat-message">Let's catch up later!</p>
+                    </div>
+                </div>
+                <div class="chat-item">
+                    <div class="chat-avatar"></div>
+                    <div class="chat-info">
+                        <p class="chat-name">Mike Johnson</p>
+                        <p class="chat-message">Got it, thanks!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Interface -->
+            <div class="chat-interface">
+                <div class="chat-interface-header">John Doe</div>
+                <div class="chat-messages">
+                    <div class="message received">
+                        <div class="message-content">Hey, how are you?</div>
+                    </div>
+                    <div class="message sent">
+                        <div class="message-content">I'm good, thanks! How about you?</div>
+                    </div>
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" placeholder="Type a message...">
+                    <button class="send-button">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Crypto Dashboard -->
+        <section class="crypto-section">
+            <header class="header">
+                <h1>Crypto Dashboard</h1>
+            </header>
+            <div class="cards">
+                <div class="card" onclick="redirectToCrypto('bitcoin')">
+                    <h3>Bitcoin (BTC)</h3>
+                    <div class="amount" id="btcPrice">$0.00</div>
+                    <div class="percentage" id="btcChange">Loading...</div>
+                </div>
+                <div class="card" onclick="redirectToCrypto('ethereum')">
+                    <h3>Ethereum (ETH)</h3>
+                    <div class="amount" id="ethPrice">$0.00</div>
+                    <div class="percentage" id="ethChange">Loading...</div>
+                </div>
+                <div class="card" onclick="redirectToCrypto('litecoin')">
+                    <h3>Litecoin (LTC)</h3>
+                    <div class="amount" id="ltcPrice">$0.00</div>
+                    <div class="percentage" id="ltcChange">Loading...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        async function fetchMessages(senderId, receiverId) {
+            const response = await fetch(`/api/messages?senderId=${senderId}&receiverId=${receiverId}`);
+            const messages = await response.json();
+            displayMessages(messages);
+        }
+
+        function displayMessages(messages) {
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.innerHTML = ''; // Clear existing messages
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message', msg.senderId === 'user1' ? 'sent' : 'received');
+                messageElement.innerHTML = `<div class="message-content">${msg.message}</div>`;
+                chatMessages.appendChild(messageElement);
+            });
+        }
+
+        async function sendMessage(senderId, receiverId, message) {
+            const response = await fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ senderId, receiverId, message })
+            });
+            const result = await response.json();
+            if (result.success) {
+                fetchMessages(senderId, receiverId); // Refresh messages
+            } else {
+                alert('Failed to send message.');
+            }
+        }
+
+        document.querySelector('.send-button').addEventListener('click', () => {
+            const messageInput = document.querySelector('.chat-input');
+            const message = messageInput.value.trim();
+            if (message) {
+                sendMessage('user1', 'user2', message); // Replace with actual sender and receiver IDs
+                messageInput.value = ''; // Clear input
+            }
+        });
+
+        async function fetchUsers() {
+            const response = await fetch('/api/users');
+            const users = await response.json();
+            const userList = document.querySelector('.chat-list');
+            users.forEach(user => {
+                const userItem = document.createElement('div');
+                userItem.classList.add('chat-item');
+                userItem.innerHTML = `
+                    <div class="chat-avatar">
+                        <img src="${user.avatar}" alt="${user.name}">
+                    </div>
+                    <div class="chat-info">
+                        <p class="chat-name">${user.name}</p>
+                    </div>
+                `;
+                userItem.addEventListener('click', () => {
+                    fetchMessages('user1', user.id); // Replace 'user1' with the logged-in user's ID
+                });
+                userList.appendChild(userItem);
+            });
+        }
+
+        fetchUsers();
+
+        // Redirect to crypto.html with the selected cryptocurrency as a query parameter
+        function redirectToCrypto(crypto) {
+            window.location.href = `crypto.html?currency=${crypto}`;
+        }
+
+        // Fetch cryptocurrency data from the API
+        async function fetchMarketData() {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd&include_24hr_change=true');
+                const data = await response.json();
+
+                // Update the UI with fetched data
+                document.getElementById('btcPrice').textContent = `$${data.bitcoin.usd.toFixed(2)}`;
+                document.getElementById('btcChange').textContent = `${data.bitcoin.usd_24h_change.toFixed(2)}%`;
+
+                document.getElementById('ethPrice').textContent = `$${data.ethereum.usd.toFixed(2)}`;
+                document.getElementById('ethChange').textContent = `${data.ethereum.usd_24h_change.toFixed(2)}%`;
+
+                document.getElementById('ltcPrice').textContent = `$${data.litecoin.usd.toFixed(2)}`;
+                document.getElementById('ltcChange').textContent = `${data.litecoin.usd_24h_change.toFixed(2)}%`;
+            } catch (error) {
+                console.error('Error fetching market data:', error);
+            }
+        }
+
+        // Fetch market data on page load
+        document.addEventListener('DOMContentLoaded', fetchMarketData);
+
+        // Get the selected cryptocurrency from the query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const currency = urlParams.get('currency');
+
+        // Display the selected cryptocurrency
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.header h1').textContent = `Trade ${currency.toUpperCase()}`;
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatItems = document.querySelectorAll('.chat-item');
+
+            chatItems.forEach((chatItem, index) => {
+                chatItem.addEventListener('click', () => {
+                    // Redirect to socialmedia2.html with a query parameter for the selected chat
+                    window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
+                });
+            });
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

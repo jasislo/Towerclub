@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Onboarding - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="../styles/onboarding.css">
+    <style>
+        /* Header Styles */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: transparent; /* Transparent border on hover */
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        /* Footer Styles */
+.main-footer {
+    background-color: #1f2937; /* Dark gray background */
+    color: white; /* White text for contrast */
+    padding: 60px 0 30px;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-brand {
+    max-width: 300px;
+}
+
+.brand-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.footer-logo {
+    height: 40px;
+    width: auto;
+}
+
+.brand-description {
+    color: #9ca3af; /* Light gray for description text */
+    line-height: 1.6;
+}
+
+.footer-links-section {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.footer-column h4 {
+    color: white; /* White headings for better contrast */
+    margin-bottom: 20px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+    color: #9ca3af; /* Light gray for links */
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-column ul li a:hover {
+    color: white; /* White on hover for better visibility */
+}
+
+.footer-bottom {
+    border-top: 1px solid #374151; /* Subtle border for separation */
+    padding-top: 30px;
+    text-align: center;
+    color: #9ca3af; /* Light gray for bottom text */
+}
+
+@media (max-width: 768px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-links-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .payment-options {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .payment-form {
+        max-width: 100%; /* Allow the form to take full width on smaller screens */
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer-links-section {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-options {
+        gap: 10px;
+    }
+
+    .payment-form {
+        padding: 10px;
+    }
+}
+
+/* Align form fields to the left */
+.payment-form {
+    text-align: left; /* Align text and labels to the left */
+    max-width: 400px; /* Optional: Limit the width of the form */
+    margin: 0 auto; /* Center the form horizontally */
+}
+
+.payment-form .form-group {
+    margin-bottom: 15px;
+}
+
+.payment-form label {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: 5px;
+    color: #333; /* Optional: Adjust label color */
+}
+
+.payment-form input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.payment-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(57, 210, 192, 0.5); /* Add a subtle glow effect */
+    outline: none;
+}
+
+.payment-form button {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.payment-form button:hover {
+    background: #007a6d; /* Darker shade on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Payment Options Styles */
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border: 2px solid #22c55e;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.payment-option:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-option.active {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    background-color: #e0e0e0; /* Light gray background for active state */
+    border: 2px solid var(--primary-color); /* Add a border to highlight the active option */
+}
+
+/* Payment Form Styles */
+.payment-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-form h2 {
+    grid-column: 1 / -1;
+    margin: 0 0 15px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.payment-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-form label {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.payment-form input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.payment-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(57, 210, 192, 0.5);
+    outline: none;
+}
+
+.payment-form button {
+    background: var(--primary-color);
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.payment-form button:hover {
+    background: #007a6d;
+    transform: scale(1.05);
+}
+
+/* PayPal Button Styles */
+.btn-paypal {
+    background-color: #ffc439; /* PayPal yellow */
+    color: #111827; /* Dark text for contrast */
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px; /* Add spacing under the heading */
+    display: inline-block;
+}
+
+.btn-paypal:hover {
+    background-color: #e0a800; /* Darker yellow on hover */
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+/* Pay with Credit/Debit Card Button Styles */
+.btn-credit-card {
+    background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+    color: #ffffff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 10px;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-credit-card:hover {
+    background: #ffffff; /* White background on hover */
+    color: #22c55e; /* Green text on hover */
+    transform: scale(1.05); /* Slight zoom effect */
+}
+
+/* Profile Section Styles */
+.profile-section {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-section header {
+    margin-bottom: 20px;
+}
+
+.profile-section h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.profile-form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.profile-form .form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-form label {
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.profile-form input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.profile-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(57, 210, 192, 0.5);
+    outline: none;
+}
+
+/* Profile Image Container */
+.profile-image-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease-out, slideUp 0.6s ease-out;
+}
+
+.profile-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.profile-image:hover .upload-overlay {
+    opacity: 1;
+}
+
+.upload-overlay span {
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    padding: 0 10px;
+}
+
+.upload-text {
+    font-size: 14px;
+    color: #555;
+    animation: fadeIn 0.6s ease-out 0.05s, slideUp 0.6s ease-out 0.05s;
+}
+
+/* Add these styles to the existing style section */
+.submit-btn {
+    background: linear-gradient(90deg, #22c55e, #a855f7);
+    color: #ffffff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #cccccc;
+    color: #666666;
+}
+
+.submit-btn:not(:disabled):hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="brand-name">TowerClub</span>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+                <a href="index.html#about" class="nav-link">About</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Login</a>
+                <a href="index.html#register" class="btn btn-primary">Get Started</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-container">
+        <!-- Complete Profile Section -->
+        <div class="profile-section">
+            <header>
+                <h1>Complete Profile</h1>
+            </header>
+
+            <!-- Upload Profile Photo Section -->
+            <div class="form-group profile-image-container">
+                <div class="profile-image" id="profileImage">
+                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile" id="profileImg">
+                    <div class="upload-overlay">
+                        <span>Click to upload photo</span>
+                    </div>
+                </div>
+                <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                <p class="upload-text">Upload a photo for us to easily identify you</p>
+            </div>
+
+            <!-- Profile Form -->
+            <form id="profileForm" class="profile-form">
+                <div class="form-group">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="username">Create Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Your Age</label>
+                    <input type="number" id="age" name="age" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Your Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <button type="submit" id="completeProfileBtn" class="submit-btn" disabled style="opacity: 0.6; cursor: not-allowed;">Complete Profile</button>
+            </form>
+        </div>
+
+        <!-- Make Payment Section -->
+        <div class="payment-section">
+            <header>
+                <h1 class="section-header" id="paymentSectionHeader">Make Payment</h1>
+            </header>
+            <div class="payment-options">
+                <!-- Pay with Credit/Debit Card -->
+                <div class="payment-option" id="creditCardOption" onclick="showCardPaymentForm()">
+                    <i class="material-icons">credit_card</i>
+                    <span>Pay with Credit/Debit Card</span>
+                </div>
+
+                <!-- Credit/Debit Card Form -->
+                <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
+                    <h2>Pay with Credit/Debit Card</h2>
+                    <form id="cardPaymentForm">
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardExpiry">Expiry Date</label>
+                            <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardCVC">CVC/CVV</label>
+                            <input type="text" id="cardCVC" placeholder="123" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolder">Cardholder Name</label>
+                            <input type="text" id="cardHolder" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn-credit-card">Pay Now</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Separator -->
+                <hr style="border: 1px solid #e2e8f0; margin: 30px 0;">
+
+                <!-- Pay with PayPal -->
+                <div class="payment-option" id="paypalOption" onclick="showPayPalPaymentForm()">
+                    <i class="material-icons">account_balance_wallet</i>
+                    <span>Pay with PayPal</span>
+                </div>
+
+                <!-- PayPal Form -->
+                <div class="payment-form" id="paypalPaymentFormContainer" style="display: none;">
+                    <button class="btn-paypal" id="paypalButton" style="background-color: #ffc439; color: #111827;" onclick="handlePayPalLogin()">Login with PayPal</button>
+                    <div class="paypal-button-container" id="paypal-button-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Budget Section -->
+        <div class="profile-section">
+            <header>
+                <h1>Create Budget</h1>
+            </header>
+            <form id="budgetForm" class="profile-form">
+                <div class="form-group amount-input">
+                    <label for="amount">Amount</label>
+                    <div style="position:relative;">
+                        <span class="icon" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px;">$</span>
+                        <input type="number" id="amount" name="amount" placeholder="Amount" style="padding-left:36px;" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="budgetName">Budget Name</label>
+                    <input type="text" id="budgetName" name="budgetName" placeholder="Budget Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
+                </div>
+                <div class="button-group" style="display:flex;gap:12px;">
+                    <button type="button" class="skip-btn" onclick="skipForNow()" style="background:#fff; color:#22c55e; border:2px solid #22c55e; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                        Skip for Now
+                    </button>
+                    <button type="submit" class="create-btn" style="background:linear-gradient(90deg,#22c55e,#a855f7); color:#fff; border:none; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                        Create Budget
+                    </button>
+                </div>
+                <p class="helper-text">Tap above to complete request</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    // Handle Credit/Debit Card Payment
+    document.getElementById('cardPaymentForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        localStorage.setItem('paymentMethod', 'creditCard');
+        localStorage.setItem('cardDetails', JSON.stringify({
+            type: 'Visa',
+            number: '**** 0250',
+            expiry: '06/25'
+        }));
+        alert('Payment successful!');
+        window.location.href = 'payment methods.html';
+    });
+
+    // Handle PayPal Payment
+    document.querySelector('.btn-paypal').addEventListener('click', function () {
+        localStorage.setItem('paymentMethod', 'paypal');
+        alert('PayPal payment successful!');
+        window.location.href = 'payment methods.html';
+    });
+
+    const profileImage = document.getElementById('profileImage');
+    const profileImg = document.getElementById('profileImg');
+    const profileImageInput = document.getElementById('profileImageInput');
+
+    // Handle profile image click
+    profileImage.addEventListener('click', () => {
+        profileImageInput.click();
+    });
+
+    // Handle file selection
+    profileImageInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profileImg.src = e.target.result; // Update the profile picture preview
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // PayPal Button: Show "Logged with PayPal" if detected from pay.html
+    const paypalBtn = document.getElementById('paypalButton');
+    if (paypalBtn && localStorage.getItem('paymentMethod') === 'paypal') {
+        paypalBtn.textContent = 'Logged with PayPal';
+        paypalBtn.style.backgroundColor = '#ffc439'; // PayPal yellow
+        paypalBtn.style.color = '#111827'; // Dark text for contrast
+        paypalBtn.style.cursor = 'not-allowed';
+        paypalBtn.disabled = true;
+    }
+
+    // Change header to "Payment Method Selected" if payment was made on pay.html
+    const paymentHeader = document.getElementById('paymentSectionHeader');
+    if (
+        (localStorage.getItem('paymentMethod') === 'creditCard' && localStorage.getItem('cardDetails')) ||
+        localStorage.getItem('paymentMethod') === 'paypal'
+    ) {
+        if (paymentHeader) {
+            paymentHeader.textContent = 'Payment Method Selected';
+        }
+    }
+
+    // Handle Complete Profile Form Submission
+    const profileForm = document.getElementById('profileForm');
+    if (profileForm) {
+        profileForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            // Collect profile info
+            const name = document.getElementById('name')?.value || '';
+            const username = document.getElementById('username')?.value || '';
+            const age = document.getElementById('age')?.value || '';
+            const email = document.getElementById('email')?.value || '';
+            const phone = document.getElementById('phone')?.value || '';
+            const profilePicture = localStorage.getItem('profilePicture') || '';
+
+            // Save profile info to localStorage
+            const updatedProfile = {
+                fullName: name,
+                username,
+                age,
+                email,
+                phone,
+                profilePicture
+            };
+            localStorage.setItem('memberProfile', JSON.stringify(updatedProfile));
+
+            // Navigate to mainpage.html
+            window.location.href = 'mainpage.html';
+        });
+    }
+
+    // Prefill Complete Profile section with info from register.html if available
+    const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+    if (memberProfile) {
+        if (memberProfile.fullName && document.getElementById('name')) {
+            document.getElementById('name').value = memberProfile.fullName;
+        }
+        if (memberProfile.email && document.getElementById('email')) {
+            document.getElementById('email').value = memberProfile.email;
+        }
+        if (memberProfile.phone && document.getElementById('phone')) {
+            document.getElementById('phone').value = memberProfile.phone;
+        }
+        // Optionally prefill username or age if you stored them
+        if (memberProfile.username && document.getElementById('username')) {
+            document.getElementById('username').value = memberProfile.username;
+        }
+        if (memberProfile.age && document.getElementById('age')) {
+            document.getElementById('age').value = memberProfile.age;
+        }
+    }
+});
+
+        function showCardPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'block';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'none';
+
+            // Add active class to Credit/Debit Card option
+            document.getElementById('creditCardOption').classList.add('active');
+            document.getElementById('paypalOption').classList.remove('active');
+        }
+
+        function showPayPalPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'none';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'block';
+
+            // Add active class to PayPal option
+            document.getElementById('paypalOption').classList.add('active');
+            document.getElementById('creditCardOption').classList.remove('active');
+        }
+
+        function startPayPalPayment() {
+            const returnUrl = encodeURIComponent(window.location.href); // Current page URL
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Budget form logic
+    const budgetForm = document.getElementById('budgetForm');
+    if (budgetForm) {
+        const amountInput = document.getElementById('amount');
+        const budgetNameInput = document.getElementById('budgetName');
+        const descriptionInput = document.getElementById('description');
+
+        // Format amount input with commas (optional)
+        amountInput.addEventListener('input', (e) => {
+            let value = e.target.value.replace(/,/g, '');
+            if (value) {
+                value = parseInt(value).toLocaleString();
+                e.target.value = value;
+            }
+        });
+
+        budgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const budgetData = {
+                amount: amountInput.value.replace(/,/g, ''),
+                name: budgetNameInput.value,
+                description: descriptionInput.value,
+                createdAt: new Date().toISOString(),
+                timeLeft: '45 days left'
+            };
+            // Simulate budget creation
+            alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
+            budgetForm.reset();
+            // Optionally redirect or update UI here
+        });
+    }
+
+    function skipForNow() {
+        // Hide the Create Budget section
+        const budgetSection = Array.from(document.querySelectorAll('.profile-section h1'))
+            .find(h1 => h1.textContent === 'Create Budget')?.closest('.profile-section');
+        if (budgetSection) {
+            budgetSection.style.display = 'none';
+        }
+        
+        // Hide the Make Payment section
+        const paymentSection = document.querySelector('.payment-section');
+        if (paymentSection) {
+            paymentSection.style.display = 'none';
+        }
+
+        // Enable the Complete Profile button
+        const completeProfileBtn = document.getElementById('completeProfileBtn');
+        if (completeProfileBtn) {
+            completeProfileBtn.disabled = false;
+            completeProfileBtn.style.opacity = '1';
+            completeProfileBtn.style.cursor = 'pointer';
+            completeProfileBtn.style.background = 'linear-gradient(90deg, #22c55e, #a855f7)';
+            completeProfileBtn.style.color = '#ffffff';
+        }
+    }
+
+    function handlePayPalLogin() {
+        // Store the current page URL to return to after PayPal login
+        localStorage.setItem('returnToOnboarding', 'true');
+        
+        // Redirect to PayPal login
+        const paypalLoginUrl = 'https://www.paypal.com/signin';
+        window.location.href = paypalLoginUrl;
+    }
+
+    // Check if returning from PayPal login
+    window.addEventListener('load', function() {
+        if (localStorage.getItem('returnToOnboarding') === 'true') {
+            // Clear the flag
+            localStorage.removeItem('returnToOnboarding');
+            
+            // Update PayPal button to show logged in state
+            const paypalBtn = document.getElementById('paypalButton');
+            if (paypalBtn) {
+                paypalBtn.textContent = 'Logged in with PayPal';
+                paypalBtn.style.backgroundColor = '#ffc439';
+                paypalBtn.style.color = '#111827';
+                paypalBtn.style.cursor = 'not-allowed';
+                paypalBtn.disabled = true;
+            }
+
+            // Update payment header
+            const paymentHeader = document.getElementById('paymentSectionHeader');
+            if (paymentHeader) {
+                paymentHeader.textContent = 'Payment Method Selected';
+            }
+
+            // Store payment method
+            localStorage.setItem('paymentMethod', 'paypal');
+        }
+    });
+    </script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+  applyTranslations(); // Call this on page load
+</script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+</body>
+</html>

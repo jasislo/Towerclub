@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Create Budget</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #F5F5F5;
+            --text-color: #333333;
+            --border-color: #E0E0E0;
+            --error-color: #FF5252;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            min-height: 100vh;
+            padding-top: 80px; /* Add padding for fixed nav */
+        }
+
+        /* Updated Navigation Bar */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            margin: 0 auto;
+            min-height: calc(100vh - 200px); /* Adjust for footer */
+        }
+
+        .form-container {
+            background-color: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .amount-input {
+            position: relative;
+        }
+
+        .amount-input .icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-color);
+            font-size: 24px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .amount-input input {
+            padding-left: 50px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 30px;
+        }
+
+        .skip-btn, .create-btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .skip-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+
+        .create-btn {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .skip-btn:hover, .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .helper-text {
+            text-align: center;
+            color: rgba(0, 0, 0, 0.4);
+            margin-top: 16px;
+            font-size: 14px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .form-container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            input, textarea {
+                padding: 12px 16px;
+            }
+            
+            .amount-input input {
+                font-size: 20px;
+            }
+        }
+
+        /* Footer Styles */
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="form-container">
+            <div class="header">
+                <h1>Create Budget</h1>
+                <button class="close-btn" onclick="closeForm()">×</button>
+            </div>
+            
+            <form id="budgetForm">
+                <div class="input-group amount-input">
+                    <i class="icon">$</i>
+                    <input type="number" id="amount" placeholder="Amount" required>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="budgetName" placeholder="Budget Name" required>
+                </div>
+
+                <div class="input-group">
+                    <textarea id="description" placeholder="Description" rows="4"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="skip-btn" onclick="skipForNow()">Skip for Now</button>
+                    <button type="submit" class="create-btn">Create Budget</button>
+                </div>
+            </form>
+
+            <p class="helper-text">Tap above to complete request</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('budgetForm');
+            const amountInput = document.getElementById('amount');
+            const budgetNameInput = document.getElementById('budgetName');
+            const descriptionInput = document.getElementById('description');
+
+            // Format amount input with commas
+            amountInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/,/g, '');
+                if (value) {
+                    value = parseInt(value).toLocaleString();
+                    e.target.value = value;
+                }
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const budgetData = {
+                    amount: amountInput.value.replace(/,/g, ''),
+                    name: budgetNameInput.value,
+                    description: descriptionInput.value,
+                    createdAt: new Date().toISOString(),
+                    timeLeft: '45 days left'
+                };
+
+                try {
+                    // Here you would typically send this data to your backend
+                    console.log('Budget created:', budgetData);
+
+                    // Simulate moving money to account balance
+                    // (If you have an account balance element, update it here)
+                    // Example: 
+                    // let balanceElem = document.getElementById('accountBalance');
+                    // let currentBalance = parseFloat(balanceElem.textContent.replace(/[^0-9.-]+/g,""));
+                    // balanceElem.textContent = '$' + (currentBalance + parseFloat(budgetData.amount)).toLocaleString();
+
+                    // Show success message
+                    alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
+
+                    // Reset form
+                    form.reset();
+
+                    // Redirect to payment page (replace with your actual route)
+                    window.location.href = '/payment';
+                } catch (error) {
+                    console.error('Error creating budget:', error);
+                    alert('Error creating budget. Please try again.');
+                }
+            });
+        });
+
+        // Close form function
+        function closeForm() {
+            window.history.back();
+        }
+
+        // Skip for now function
+        function skipForNow() {
+            window.history.back();
+        }
+
+        // Add animations
+        document.querySelectorAll('.input-group').forEach((group, index) => {
+            group.style.animation = `fadeIn 0.6s ease-out ${index * 0.1}s forwards`;
+            group.style.opacity = '0';
+        });
+
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Update Your Profile Pictures - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Profile Pictures - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff;
+            color: #15161E;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px; /* Match size from referral profile */
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-top: 100px; /* Adjust for fixed header */
+        }
+
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #15161E;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 16px;
+        }
+
+        .app-bar h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .profile-header {
+            position: relative;
+            height: 290px;
+            margin-bottom: 16px;
+        }
+
+        /* Cover Image */
+        .cover-image {
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 24px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cover-image:hover {
+            transform: scale(1.02); /* Slightly enlarge on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+        }
+
+        .cover-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Picture */
+        .profile-image-container {
+            position: relative; /* Change from absolute to relative */
+            margin: 0 auto;
+            margin-top: -60px; /* Adjust the margin to position the profile picture */
+            width: 120px;
+            height: 120px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            border: 2px solid #FFFFFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow effect */
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            text-align: center;
+            margin-top: 16px; /* Add spacing between the profile picture and text */
+        }
+
+        .profile-info h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 4px;
+            color: #1A202C;
+        }
+
+        .profile-info .username {
+            color: #4A5568;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .stats-container {
+            background-color: #F1F4F8;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 0 16px 24px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .stat-item {
+            text-align: center;
+            flex: 1;
+        }
+
+        .stat-item h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .stat-item p {
+            color: #606A85;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .collections-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+
+        .collections-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .show-all {
+            color: #6F61EF;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .collections-grid {
+            padding: 0 12px;
+        }
+
+        .collection-item {
+            background-color: #fff;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+
+        .collection-item .main-image {
+            flex: 3;
+        }
+
+        .collection-item .side-images {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .collection-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .collection-info {
+            padding: 12px 0 4px;
+        }
+
+        .collection-info h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .collection-info p {
+            color: #606A85;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .profile-picture-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logout-button {
+            margin-left: 15px;
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .logout-button:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .editable-image {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .editable-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0.8;
+        }
+
+        .profile-picture {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .collection-item {
+                display: flex;
+                gap: 8px;
+            }
+
+            .main-image {
+                width: 60%;
+            }
+
+            .side-images {
+                width: 40%;
+            }
+        }
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <!-- Updated Header -->
+<nav class="main-nav">
+    <div class="nav-content">
+        <!-- Brand Section -->
+        <a href="/pages/mainpage.html" class="nav-brand">
+            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo" data-i18n="logo-alt">
+            <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+        </a>
+
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+            <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+            <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+            <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+            <a href="/pages/settings.html" class="nav-link">Settings</a>
+        </div>
+
+        <!-- Navigation Actions -->
+        <div class="nav-actions">
+            <!-- Profile Picture -->
+            <div class="profile-picture-container">
+                <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+            </div>
+            <!-- Log Out Button -->
+            <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="app-bar">
+            <button class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-i18n="profile-pictures-title">Profile Pictures</h1>
+        </header>
+
+        <main>
+            <div class="profile-header">
+                <!-- Cover Image -->
+                <div class="cover-image">
+                    <img id="coverImage" src="https://images.unsplash.com/photo-1538370965046-79c0d6907d47" alt="Cover Image">
+                    <input type="file" id="coverImageInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="profile-image-container">
+                    <div class="profile-image">
+                        <img id="profileImage" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" alt="Profile Picture">
+                        <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="profile-info">
+                    <h2>Jonatthan Asis</h2>
+                    <p class="username">#jonatthanasis</p>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-item">
+                    <h3>Since</h3>
+                    <p>2025</p>
+                </div>
+                <div class="stat-item">
+                    <h3>420</h3>
+                    <p>Followers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>15,200</h3>
+                    <p>Views</p>
+                </div>
+            </div>
+
+            <div class="collections-header">
+                <h2>Collections</h2>
+                <a href="#" class="show-all">Show All</a>
+            </div>
+
+            <div class="collections-grid">
+                <div class="collection-item">
+                    <div class="main-image">
+                        <img src="https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa" alt="Main Image" class="editable-image" id="collectionMainImage1">
+                        <input type="file" id="collectionMainImageInput1" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="side-images">
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574" alt="Side Image 1" class="editable-image" id="collectionSideImage1">
+                        <input type="file" id="collectionSideImageInput1" accept="image/*" style="display: none;">
+                        <img src="https://images.unsplash.com/photo-1628800242113-98ffcfcc2e77" alt="Side Image 2" class="editable-image" id="collectionSideImage2">
+                        <input type="file" id="collectionSideImageInput2" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const backButton = document.querySelector('.back-button');
+
+            backButton.addEventListener('click', function () {
+                window.history.back();
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePicture = document.getElementById('profilePicture');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Make the profile picture clickable to trigger file input
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicture.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cover Image Upload
+            const coverImage = document.getElementById('coverImage');
+            const coverImageInput = document.getElementById('coverImageInput');
+
+            coverImage.addEventListener('click', () => {
+                coverImageInput.click();
+            });
+
+            coverImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        coverImage.src = e.target.result; // Update the cover image preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Profile Picture Upload
+            const profileImage = document.getElementById('profileImage');
+            const profileImageInput = document.getElementById('profileImageInput');
+
+            profileImage.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+
+            profileImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImage.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            const profileImageInput = document.getElementById('profileImageInput');
+
+            // Make the profile picture clickable
+            profileImage.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+
+            // Handle the file input change event for the profile picture
+            profileImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImage.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const editableImages = document.querySelectorAll('.editable-image');
+
+            editableImages.forEach((image) => {
+                const inputId = image.id + 'Input';
+                const fileInput = document.getElementById(inputId);
+
+                // Make the image clickable
+                image.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                // Handle the file input change event
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            image.src = e.target.result; // Update the image preview
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const profilePictureHeader = document.getElementById('profilePicture'); // Header profile picture
+            const profilePictureMain = document.getElementById('profileImage'); // Main profile picture
+            const profilePictureInput = document.getElementById('profilePictureInput'); // File input for profile picture
+
+            // Make the header profile picture clickable
+            profilePictureHeader.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Make the main profile picture clickable
+            profilePictureMain.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Update both profile pictures
+                        profilePictureHeader.src = e.target.result;
+                        profilePictureMain.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+// Example: Replace with actual API call or backend data
+const profileData = {
+    name: "Jonatthan Asis",
+    referralCode: "jonatthanasis",
+    since: 2025,
+    followers: 420,
+    views: 15200
+};
+
+// Format numbers (e.g., 15200 -> 15.2k)
+function formatNumber(num) {
+    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return num.toString();
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Profile Info
+    document.querySelector('.profile-info h2').textContent = profileData.name;
+    document.querySelector('.profile-info .username').textContent = `#${profileData.referralCode}`;
+
+    // Stats
+    const statItems = document.querySelectorAll('.stat-item h3');
+    if (statItems.length >= 3) {
+        statItems[0].textContent = profileData.since; // Since
+        statItems[1].textContent = formatNumber(profileData.followers); // Followers
+        statItems[2].textContent = formatNumber(profileData.views); // Views
+    }
+});
+    </script>
+</body>
+</html>

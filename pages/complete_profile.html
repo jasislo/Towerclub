@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Complete Your TowerClub Profile" data-i18n="meta-description">
+    <title data-i18n="page-title">Complete Your Profile - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #4B39EF;
+            --secondary-color: #F5F5F5;
+            --text-color: #1D2429;
+            --background-color: #FFFFFF;
+            --border-radius: 8px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-top: 80px; /* Add padding for fixed navigation */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Updated Navigation Bar */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        /* Center the Complete Profile header */
+        .container header h1 {
+            text-align: center; /* Center the text */
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 20px; /* Add space below the header */
+        }
+
+        .profile-form {
+            background-color: var(--background-color);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .profile-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out, slideUp 0.6s ease-out;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .profile-image:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .upload-overlay span {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-color);
+            animation: fadeIn 0.6s ease-out 0.05s, slideUp 0.6s ease-out 0.05s;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            animation: fadeIn 0.6s ease-out, slideUp 0.6s ease-out;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #E0E0E0;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--secondary-color);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(75, 57, 239, 0.1);
+        }
+
+        .submit-btn {
+            width: 230px;
+            height: 50px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            margin: 30px auto 0;
+            animation: fadeIn 0.6s ease-out 0.4s, slideUp 0.6s ease-out 0.4s;
+        }
+
+        .submit-btn:hover {
+            background-color: #3A2BC0;
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .profile-form {
+                padding: 20px;
+            }
+            
+            .submit-btn {
+                width: 100%;
+            }
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Profile Picture Styling */
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff; /* Optional border for better visibility */
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+            transform: scale(1.1); /* Slightly enlarge the profile picture */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-picture-container input[type="file"] {
+            display: none; /* Hide the file input */
+        }
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1 data-i18n="profile-completion-title">Complete Your Profile</h1>
+        </header>
+        
+        <main>
+            <form id="profileForm" class="profile-form">
+                <div class="profile-image-container">
+                    <div class="profile-image" id="profileImage">
+                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile" id="profileImg">
+                        <div class="upload-overlay">
+                            <span data-i18n="profile-upload-overlay">Click to upload photo</span>
+                        </div>
+                    </div>
+                    <p class="upload-text" data-i18n="profile-upload-text">Upload a photo for us to easily identify you</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name" data-i18n="profile-fullname">Your Name</label>
+                    <input type="text" id="name" name="name" required data-i18n-placeholder="profile-fullname-placeholder">
+                </div>
+
+                <div class="form-group">
+                    <label for="username" data-i18n="profile-username">Create Username</label>
+                    <input type="text" id="username" name="username" placeholder="username" required data-i18n-placeholder="profile-username-placeholder">
+                </div>
+
+                <div class="form-group">
+                    <label for="age" data-i18n="profile-age">Your Age</label>
+                    <input type="number" id="age" name="age" placeholder="i.e. 34" required data-i18n-placeholder="profile-age-placeholder">
+                </div>
+
+                <div class="form-group">
+                    <label for="email" data-i18n="profile-email">Your Email</label>
+                    <input type="email" id="email" name="email" placeholder="email" required data-i18n-placeholder="profile-email-placeholder">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" data-i18n="profile-phone">Your Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="phone number" required data-i18n-placeholder="profile-phone-placeholder">
+                </div>
+
+                <button type="submit" class="submit-btn" data-i18n="profile-submit">Complete Profile</button>
+            </form>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-company">Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-resources">Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-legal">Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-social">Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileForm = document.getElementById('profileForm');
+            const profileImage = document.getElementById('profileImage');
+            const profileImg = document.getElementById('profileImg');
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+
+            // Handle profile image click
+            profileImage.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // Handle file selection
+            fileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImg.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Handle form submission
+            profileForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // Get form data
+                const formData = new FormData(profileForm);
+                const profileData = {
+                    name: formData.get('name'),
+                    username: formData.get('username'),
+                    age: formData.get('age'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    profileImage: profileImg.src
+                };
+
+                try {
+                    // Here you would typically send the data to your backend
+                    console.log('Profile data:', profileData);
+                    
+                    // Simulate successful submission
+                    alert(translationManager.translate('profile-success'));
+                    
+                    // Redirect to next page (replace with your actual redirect)
+                    window.location.href = '/onboarding';
+                } catch (error) {
+                    console.error('Error submitting profile:', error);
+                    alert(translationManager.translate('profile-error'));
+                }
+            });
+
+            // Add input validation
+            const inputs = profileForm.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    validateInput(input);
+                });
+            });
+        });
+
+        function validateInput(input) {
+            const value = input.value.trim();
+            let isValid = true;
+            let errorMessage = '';
+
+            switch (input.id) {
+                case 'name':
+                    isValid = value.length >= 2;
+                    errorMessage = translationManager.translate('profile-name-error');
+                    break;
+                case 'username':
+                    isValid = /^[a-zA-Z0-9_]{3,20}$/.test(value);
+                    errorMessage = translationManager.translate('profile-username-error');
+                    break;
+                case 'age':
+                    isValid = value >= 18 && value <= 120;
+                    errorMessage = translationManager.translate('profile-age-error');
+                    break;
+                case 'email':
+                    isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+                    errorMessage = translationManager.translate('profile-email-error');
+                    break;
+                case 'phone':
+                    isValid = /^\+?[\d\s-]{10,}$/.test(value);
+                    errorMessage = translationManager.translate('profile-phone-error');
+                    break;
+            }
+
+            input.setCustomValidity(isValid ? '' : errorMessage);
+        }
+
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

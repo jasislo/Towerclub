@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Profile - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/referral.css">
+    <link rel="stylesheet" href="/styles/footer.css">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module" src="/scripts/referral.js"></script>
+    <link rel="icon" type="image/png" href="/assets/images/towerclub_logo.png">
+    <style>
+        /* General Layout Improvements */
+        .main-content {
+            padding: 40px 20px; /* Add padding for better spacing */
+            max-width: 1000px; /* Limit the width for better readability */
+            margin: 0 auto; /* Center the content horizontally */
+        }
+
+        .content-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the content horizontally */
+            text-align: center; /* Center the text */
+            margin-bottom: 40px; /* Add spacing below the header */
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Add spacing between elements */
+        }
+
+        .header-left h1 {
+            font-size: 2rem; /* Adjust font size for better visibility */
+            margin: 0;
+        }
+
+        .header-left p {
+            font-size: 1rem; /* Adjust font size for better readability */
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 0, 0, 0.1); /* Add a subtle hover effect */
+        }
+
+        .referral-container {
+            max-width: 800px; /* Reduce width for better centering */
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px; /* Slightly larger border radius for a modern look */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhance shadow for depth */
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Add spacing between profile image and info */
+        }
+
+        .profile-image {
+            width: 120px; /* Adjust size for better visibility */
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-image:hover {
+            transform: scale(1.1); /* Slightly enlarge the profile picture on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow effect on hover */
+        }
+
+        .profile-info {
+            text-align: center; /* Center-align the text */
+        }
+
+        .referral-code {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            padding: 15px; /* Increase padding for better spacing */
+            border-radius: 5px;
+            gap: 15px; /* Increase spacing between elements */
+        }
+
+        .referral-code span {
+            font-size: 0.9rem;
+            color: #4f46e5;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e5e7eb;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: #d1d5db;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust column size for better layout */
+            gap: 30px; /* Increase spacing between cards */
+            margin-top: 30px; /* Add spacing above the stats grid */
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px; /* Increase padding for better spacing */
+            border-radius: 10px; /* Slightly larger border radius for a modern look */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhance shadow for depth */
+        }
+
+        .stat-card.clickable {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .stat-card.clickable:hover {
+            transform: translateY(-5px); /* Slightly lift the card */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+            background-color: #f3f4f6; /* Optional: Change background color on hover */
+        }
+
+        .stat-icon {
+            font-size: 2.5rem; /* Increase icon size for better visibility */
+            color: #4f46e5;
+        }
+
+        .stat-value {
+            font-size: 1.5rem; /* Adjust font size for better readability */
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .stat-label {
+            font-size: 1rem; /* Adjust font size for better readability */
+            color: #6b7280;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background for contrast */
+            padding: 15px 30px; /* Adjust padding for better spacing */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .main-content {
+            padding: 80px 20px; /* Add top padding to prevent content from being hidden behind the header */
+            max-width: 1000px; /* Limit the width for better readability */
+            margin: 0 auto; /* Center the content horizontally */
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logout-button {
+            margin-left: 15px;
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .logout-button:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .content-header {
+                align-items: flex-start; /* Align content to the left on smaller screens */
+                text-align: left;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Adjust for smaller screens */
+            }
+
+            .footer-top {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-links-section {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <div class="header-left">
+                <button onclick="history.back()" class="btn btn-icon back-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div>
+                    <h1>Referral Profile</h1>
+                    <p>Track your referrals and rewards</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="referral-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-image" onclick="redirectToPicturesProfile()">
+                    <img id="profilePicture" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60" alt="Profile Picture">
+                </div>
+                <div class="profile-info">
+                    <h2 id="userName">Jonatthan Asis</h2>
+                    <div class="referral-code">
+                        <span class="material-icons">link</span>
+                        <span>Referral code:</span>                  
+                        <span id="referralCode">#jonatthanasis</span>
+                        <button class="btn btn-icon" onclick="copyReferralCode()">
+                        <span class="material-icons">content_copy</span>
+                    </div>
+                    <p class="username">
+                        <input 
+                            id="referralCodeInput"
+                            type="text"
+                            value="#jonatthanasis"
+                            style="border:none; background:transparent; color:#4A5568; font-size:14px; font-weight:500; width:auto; text-align:center;"
+                            maxlength="30"
+                        />
+                        <span id="editReferralCode" style="cursor:pointer; margin-left:6px; color:#a855f7;" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <!-- Followers Card -->
+                <div class="stat-card clickable" onclick="window.location.href='pictures_profile.html'">
+                    <div class="stat-icon">
+                        <span class="material-icons">supervisor_account</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="followersCount">24k</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                </div>
+
+                <!-- Referral Reward Card -->
+                <div class="stat-card clickable" onclick="showReferralRewardInfo()">
+                    <div class="stat-icon">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="rewardAmount">$2,340</span>
+                        <span class="stat-label">Referral Reward</span>
+                    </div>
+                </div>
+
+                <!-- Platinum Level Card -->
+                <div class="stat-card clickable" onclick="showAccountLevelInfo()">
+                    <div class="stat-icon">
+                        <span class="material-icons">military_tech</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="accountLevel">Platinum</span>
+                        <span class="stat-label">Account Level</span>
+                    </div>
+                </div>
+
+                <!-- Cash Out Reward Card -->
+                <div class="stat-card clickable" onclick="showCashOutModal()">
+                    <div class="stat-icon">
+                        <span class="material-icons">account_balance_wallet</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="cashOutReward">$1,200</span>
+                        <span class="stat-label">Cash Out Reward</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add this modal HTML at the end of your body -->
+<div id="referralRewardModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; max-width:350px; text-align:center; position:relative;">
+        <button onclick="closeReferralRewardModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Referral Reward Details</h3>
+        <p>
+            <strong>Total Accumulated:</strong> <span id="modalTotalReward"></span><br>
+            <strong>Cash Out Available:</strong> <span id="modalCashOutReward"></span>
+        </p>
+        <small>
+            Your cash out reward is based on the referral program algorithm.<br>
+            Accumulated rewards grow as your referrals and their generations increase.
+        </small>
+    </div>
+</div>
+
+<!-- Add this modal at the end of your body -->
+<div id="cashOutModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:2rem; border-radius:12px; max-width:350px; text-align:center; position:relative;">
+        <h3>Cash Out Confirmation</h3>
+        <p>Are you sure you want to cash out to your balance?</p>
+        <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:center;">
+            <button id="cashOutYesBtn" style="padding:0.5rem 1.5rem; background:#22c55e; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer;">Yes</button>
+            <button id="cashOutNoBtn" style="padding:0.5rem 1.5rem; background:#eee; color:#333; border:none; border-radius:6px; font-weight:600; cursor:pointer;">No</button>
+        </div>
+    </div>
+</div>
+
+<!-- Account Level Modal -->
+<div id="accountLevelModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2100; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; max-width:350px; text-align:center; position:relative;">
+        <button onclick="closeAccountLevelModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Account Level Details</h3>
+        <p>
+            <strong>Current Level:</strong> <span id="modalAccountLevel"></span><br>
+            <strong>Benefits:</strong>
+            <ul style="text-align:left; margin:10px 0 0 0; padding-left:20px;">
+                <li>Higher referral rewards</li>
+                <li>If 1000 followers and 100 referrals: VIP Member</li>
+                <li>If 10000 followers and 1000 referrals: Silver Level </li>
+                <li>If 50000 followers and 10000 referrals: Gold level</li>
+                <li>If 100000 followers and 50000 referrals: Platinum level</li>
+                <li>Priority support</li>
+                <li>And more!</li>
+            </ul>
+        </p>
+        <small>
+            Your account level increases as you refer more users and engage with the platform.<br>
+            Reach higher levels for greater benefits.
+        </small>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePicture = document.getElementById('profilePicture');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Make the profile picture clickable to trigger file input
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicture.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        function redirectToPicturesProfile() {
+            window.location.href = 'pictures_profile.html'; // Redirect to pictures_profile.html
+        }
+
+        // Copy referral code to clipboard
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                // Optional: show feedback to user
+                alert('Referral code copied!');
+            });
+        }
+
+        function showReferralRewardInfo() {
+            // Calculate or fetch the totalReward and cashOutReward values
+            const totalReward = 2340; // Example value
+            const cashOutReward = 1200; // Example value
+
+            // Update the modal content
+            document.getElementById('modalTotalReward').innerText = `$${totalReward.toLocaleString()}`;
+            document.getElementById('modalCashOutReward').innerText = `$${cashOutReward.toLocaleString()}`;
+
+            // Show the modal
+            document.getElementById('referralRewardModal').style.display = 'flex';
+        }
+
+        function closeReferralRewardModal() {
+            // Hide the modal
+            document.getElementById('referralRewardModal').style.display = 'none';
+        }
+
+        // Cash Out functionality
+        document.getElementById('cashOutYesBtn').addEventListener('click', () => {
+            // Implement cash out logic here
+            alert('Cash out successful!');
+            closeCashOutModal();
+        });
+
+        document.getElementById('cashOutNoBtn').addEventListener('click', () => {
+            closeCashOutModal();
+        });
+
+        function closeCashOutModal() {
+            document.getElementById('cashOutModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const referralInput = document.getElementById('referralCodeInput');
+            const editIcon = document.getElementById('editReferralCode');
+
+            // Make input readonly by default
+            referralInput.readOnly = true;
+
+            // Click edit icon to enable editing
+            editIcon.addEventListener('click', function () {
+                referralInput.readOnly = false;
+                referralInput.focus();
+                // Move cursor to end
+                referralInput.setSelectionRange(referralInput.value.length, referralInput.value.length);
+            });
+
+            // On blur or Enter, validate and save
+            function finalizeReferralEdit() {
+                let val = referralInput.value.trim();
+                if (!val.startsWith('#')) {
+                    val = '#' + val.replace(/^#+/, '');
+                }
+                referralInput.value = val;
+                referralInput.readOnly = true;
+                // Optionally: Save to backend here
+            }
+
+            referralInput.addEventListener('blur', finalizeReferralEdit);
+            referralInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    referralInput.blur();
+                }
+            });
+        });
+
+        function showAccountLevelInfo() {
+            // Get the current account level from the page
+            const accountLevel = document.getElementById('accountLevel').innerText;
+            document.getElementById('modalAccountLevel').innerText = accountLevel;
+
+            // Show the modal
+            document.getElementById('accountLevelModal').style.display = 'flex';
+        }
+
+        function closeAccountLevelModal() {
+            document.getElementById('accountLevelModal').style.display = 'none';
+        }
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

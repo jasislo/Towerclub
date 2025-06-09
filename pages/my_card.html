@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Card – TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">My Card – TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/header.css">
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <style>
+        /* CSS Variables */
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-background: #F5F5F5;
+            --primary-text: #333333;
+            --success-color: #4CAF50;
+            --error-color: #FF3B30;
+            --chat-background: #ffffff;
+            --chat-border: #e5e7eb;
+            --chat-hover: #f9fafb;
+        }
+
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-background);
+            color: var(--primary-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        /* Existing styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px;
+            flex: 1;
+        }
+
+        .card-container {
+            background: linear-gradient(135deg, #22c55e, #a855f7);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            cursor: pointer; /* Make the card clickable */
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s; /* Smooth hover effect */
+        }
+
+        .card-container:hover {
+            transform: scale(1.05); /* Slightly enlarge the card on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Add a deeper shadow on hover */
+            background: linear-gradient(135deg, #16a34a, #9333ea); /* Optional: Change gradient on hover */
+        }
+
+        .card-header img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-number {
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .card-details span {
+            display: block;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <a href="logout.html" class="btn-outline">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="card-container">
+            <div class="card-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" class="visa-logo">
+            </div>
+            <div class="card-content">
+                <h3>My Towerclub Card</h3>
+                <div class="card-number">**** **** **** 1234</div>
+                <div class="card-details">
+                    <span>Expiry: 12/26</span>
+                    <span>Cardholder: John Doe</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Payment Methods -->
+        <div class="payment-methods">
+            <div class="card-container" onclick="enableEdit(this)">
+                <div class="card-header">
+                    <!-- No logo -->
+                </div>
+                <div class="card-content">
+                    <h3 contenteditable="false">Credit Card</h3>
+                    <div class="card-number" contenteditable="false">**** **** **** 5678</div>
+                    <div class="card-details">
+                        <span contenteditable="false">Expiry: 11/25</span>
+                        <span contenteditable="false">Cardholder: Jane Doe</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container" onclick="enableEdit(this)">
+                <div class="card-header">
+                    <!-- No logo -->
+                </div>
+                <div class="card-content">
+                    <h3 contenteditable="false">Debit Card</h3>
+                    <div class="card-number" contenteditable="false">**** **** **** 9012</div>
+                    <div class="card-details">
+                        <span contenteditable="false">Expiry: 10/24</span>
+                        <span contenteditable="false">Cardholder: John Smith</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container" onclick="enableEdit(this)">
+                <div class="card-header">
+                    <!-- No logo -->
+                </div>
+                <div class="card-content">
+                    <h3 contenteditable="false">Bank Account</h3>
+                    <div class="card-number" contenteditable="false">Account: 123456789</div>
+                    <div class="card-details">
+                        <span contenteditable="false">Routing: 987654321</span>
+                        <span contenteditable="false">Bank: TowerBank</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-container" onclick="redirectToPayPal()">
+                <div class="card-header">
+                    <!-- No logo -->
+                </div>
+                <div class="card-content">
+                    <h3>PayPal</h3>
+                    <div class="card-number">Email: user@example.com</div>
+                    <div class="card-details">
+                        <span>Status: Verified</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
+
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function enableEdit(card) {
+            // Prevent editing "My Towerclub Card"
+            const cardTitle = card.querySelector('h3').innerText;
+            if (cardTitle === "My Towerclub Card") {
+                alert("This card is assigned by the virtual generator and cannot be edited.");
+                return;
+            }
+
+            const editableElements = card.querySelectorAll('[contenteditable]');
+            const isEditable = editableElements[0]?.getAttribute('contenteditable') === 'true';
+
+            editableElements.forEach((element) => {
+                element.setAttribute('contenteditable', !isEditable);
+                if (!isEditable) {
+                    element.focus(); // Focus on the first editable element
+                }
+            });
+
+            // Add a visual indicator for edit mode
+            if (!isEditable) {
+                card.style.boxShadow = '0 0 10px rgba(0, 255, 0, 0.5)'; // Highlight the card in edit mode
+            } else {
+                card.style.boxShadow = ''; // Remove the highlight when exiting edit mode
+            }
+        }
+
+        function redirectToPayPal() {
+            const returnUrl = encodeURIComponent(window.location.origin + '/pages/payment methods.html');
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+    </script>
+</body>
+</html>

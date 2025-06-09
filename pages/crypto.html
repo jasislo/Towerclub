@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #22c55e;
+            --secondary-color: #a855f7;
+            --text-color: #15161E;
+            --secondary-text: #606A85;
+            --background-color: #f9fafb;
+            --card-background: #ffffff;
+            --border-color: #E5E7EB;
+            --error-color: #FF4D4F;
+            --success-color: #22c55e;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 70px; /* Prevent content from hiding behind the fixed header */
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            margin-top: 8px;
+        }
+
+        .balance-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .balance-label {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 3rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .price-info {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: var(--secondary-text);
+        }
+
+        .cards {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Add spacing between cards */
+            width: 100%; /* Make cards take full width */
+            max-width: 400px; /* Limit the width for better readability */
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .card .amount {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .card .percentage {
+            font-size: 1.1rem;
+            color: var(--secondary-text);
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .btn-trade {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-trade:hover {
+            background: #16a34a; /* Slightly darker green for hover effect */
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .profile-picture {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        .paypal-login {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .btn-paypal {
+            background: #ffc439;
+            color: #111827;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-paypal:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .crypto-message {
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #6b7280; /* Neutral gray color */
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9fafb; /* Light background */
+            border: 1px solid #e5e7eb; /* Subtle border */
+            border-radius: 8px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link">Transfer</a>
+                <a href="activities.html" class="nav-link">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="header">
+            <h1>Crypto Dashboard</h1>
+            <p>Track and manage your cryptocurrency investments</p>
+        </header>
+
+        <!-- Balance Section -->
+        <section class="balance-section">
+            <div class="balance-label">Total Portfolio Balance</div>
+            <div class="balance-amount" id="portfolioBalance">$0.00</div>
+            <div class="price-info" id="portfolioChange">Loading...</div>
+        </section>
+
+        <!-- Login with PayPal Section -->
+        <section class="paypal-login">
+            <button class="btn-paypal" onclick="processPayment()">Login with PayPal</button>
+        </section>
+
+        <!-- Cards Section -->
+        <section class="cards">
+            <div class="card">
+                <h3>Bitcoin (BTC)</h3>
+                <div class="amount" id="btcPrice">$0.00</div>
+                <div class="percentage" id="btcChange">Loading...</div>
+                <div class="card-actions">
+                    <button class="btn-trade" onclick="checkPayPalLogin('bitcoin.html')">Trade BTC</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Ethereum (ETH)</h3>
+                <div class="amount" id="ethPrice">$0.00</div>
+                <div class="percentage" id="ethChange">Loading...</div>
+                <div class="card-actions">
+                    <button class="btn-trade" onclick="checkPayPalLogin('ethereum.html')">Trade ETH</button>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Litecoin (LTC)</h3>
+                <div class="amount" id="ltcPrice">$0.00</div>
+                <div class="percentage" id="ltcChange">Loading...</div>
+                <div class="card-actions">
+                    <button class="btn-trade" onclick="checkPayPalLogin('litecoin.html')">Trade LTC</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="crypto-message">
+            Crypto features are available only with PayPal services.
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let isPayPalLoggedIn = false; // Track PayPal login status
+
+        async function processPayment() {
+            const clientId = 'AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj';
+            const secret = 'undefined'; // Replace with your actual secret
+            const amount = 1.00; // $1.00 processing fee
+
+            try {
+                // Get access token
+                const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Basic ${btoa(`${clientId}:${secret}`)}`,
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'grant_type=client_credentials',
+                });
+                const tokenData = await tokenResponse.json();
+                const accessToken = tokenData.access_token;
+
+                // Create payment
+                const paymentResponse = await fetch('https://api-m.sandbox.paypal.com/v1/payments/payment', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        intent: 'sale',
+                        payer: {
+                            payment_method: 'paypal',
+                        },
+                        transactions: [
+                            {
+                                amount: {
+                                    total: amount.toFixed(2),
+                                    currency: 'USD',
+                            },
+                            description: 'Processing fee for transactions',
+                        },
+                    ],
+                        redirect_urls: {
+                            return_url: 'https://yourwebsite.com/success',
+                            cancel_url: 'https://yourwebsite.com/cancel',
+                        },
+                    }),
+                });
+                const paymentData = await paymentResponse.json();
+
+                // Redirect user to PayPal approval URL
+                const approvalUrl = paymentData.links.find(link => link.rel === 'approval_url').href;
+                window.location.href = approvalUrl;
+
+                // Set PayPal login status to true after successful login
+                isPayPalLoggedIn = true;
+            } catch (error) {
+                console.error('Error processing payment:', error);
+            }
+        }
+
+        function checkPayPalLogin(tradeUrl) {
+            if (isPayPalLoggedIn) {
+                window.location.href = tradeUrl;
+            } else {
+                alert('Please log in with PayPal to proceed.');
+            }
+        }
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

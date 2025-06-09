@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Dashboard" data-i18n="meta-description">
+    <title data-i18n="page-title">Dashboard - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #39D2C0;
+            --text-color: #15161E;
+            --secondary-text: #606A85;
+            --border-color: #E5E7EB;
+            --background-color: #FFFFFF;
+            --error-color: #FF4D4F;
+            --success-color: #52C41A;
+            --chat-bg: #f9fafb;
+            --chat-border: #e5e7eb;
+            --chat-hover: #f1f5f9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        /* Navigation Bar */
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #22c55e; /* Optional: border color change */
+        }
+
+        .main-content {
+            padding-top: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .dashboard-header p {
+            font-size: 1rem;
+            color: var(--secondary-text);
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .dashboard-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px; /* Space between the icon and text */
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 150px; /* Consistent height for all cards */
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px); /* Slight lift effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            background-color: #f9fafb; /* Optional: subtle background change */
+        }
+
+        .dashboard-card .icon {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            flex-shrink: 0; /* Prevent the icon from shrinking */
+        }
+
+        .dashboard-card h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .dashboard-card p {
+            font-size: 1rem;
+            color: var(--secondary-text);
+        }
+
+        /* Recent Transactions Card */
+        .recent-transactions {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .recent-transactions:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .recent-transactions .transaction-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .recent-transactions ul {
+            margin-top: 10px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .recent-transactions .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+
+        .recent-transactions .transaction-item .amount {
+            font-weight: 600;
+        }
+
+        .recent-transactions .transaction-item .amount.positive {
+            color: var(--success-color);
+        }
+
+        .recent-transactions .transaction-item .amount.negative {
+            color: var(--error-color);
+        }
+
+        /* Cryptocurrency Section */
+        .crypto-container {
+            margin-top: 40px;
+            margin-bottom: 60px; /* Increased bottom margin for more space */
+        }
+
+        .crypto-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .crypto-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .crypto-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .crypto-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer; /* Indicate the item is clickable */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .crypto-item:hover {
+            transform: translateY(-5px); /* Slight lift effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            background-color: #f9fafb; /* Optional: subtle background change */
+        }
+
+        .crypto-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .crypto-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .crypto-price {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        .crypto-trend {
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .crypto-trend.positive {
+            color: var(--success-color);
+        }
+
+        .crypto-trend.negative {
+            color: var(--error-color);
+        }
+
+        /* Chat Section */
+        .chat-container {
+            margin-top: 40px;
+        }
+
+        .chat-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .chat-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .chat-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .chat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .chat-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .chat-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .chat-message {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        /* Recent Activities Section */
+        .recent-activities-container {
+            margin-top: 40px;
+        }
+
+        .recent-activities-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .recent-activities-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .recent-activities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .activity-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background-color: #f9fafb;
+        }
+
+        .activity-icon {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .activity-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 5px;
+        }
+
+        .activity-date {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+            margin-bottom: 10px;
+        }
+
+        .activity-amount {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .activity-amount.positive {
+            color: var(--success-color);
+        }
+
+        .activity-amount.negative {
+            color: var(--error-color);
+        }
+
+        /* Footer */
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link active" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1 data-i18n="dashboard-welcome">Welcome back, <span class="user-name">John</span>!</h1>
+            <p data-i18n="dashboard-date">Today is <span id="currentDate"></span></p>
+        </div>
+
+        <div class="dashboard-cards">
+            <!-- Available Balance -->
+            <div class="dashboard-card">
+                <span class="material-icons icon">account_balance_wallet</span>
+                <div>
+                    <h2 data-i18n="dashboard-balance">Total Balance</h2>
+                    <p id="totalBalance">$0.00</p> <!-- Added ID -->
+                </div>
+            </div>
+
+            <!-- Money In -->
+            <div class="dashboard-card">
+                <span class="material-icons icon">arrow_downward</span>
+                <div>
+                    <h2 data-i18n="dashboard-income">Monthly Income</h2>
+                    <p id="moneyIn">$0.00</p> <!-- Added ID -->
+                </div>
+            </div>
+
+            <!-- Money Out -->
+            <div class="dashboard-card">
+                <span class="material-icons icon">arrow_upward</span>
+                <div>
+                    <h2 data-i18n="dashboard-expenses">Monthly Expenses</h2>
+                    <p id="moneyOut">$0.00</p> <!-- Added ID -->
+                </div>
+            </div>
+
+            <!-- Savings Rate -->
+            <div class="dashboard-card">
+                <span class="material-icons icon">savings</span>
+                <div>
+                    <h2 data-i18n="dashboard-savings">Savings Rate</h2>
+                    <p id="savingsRate">0%</p> <!-- Added ID -->
+                </div>
+            </div>
+
+            <!-- Portfolio Value -->
+            <div class="dashboard-card">
+                <span class="material-icons icon">pie_chart</span>
+                <div>
+                    <h2 data-i18n="dashboard-portfolio">Your Portfolio</h2>
+                    <p id="portfolioValue">$0.00</p> <!-- Added ID -->
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="dashboard-card recent-transactions">
+                <span class="material-icons icon">receipt_long</span>
+                <div>
+                    <h2 data-i18n="dashboard-recent-transactions">Recent Transactions</h2>
+                    <div id="recentTransactions">
+                        <!-- Transactions will be dynamically populated -->
+                    </div> <!-- Added ID -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Chats Section -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2 data-i18n="dashboard-chats">Recent Chats</h2>
+            </div>
+            <div class="chat-list">
+                <div class="chat-item">
+                    <span class="material-icons chat-icon">person</span>
+                    <div class="chat-name">John Doe</div>
+                    <div class="chat-message">Hey, how are you?</div>
+                </div>
+                <div class="chat-item">
+                    <span class="material-icons chat-icon">person</span>
+                    <div class="chat-name">Jane Smith</div>
+                    <div class="chat-message">Let's catch up later!</div>
+                </div>
+                <div class="chat-item">
+                    <span class="material-icons chat-icon">person</span>
+                    <div class="chat-name">Mike Johnson</div>
+                    <div class="chat-message">Got it, thanks!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities Section -->
+        <div class="recent-activities-container">
+            <div class="recent-activities-header">
+                <h2 data-i18n="dashboard-activities">Recent Activities</h2>
+            </div>
+            <div class="recent-activities-list">
+                <div class="activity-item">
+                    <span class="material-icons activity-icon">payment</span>
+                    <div class="activity-title">Payment to John Doe</div>
+                    <div class="activity-date">May 1, 2025</div>
+                    <div class="activity-amount negative">-$50.00</div>
+                </div>
+                <div class="activity-item">
+                    <span class="material-icons activity-icon">attach_money</span>
+                    <div class="activity-title">Salary Credit</div>
+                    <div class="activity-date">April 30, 2025</div>
+                    <div class="activity-amount positive">+$5,000.00</div>
+                </div>
+                <div class="activity-item">
+                    <span class="material-icons activity-icon">shopping_cart</span>
+                    <div class="activity-title">Grocery Shopping</div>
+                    <div class="activity-date">April 29, 2025</div>
+                    <div class="activity-amount negative">-$200.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cryptocurrency Section -->
+        <div class="crypto-container">
+            <div class="crypto-header">
+                <h2 data-i18n="dashboard-cryptocurrency">Cryptocurrency Prices</h2>
+            </div>
+            <div class="crypto-list">
+                <div class="crypto-item">
+                    <div class="crypto-symbol" style="font-size:1.5rem; margin-bottom:2px;">₿</div>
+                    <div class="crypto-name">Bitcoin</div>
+                    <div class="crypto-price">$28,000</div>
+                    <div class="crypto-trend positive">+2.5%</div>
+                </div>
+                <div class="crypto-item">
+                    <div class="crypto-symbol" style="font-size:1.5rem; margin-bottom:2px;">
+                        <span class="material-icons crypto-icon" style="vertical-align:middle; font-size:1.5rem;">currency_ethereum</span> Ξ
+                    </div>
+                    <div class="crypto-name">Ethereum</div>
+                    <div class="crypto-price">$1,800</div>
+                    <div class="crypto-trend negative">-1.2%</div>
+                </div>
+                <div class="crypto-item">
+                    <div class="crypto-symbol" style="font-size:1.5rem; margin-bottom:2px;">Ł</div>
+                    <div class="crypto-name">Litecoin</div>
+                    <div class="crypto-price">$90</div>
+                    <div class="crypto-trend positive">+3.8%</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-company">Company</h4>
+                        <ul>
+                            <li><a href="#" data-i18n="footer-about">About Us</a></li>
+                            <li><a href="#" data-i18n="footer-careers">Careers</a></li>
+                            <li><a href="#" data-i18n="footer-press">Press</a></li>
+                            <li><a href="#" data-i18n="footer-blog">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-resources">Resources</h4>
+                        <ul>
+                            <li><a href="#" data-i18n="footer-help">Help Center</a></li>
+                            <li><a href="#" data-i18n="footer-guides">Guides</a></li>
+                            <li><a href="#" data-i18n="footer-api">API</a></li>
+                            <li><a href="#" data-i18n="footer-status">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4 data-i18n="footer-legal">Legal</h4>
+                        <ul>
+                            <li><a href="#" data-i18n="footer-privacy">Privacy</a></li>
+                            <li><a href="#" data-i18n="footer-terms">Terms</a></li>
+                            <li><a href="#" data-i18n="footer-security">Security</a></li>
+                            <li><a href="#" data-i18n="footer-cookies">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Redirect to mainpage.html when clicking TowerClub in header
+            const navBrand = document.querySelector('.nav-brand');
+            navBrand.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = '/pages/mainpage.html';
+            });
+
+            const recentTransactionsCard = document.querySelector('.recent-transactions');
+            recentTransactionsCard.addEventListener('click', () => {
+                window.location.href = '/pages/activities.html';
+            });
+
+            const portfolioCard = document.querySelector('.dashboard-card:nth-child(5)'); // Assuming it's the 5th card
+            portfolioCard.addEventListener('click', () => {
+                window.location.href = '/pages/crypto.html';
+            });
+
+            const cryptoItems = document.querySelectorAll('.crypto-item');
+
+            cryptoItems.forEach((cryptoItem, index) => {
+                cryptoItem.addEventListener('click', () => {
+                    // Redirect to crypto.html with a query parameter for the selected cryptocurrency
+                    window.location.href = `/pages/crypto.html?crypto=${index + 1}`;
+                });
+            });
+
+            const activityItems = document.querySelectorAll('.activity-item');
+
+            activityItems.forEach((activityItem) => {
+                activityItem.addEventListener('click', () => {
+                    // Redirect to activities.html
+                    window.location.href = '/pages/activities.html';
+                });
+            });
+
+            const chatItems = document.querySelectorAll('.chat-item');
+
+            chatItems.forEach((chatItem, index) => {
+                chatItem.addEventListener('click', () => {
+                    // Redirect to socialmedia2.html with a query parameter for the selected chat
+                    window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
+                });
+            });
+
+            applyTranslations(); // Call this on page load
+        });
+    </script>
+    <script src="/scripts/sync.js"></script>
+</body>
+</html>
