@@ -1,57 +1,56 @@
-# Tower Club App
+# Project Title
 
-## Overview
-The Tower Club App is a web application designed to manage users, products, and orders for the Tower Club. It utilizes Flask as the web framework and SQLAlchemy for database interactions.
+A brief description of your project goes here. This project utilizes Netlify Functions to handle backend logic for a frontend application.
 
-## Project Structure
-```
-towerclubapp
-├── src
-│   ├── models
-│   │   └── models.py       # Domain models for the application
-│   ├── routes
-│   │   └── index.py        # Routing for handling HTTP requests
-│   ├── services
-│   │   └── __init__.py     # Service functions for business logic
-│   ├── app.py              # Entry point of the application
-│   └── config.py           # Configuration settings
-├── requirements.txt         # Project dependencies
-├── .env                     # Environment variables
-└── README.md                # Project documentation
-```
+## Table of Contents
 
-## Setup Instructions
-1. **Clone the repository:**
-   ```
-   git clone https://github.com/yourusername/towerclubapp.git
-   cd towerclubapp
-   ```
+- [Installation](#installation)
+- [Usage](#usage)
+- [Netlify Functions](#netlify-functions)
+- [Contributing](#contributing)
+- [License](#license)
 
-2. **Create a virtual environment:**
-   ```
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
-   ```
+## Installation
 
-3. **Install dependencies:**
+1. Clone the repository:
    ```
-   pip install -r requirements.txt
+   git clone <repository-url>
    ```
-
-4. **Set up environment variables:**
-   Create a `.env` file in the root directory and add your environment variables, such as database URL and secret keys.
-
-5. **Run the application:**
+2. Navigate to the project directory:
    ```
-   python src/app.py
+   cd your-project
+   ```
+3. Install the dependencies:
+   ```
+   npm install
    ```
 
 ## Usage
-- Access the application in your web browser at `http://localhost:5000`.
-- Use the defined routes to interact with the application.
+
+To run the project locally, you can use the Netlify CLI:
+
+1. Install the Netlify CLI globally:
+   ```
+   npm install -g netlify-cli
+   ```
+2. Start the local development server:
+   ```
+   netlify dev
+   ```
+3. Access the application at `http://localhost:8888`.
+
+## Netlify Functions
+
+This project includes two Netlify Functions:
+
+- **hello.js**: A function that responds to HTTP requests with a greeting message. You can access it at `/.netlify/functions/hello?name=YourName`.
+
+- **submit-data.js**: A function that processes POST requests. It expects a JSON body and returns a success message or an error if the JSON is invalid. 
 
 ## Contributing
-Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.
+
+Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.
