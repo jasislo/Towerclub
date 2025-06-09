@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Notifications Settings – TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Notifications Settings – TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <style>
+        :root {
+            --primary-color: #39D2C0;
+            --text-color: #15161E;
+            --secondary-text: #606A85;
+            --border-color: #E5E7EB;
+            --background-color: #FFFFFF;
+            --error-color: #FF4D4F;
+            --success-color: #52C41A;
+            --secondary-color: #a855f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient on hover */
+            color: #ffffff; /* White text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient on hover */
+            color: #ffffff; /* White text on hover */
+            border-color: transparent; /* Transparent border on hover */
+        }
+
+        .main-content {
+            padding-top: 100px; /* Adjust for fixed header */
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+        }
+
+        .notifications-header {
+            margin-bottom: 20px;
+        }
+
+        .notifications-header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .notifications-header p {
+            font-size: 1rem;
+            color: var(--secondary-text);
+        }
+
+        .notifications-container {
+            background: var(--background-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .settings-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .setting-info p {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .save-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .save-button:hover {
+            background: #2bb3a6;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .menu {
+            margin-top: 20px;
+            background: var(--background-color);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .menu-item:hover {
+            background: #f1f5f9;
+        }
+
+        .menu-item span {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .menu-item i {
+            color: var(--secondary-text);
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav" style="background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white;">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand" style="color: white;">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" style="color: white;" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link" style="color: white;">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" style="color: white;" data-i18n="nav-transfer">Transfer</a>
+                <a href="activities.html" class="nav-link" style="color: white;" data-i18n="nav-activities">Activities</a>
+                <a href="settings.html" class="nav-link" style="color: white;">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="notifications-header">
+            <div class="header-left">
+                <button onclick="history.back()" class="btn btn-icon">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div>
+                    <h1 data-i18n="notifications-settings-title">Notifications</h1>
+                    <p data-i18n="notifications-settings-desc">Choose what notifications you want to receive</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="notifications-container">
+            <div class="settings-group">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3 data-i18n="form-push">Push Notifications</h3>
+                        <p>Receive push notifications from our application</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="pushNotifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3 data-i18n="form-email">Email Notifications</h3>
+                        <p>Receive email notifications from our application</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="emailNotifications" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <h3 data-i18n="form-phone">Location Services</h3>
+                        <p>Allow us to track your location for better service</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="locationServices" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button id="saveChanges" class="save-button" data-i18n="action-save">Save Changes</button>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item" onclick="navigateTo('pictures_profile.html')">
+                <span>Edit Pictutes Profile</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item" onclick="navigateTo('change-password')">
+                <span>Change Password</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="menu-item" onclick="navigateTo('notifications settings.html')">
+                <span>Notification Settings</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2024 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

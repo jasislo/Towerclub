@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verify Your Phone Number - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Verify Phone Number - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #22c55e; /* Green */
+            --secondary-color: #a855f7; /* Fuchsia */
+            --background-color: #ffffff; /* White */
+            --card-background: #f3f4f6; /* Light Gray */
+            --text-color: #1a1f24; /* Dark Gray */
+            --text-secondary: #6b7280; /* Medium Gray */
+            --input-border: #d1d5db; /* Light Gray Border */
+            --error-color: #ef4444; /* Red */
+            --success-color: #10b981; /* Green */
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Lexend', 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 2rem;
+        }
+
+        .auth-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .logo {
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .content {
+            text-align: center;
+        }
+
+        .content h1 {
+            color: var(--text-color);
+            font-size: 1.75rem;
+            margin: 0 0 0.5rem;
+            font-weight: 600;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0 0 2rem;
+        }
+
+        .highlight {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .verification-code {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .verification-code input {
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            font-size: 1.25rem;
+            font-weight: 500;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .verification-code input:focus {
+            border-color: var(--primary-color);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+
+        .resend-timer {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+
+        .primary-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .primary-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .primary-button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                margin: 1rem;
+            }
+
+            .auth-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .verification-code {
+                gap: 0.5rem;
+            }
+
+            .verification-code input {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Main Content -->
+    <div class="verification-container">
+        <div class="verification-card">
+            <div class="verification-header">
+                <h1 data-i18n="verify-phone-title">Verify Your Phone Number</h1>
+                <p data-i18n="verify-phone-subtitle">Enter the verification code sent to your phone</p>
+            </div>
+
+            <form id="verificationForm" class="verification-form">
+                <div class="verification-code">
+                    <div class="code-inputs">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                        <input type="text" maxlength="1" pattern="[0-9]" inputmode="numeric" class="code-input" data-i18n-placeholder="verify-code-placeholder">
+                    </div>
+                    <p class="code-hint" data-i18n="verify-code-hint">Enter the 6-digit code</p>
+                </div>
+
+                <div class="timer-section">
+                    <p class="timer-text" data-i18n="verify-timer">Code expires in: <span id="timer">05:00</span></p>
+                    <button type="button" class="resend-btn" disabled data-i18n="verify-resend">Resend Code</button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" data-i18n="verify-submit">Verify Phone Number</button>
+                    <button type="button" class="btn btn-outline" data-i18n="verify-cancel">Cancel</button>
+                </div>
+            </form>
+
+            <div class="verification-footer">
+                <p data-i18n="verify-help">Need help? <a href="#" data-i18n="verify-contact">Contact Support</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('verificationForm');
+            const codeInputs = form.querySelectorAll('.code-input');
+            const resendBtn = form.querySelector('.resend-btn');
+            const timerSpan = document.getElementById('timer');
+            let timeLeft = 300; // 5 minutes in seconds
+            let timerInterval;
+
+            // Start the timer
+            startTimer();
+
+            // Handle code input
+            codeInputs.forEach((input, index) => {
+                // Focus first input on load
+                if (index === 0) {
+                    input.focus();
+                }
+
+                // Handle input
+                input.addEventListener('input', function(e) {
+                    if (this.value.length === 1) {
+                        if (index < codeInputs.length - 1) {
+                            codeInputs[index + 1].focus();
+                        }
+                    }
+                });
+
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && !this.value && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+
+                // Handle paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedData = e.clipboardData.getData('text').slice(0, 6);
+                    if (/^\d+$/.test(pastedData)) {
+                        pastedData.split('').forEach((digit, i) => {
+                            if (codeInputs[i]) {
+                                codeInputs[i].value = digit;
+                            }
+                        });
+                        if (codeInputs[pastedData.length]) {
+                            codeInputs[pastedData.length].focus();
+                        }
+                    }
+                });
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                if (code.length !== 6) {
+                    showNotification(translationManager.translate('verify-invalid-code'), 'error');
+                    return;
+                }
+
+                const submitButton = form.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                
+                try {
+                    submitButton.disabled = true;
+                    submitButton.textContent = translationManager.translate('verify-verifying');
+                    
+                    // Simulate verification
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                    
+                    showNotification(translationManager.translate('verify-success'), 'success');
+                    
+                    // Redirect to next page
+                    setTimeout(() => {
+                        window.location.href = 'complete_profile.html';
+                    }, 2000);
+                } catch (error) {
+                    showNotification(translationManager.translate('verify-error'), 'error');
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            });
+
+            // Handle resend code
+            resendBtn.addEventListener('click', async function() {
+                try {
+                    this.disabled = true;
+                    this.textContent = translationManager.translate('verify-sending');
+                    
+                    // Simulate sending new code
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    showNotification(translationManager.translate('verify-code-sent'), 'success');
+                    
+                    // Reset timer
+                    timeLeft = 300;
+                    startTimer();
+                } catch (error) {
+                    showNotification(translationManager.translate('verify-resend-error'), 'error');
+                } finally {
+                    this.disabled = true;
+                    this.textContent = translationManager.translate('verify-resend');
+                }
+            });
+
+            // Handle cancel button
+            form.querySelector('button[data-i18n="verify-cancel"]').addEventListener('click', function() {
+                if (confirm(translationManager.translate('verify-cancel-confirm'))) {
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Start timer function
+            function startTimer() {
+                clearInterval(timerInterval);
+                updateTimerDisplay();
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        resendBtn.disabled = false;
+                    }
+                }, 1000);
+            }
+
+            // Update timer display
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerSpan.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+
+            // Show notification
+            function showNotification(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
+            }
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Settings" data-i18n="meta-description">
+    <title data-i18n="page-title">Settings - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="../styles/styles.css">
+    <style>
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F4F4F4;
+            --text-color: #15161E;
+            --secondary-text-color: #6B7280;
+            --card-background: #FFFFFF;
+            --border-color: #E5E7EB;
+            --button-color: #3B82F6;
+            --button-text-color: #FFFFFF;
+            --header-bg: linear-gradient(90deg, #22c55e, #a855f7);
+            --header-text-color: #ffffff;
+            --footer-bg: #1f2937;
+            --footer-text: #9ca3af;
+        }
+
+        body.dark-mode {
+            --background-color: #15161E;
+            --text-color: #F4F4F4;
+            --secondary-text-color: #9CA3AF;
+            --card-background: #1F2937;
+            --border-color: #374151;
+            --button-color: #2563EB;
+            --button-text-color: #FFFFFF;
+            --header-bg: linear-gradient(90deg, #4B5563, #1F2937);
+            --header-text-color: #F4F4F4;
+            --footer-bg: #111827;
+            --footer-text: #6B7280;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Lexend', sans-serif;
+            margin: 0;
+            padding: 70px 0;
+        }
+
+        .main-nav {
+            background: var(--header-bg);
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--header-text-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--header-text-color);
+            font-weight: 500;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 32px; /* Reduced width */
+            height: 32px; /* Reduced height */
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #profilePictureInput {
+            display: none;
+        }
+
+        .btn-outline {
+            text-decoration: none;
+            color: var(--header-text-color);
+            border: 2px solid var(--header-text-color);
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-header .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-header .profile-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-header .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-header .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .profile-header .profile-username {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .profile-header .profile-email {
+            font-size: 16px;
+            color: white;
+        }
+
+        .menu {
+            margin-top: 40px;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(0, 150, 138, 0.1);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .menu-item span {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .menu-item i {
+            color: var(--secondary-text-color);
+            font-size: 24px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: var(--button-color);
+            color: var(--button-text-color);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+        }
+
+        .button:hover {
+            background-color: #2563EB;
+            transform: translateY(-2px);
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="settings.html" class="nav-link active" data-i18n="nav-settings">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture" data-i18n="profile-picture-alt">
+                    <input type="file" id="profilePictureInput" accept="image/*" data-i18n="profile-picture-input-alt">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/logout.html" class="btn-outline" data-i18n="logout">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">
+                <img src="../assets/images/avatar.png" alt="Profile Picture" id="profileAvatarImg" data-i18n="profile-avatar-img-alt">
+                <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" data-i18n="profile-avatar-input-alt">
+            </div>
+            <div class="profile-name">Andrew Smith</div>
+            <div class="profile-username">@andrewsmith</div>
+            <div class="profile-email">andrew.smith@example.com</div>
+        </div>
+
+        <div class="menu">
+            <div class="menu-item" onclick="window.location.href='complete_profile.html'" data-i18n="edit-profile">
+                <span>Edit Profile</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
+            <div class="menu-item" onclick="window.location.href='forgot-password.html'" data-i18n="change-password">
+                <span>Change Password</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
+            <div class="menu-item" onclick="window.location.href='notifications settings.html'" data-i18n="notification-settings">
+                <span>Notification Settings</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
+            <div class="menu-item" onclick="window.location.href='budgetbegin.html'" data-i18n="tutorial">
+                <span>Tutorial</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
+            <div class="menu-item" onclick="window.location.href='domainmodels.html'" data-i18n="privacy-policy">
+                <span>Privacy Policy</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="button" id="darkModeToggle" data-i18n="dark-mode-toggle">Dark Mode</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2024 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+    <script>
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        const profileAvatar = document.getElementById('profileAvatar');
+        const profileAvatarImg = document.getElementById('profileAvatarImg');
+        const profileAvatarInput = document.getElementById('profileAvatarInput');
+
+        // Make the profile avatar clickable
+        profileAvatar.addEventListener('click', () => {
+            window.location.href = 'pictures_profile.html';
+        });
+
+        // Disable file upload functionality for the profile picture
+        profileAvatarInput.style.display = 'none'; // Ensure the file input is hidden
+
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Apply dark mode from localStorage on page load
+        if (localStorage.getItem('darkMode') === 'enabled') {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'Light Mode';
+        } else {
+            darkModeToggle.textContent = 'Dark Mode';
+        }
+
+        // Toggle dark mode on button click and sync across app
+        darkModeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('darkMode', 'enabled');
+                darkModeToggle.textContent = 'Light Mode';
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+                darkModeToggle.textContent = 'Dark Mode';
+            }
+        });
+
+        // Example: Replace with actual API call or backend data
+        const profileData = {
+            name: "Andrew Smith",
+            username: "andrewsmith",
+            email: "andrew.smith@example.com"
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Update profile info fields dynamically
+            const nameElem = document.querySelector('.profile-header .profile-name');
+            const usernameElem = document.querySelector('.profile-header .profile-username');
+            const emailElem = document.querySelector('.profile-header .profile-email');
+
+            if (nameElem) nameElem.textContent = profileData.name;
+            if (usernameElem) usernameElem.textContent = `@${profileData.username}`;
+            if (emailElem) emailElem.textContent = profileData.email;
+
+            const headerProfilePicture = document.getElementById('profilePicture'); // Header profile picture
+            const mainProfilePicture = document.getElementById('profileAvatarImg'); // Main content profile picture
+            const profilePictureInput = document.getElementById('profilePictureInput'); // File input for profile picture
+
+            // Make the header profile picture clickable
+            headerProfilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Update both the header and main content profile pictures
+                        headerProfilePicture.src = e.target.result;
+                        mainProfilePicture.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Ensure the main profile picture matches the header profile picture on page load
+            mainProfilePicture.src = headerProfilePicture.src;
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle form submissions with translations
+            const forms = document.querySelectorAll('.settings-form');
+            forms.forEach(form => {
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const formId = this.id;
+                    const submitButton = this.querySelector('button[type="submit"]');
+                    const originalText = submitButton.textContent;
+                    
+                    try {
+                        submitButton.disabled = true;
+                        submitButton.textContent = translationManager.translations['settings-saving'] || 'Saving...';
+                        
+                        // Simulate API call
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                        
+                        // Show success message
+                        const successMessage = document.createElement('div');
+                        successMessage.className = 'alert alert-success';
+                        successMessage.textContent = translationManager.translations['settings-save-success'] || 'Settings saved successfully!';
+                        this.insertBefore(successMessage, submitButton);
+                        
+                        setTimeout(() => {
+                            successMessage.remove();
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalText;
+                        }, 3000);
+                    } catch (error) {
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'alert alert-error';
+                        errorMessage.textContent = translationManager.translations['settings-save-error'] || 'Error saving settings. Please try again.';
+                        this.insertBefore(errorMessage, submitButton);
+                        
+                        setTimeout(() => {
+                            errorMessage.remove();
+                            submitButton.disabled = false;
+                            submitButton.textContent = originalText;
+                        }, 3000);
+                    }
+                });
+            });
+
+            // Handle danger zone actions
+            document.getElementById('exportData').addEventListener('click', function() {
+                if (confirm(translationManager.translations['settings-export-confirm'] || 'Are you sure you want to export all your data?')) {
+                    // Handle data export
+                    alert(translationManager.translations['settings-export-success'] || 'Your data export has started. You will receive an email when it\'s ready.');
+                }
+            });
+
+            document.getElementById('deleteAccount').addEventListener('click', function() {
+                if (confirm(translationManager.translations['settings-delete-confirm'] || 'Are you sure you want to delete your account? This action cannot be undone.')) {
+                    // Handle account deletion
+                    alert(translationManager.translations['settings-delete-success'] || 'Your account deletion request has been submitted. You will receive an email with further instructions.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

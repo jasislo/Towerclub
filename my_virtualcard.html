@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="My Virtual Card – TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">My Virtual Card – TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lexend', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+            transform: scale(1.1); /* Slightly enlarge the profile picture */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn {
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+            transition: background-color 0.3s, color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+        }
+
+        /* Hover Effect for Buttons */
+        .btn:hover {
+            transform: scale(1.05); /* Slightly enlarge the button */
+            background-color: #22c55e; /* Change background color on hover */
+            color: #ffffff; /* Change text color on hover */
+        }
+
+        /* Outline Button Specific Styles */
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        /* General container adjustments for vertical view */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px; /* Adjust for fixed header */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Add spacing between sections */
+        }
+
+        /* Ensure quick-service and income-spending sections stack vertically on smaller screens */
+        @media (max-width: 768px) {
+            .card-container,
+            .quick-service,
+            .income-spending {
+                flex-direction: column; /* Stack items vertically */
+                gap: 15px; /* Add spacing between stacked items */
+            }
+
+            .info-card,
+            .service-card {
+                width: 100%; /* Make cards full width */
+            }
+
+            .transactions {
+                max-height: 200px; /* Reduce height for smaller screens */
+            }
+        }
+
+        /* Ensure the card-container is centered and responsive */
+        .card-container {
+            background: linear-gradient(135deg, #22c55e, #a855f7);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 100%; /* Allow full width on smaller screens */
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .card-header img {
+            width: 80px;
+            margin-bottom: 15px;
+        }
+
+        .card-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .card-number {
+            font-size: 1.25rem;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .card-details {
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .card-details span {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #15161E;
+            margin: 20px 0 10px;
+        }
+
+        .info-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            flex: 1; /* Ensure both cards take equal width */
+        }
+
+        .info-card h4 {
+            font-size: 1rem;
+            color: #606A85;
+            margin-bottom: 10px;
+        }
+
+        .info-card .amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .info-card .positive {
+            color: #22c55e;
+        }
+
+        .info-card .negative {
+            color: #f06a6a;
+        }
+
+        .quick-service {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .service-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 48%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Make the card clickable */
+            transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effect */
+        }
+
+        .service-card:hover {
+            transform: scale(1.05); /* Slightly enlarge the card on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Add a deeper shadow on hover */
+            background-color: #f0f0f0; /* Optional: Change background color on hover */
+        }
+
+        .service-card i {
+            font-size: 2rem;
+            color: #606A85;
+            margin-bottom: 10px;
+        }
+
+        .service-card div {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #15161E;
+        }
+
+        .transactions {
+            margin-top: 20px;
+            overflow-y: auto; /* Enable vertical scrolling for transactions */
+            max-height: 300px; /* Limit height for better vertical view */
+        }
+
+        .transaction-item {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Adjust transaction items for smaller screens */
+        .transaction-item {
+            flex-direction: column; /* Stack details and amount vertically */
+            align-items: flex-start;
+        }
+
+        .transaction-item .details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-item .details span {
+            font-size: 0.9rem;
+            color: #606A85;
+        }
+
+        .transaction-item .amount {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .transaction-item .positive {
+            color: #22c55e;
+        }
+
+        .transaction-item .negative {
+            color: #f06a6a;
+        }
+
+        /* Footer Styles */
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* General styles for income and spending cards */
+        .income-spending {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            gap: 15px; /* Add spacing between the cards */
+        }
+
+        .income-spending .service-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 48%; /* Match the width of quick-service cards */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Make the cards clickable */
+            transition: transform 0.2s, box-shadow 0.2s; /* Smooth hover effect */
+        }
+
+        .income-spending .service-card:hover {
+            transform: scale(1.05); /* Slightly enlarge the card on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Add a deeper shadow on hover */
+        }
+
+        .income-spending .service-card h4 {
+            font-size: 1rem;
+            color: #606A85;
+            margin-bottom: 10px;
+        }
+
+        .income-spending .service-card .amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .income-spending .income-card .amount {
+            color: #22c55e; /* Green for income */
+        }
+
+        .income-spending .spending-card .amount {
+            color: #f06a6a; /* Red for spending */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Virtual Card Section -->
+        <div class="card-container">
+            <div class="card-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" class="visa-logo">
+            </div>
+            <div class="card-content">
+                <h3 data-i18n="virtual-card-title">My Towerclub Virtual Card</h3>
+                <div class="card-number">**** **** **** 0250</div>
+                <div class="card-details">
+                    <span data-i18n="card-exp">Expiry: 06/25</span>
+                    <span>Cardholder: Andrew Smith</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income and Spending Section -->
+        <div class="section-title">Income and Spending</div>
+        <div class="quick-service">
+            <div class="service-card income-card">
+                <h4>Income</h4>
+                <div class="amount positive">+$12,402</div>
+            </div>
+            <div class="service-card spending-card">
+                <h4>Spending</h4>
+                <div class="amount negative">-$8,392</div>
+            </div>
+        </div>
+
+        <!-- Quick Service Section -->
+        <div class="section-title">Quick Service</div>
+        <div class="quick-service">
+            <div class="service-card" onclick="window.location.href='edittransaction.html'">
+                <i class="material-icons">swap_horiz</i>
+                <div data-i18n="action-transfer">Transfer</div>
+            </div>
+            <div class="service-card" onclick="window.location.href='my_card.html'">
+                <i class="material-icons">add_card</i>
+                <div data-i18n="action-change-card">Change Card</div>
+            </div>
+        </div>
+
+        <!-- Transactions Section -->
+        <div class="section-title">Transactions</div>
+        <div class="transactions">
+            <div id="transactions-list" style="overflow-y: auto; max-height: 300px;">
+                <!-- Transactions will be populated here -->
+            </div>
+
+            <!-- Income and Spending Section -->
+            <div class="income-spending">
+                <div class="info-card">
+                    <h4>Income</h4>
+                    <div class="amount positive">+$0.00</div>
+                </div>
+                <div class="info-card">
+                    <h4>Spending</h4>
+                    <div class="amount negative">-$0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
+    </script>
+    <script>
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+
+        // Make the profile picture clickable
+        profilePicture.addEventListener('click', () => {
+            profilePictureInput.click();
+        });
+
+        // Handle the file input change event
+        profilePictureInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    profilePicture.src = e.target.result; // Update the profile picture preview
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const transactions = await fetchRecentTransactions();
+
+                const transactionsContainer = document.querySelector('.transactions');
+                transactionsContainer.innerHTML = ''; // Clear existing transactions
+
+                transactions.forEach(transaction => {
+                    const transactionItem = document.createElement('div');
+                    transactionItem.classList.add('transaction-item');
+                    transactionItem.innerHTML = `
+                        <div class="details">
+                            <span>${transaction.description}</span>
+                            <span>${transaction.type}</span>
+                        </div>
+                        <div class="amount ${transaction.amount < 0 ? 'negative' : 'positive'}">
+                            ${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount)}
+                        </div>
+                    `;
+                    transactionsContainer.appendChild(transactionItem);
+                });
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const balanceData = await fetchAccountBalance();
+                document.querySelector('.info-card .positive').textContent = `+$${balanceData.income}`;
+                document.querySelector('.info-card .negative').textContent = `-$${balanceData.spending}`;
+            } catch (error) {
+                console.error('Error fetching account balance:', error);
+            }
+        });
+
+        async function logActivity(transactionId, description) {
+            try {
+                await logTransactionActivity(transactionId, {
+                    description,
+                    type: 'transaction',
+                    timestamp: new Date().toISOString(),
+                });
+                console.log('Activity logged successfully');
+            } catch (error) {
+                console.error('Error logging activity:', error);
+            }
+        }
+
+        document.querySelector('#makeTransactionButton').addEventListener('click', async () => {
+            const transactionData = {
+                amount: 100, // Example amount
+                recipient: 'John Doe', // Example recipient
+            };
+
+            try {
+                const transactionResponse = await makeTransaction(transactionData);
+                console.log('Transaction successful:', transactionResponse);
+
+                // Log the activity
+                await logActivity(transactionResponse.id, `Transaction of $${transactionData.amount} to ${transactionData.recipient}`);
+
+                // Optionally update the UI
+                alert('Transaction completed and activity logged!');
+            } catch (error) {
+                console.error('Error processing transaction:', error);
+                alert('Failed to complete the transaction.');
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const cryptoData = await getCryptoData();
+
+                document.getElementById('btcPrice').textContent = `$${cryptoData.bitcoin.usd.toFixed(2)}`;
+                document.getElementById('ethPrice').textContent = `$${cryptoData.ethereum.usd.toFixed(2)}`;
+                document.getElementById('ltcPrice').textContent = `$${cryptoData.litecoin.usd.toFixed(2)}`;
+            } catch (error) {
+                console.error('Error fetching cryptocurrency data:', error);
+            }
+        });
+
+        // Handle the charge form submission
+        document.getElementById('chargeForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent the default form submission
+
+            const amount = document.getElementById('chargeAmount').value;
+            const description = document.getElementById('chargeDescription').value;
+
+            try {
+                // Call your API or function to create the charge
+                const response = await createCharge({ amount, description });
+
+                // Optionally, you can log this activity as well
+                await logActivity(response.id, `Charge of $${amount} created`);
+
+                alert('Charge created successfully!');
+                // Optionally, refresh the transactions or perform other UI updates
+            } catch (error) {
+                console.error('Error creating charge:', error);
+                alert('Failed to create charge.');
+            }
+        });
+    </script>
+</body>
+</html>

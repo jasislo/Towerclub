@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage Your Payment Methods - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Payment Methods - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <style>
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --positive-color: #39D2C0;
+            --negative-color: #F06A6A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient on hover */
+            color: #ffffff; /* White text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-image:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .upload-overlay span {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            padding-top: 100px; /* Adjust for fixed header */
+            flex: 1;
+        }
+
+        .app-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-button .material-icons {
+            font-size: 24px;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .card-container {
+            margin-bottom: 20px;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .card-logo {
+            height: 14px;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: var(--card-background);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .amount {
+            font-size: 32px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .amount.positive {
+            color: var(--positive-color);
+        }
+
+        .amount.negative {
+            color: var(--negative-color);
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .trend-indicator.positive {
+            background-color: rgba(57, 210, 192, 0.3);
+            color: var(--positive-color);
+        }
+
+        .trend-indicator.negative {
+            background-color: rgba(240, 106, 106, 0.3);
+            color: var(--negative-color);
+        }
+
+        .quick-services {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 16px 16px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .quick-services h2 {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .service-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .service-btn {
+            background-color: var(--background-color);
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .service-btn:hover {
+            background-color: #E0E0E0;
+        }
+
+        .service-btn .material-icons {
+            font-size: 40px;
+        }
+
+        .transactions {
+            background-color: var(--card-background);
+            padding: 20px;
+        }
+
+        .transactions h2 {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background-color: var(--background-color);
+        }
+
+        .transaction-icon {
+            background-color: rgba(57, 210, 192, 0.4);
+            border-radius: 50%;
+            padding: 8px;
+            margin-right: 12px;
+        }
+
+        .transaction-icon .material-icons {
+            color: var(--positive-color);
+        }
+
+        .transaction-details {
+            flex-grow: 1;
+        }
+
+        .transaction-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .transaction-type {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            text-align: right;
+            color: var(--positive-color);
+            font-weight: 500;
+        }
+
+        .transaction-time {
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        .fab .material-icons {
+            font-size: 24px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-container, .stats-container, .quick-services, .transactions {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stats-container {
+            animation-delay: 0.1s;
+        }
+
+        .quick-services {
+            animation-delay: 0.2s;
+        }
+
+        .transactions {
+            animation-delay: 0.3s;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .paypal-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-paypal {
+            background: #ffc439;
+            color: #111827;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-paypal:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .service-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .service-card:hover {
+            background-color: #E0E0E0;
+        }
+
+        .service-card .material-icons {
+            font-size: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <div class="profile-image" id="profileImage">
+                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile" id="profileImg">
+                        <div class="upload-overlay">
+                            <span data-i18n="upload-overlay-text">Click to upload photo</span>
+                        </div>
+                    </div>
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="logout.html" class="btn btn-outline">Logout</a>
+                <select id="languageSelect" class="language-select" aria-label="Select Language">
+                    <option value="en" data-i18n="lang-en">English</option>
+                    <option value="es" data-i18n="lang-es">Español</option>
+                    <option value="fr" data-i18n="lang-fr">Français</option>
+                    <option value="zh" data-i18n="lang-zh">中文</option>
+                    <option value="ar" data-i18n="lang-ar">العربية</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-container">
+        <header class="app-header">
+            <button class="back-button" onclick="handleBack()">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <h1 data-i18n="payment-methods-title">Payment Methods</h1>
+        </header>
+
+        <main>
+            <div class="card-container">
+                <div class="credit-card">
+                    <div class="card-header">
+                        <img src="assets/visa.png" alt="Visa" class="card-logo">
+                    </div>
+                    <div class="card-details">
+                        <span class="card-number">**** 0250</span>
+                        <span class="card-expiry">06/25</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3>Money cashed out</h3>
+                    <p class="amount positive">+$12,402</p>
+                    <div class="trend-indicator positive">
+                        <span>4.5%</span>
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <h3>Spending</h3>
+                    <p class="amount negative">-$8,392</p>
+                    <div class="trend-indicator negative">
+                        <span>4.5%</span>
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-services">
+                <h2>Quick Service</h2>
+                <div class="service-buttons">
+                    <button class="service-btn" onclick="handleTransfer()">
+                        <span class="material-icons">swap_horiz</span>
+                        <span data-i18n="quick-service-transfer">Transfer</span>
+                    </button>
+                    <button class="service-btn" onclick="window.location.href='my_card.html'">
+                        <span class="material-icons">add_card</span>
+                        <span data-i18n="quick-service-change-card">Change Card</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="transactions">
+                <h2>Transactions</h2>
+                <div id="transactions-list">
+                    <!-- Transactions will be populated here -->
+                </div>
+            </div>
+
+            <div class="paypal-login">
+                <button class="btn-paypal" onclick="loginWithPayPal()">Login with PayPal</button>
+            </div>
+        </main>
+
+        <button class="fab" onclick="handleAddTransaction()">
+            <span class="material-icons">add</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample transaction data
+        const transactions = [
+            {
+                name: 'Salary Deposit',
+                type: 'Income',
+                amount: '+$2,500',
+                time: '2 hours ago'
+            },
+            {
+                name: 'Grocery Shopping',
+                type: 'Expense',
+                amount: '-$120',
+                time: '5 hours ago'
+            },
+            {
+                name: 'Electric Bill',
+                type: 'Expense',
+                amount: '-$85',
+                time: '1 day ago'
+            }
+        ];
+
+        // Function to format relative time
+        function formatRelativeTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (minutes < 60) {
+                return `${minutes} minutes ago`;
+            } else if (hours < 24) {
+                return `${hours} hours ago`;
+            } else {
+                return `${days} days ago`;
+            }
+        }
+
+        // Function to create transaction item
+        function createTransactionItem(transaction) {
+            const transactionElement = document.createElement('div');
+            transactionElement.className = 'transaction-item';
+            transactionElement.innerHTML = `
+                <div class="transaction-icon">
+                    <span class="material-icons">monetization_on</span>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-name">${transaction.name}</div>
+                    <div class="transaction-type">${transaction.type}</div>
+                </div>
+                <div class="transaction-info">
+                    <div class="transaction-amount">${transaction.amount}</div>
+                    <div class="transaction-time">${transaction.time}</div>
+                </div>
+            `;
+            return transactionElement;
+        }
+
+        // Function to populate transactions
+        function populateTransactions() {
+            const transactionsList = document.getElementById('transactions-list');
+            transactionsList.innerHTML = '';
+
+            if (transactions.length === 0) {
+                transactionsList.innerHTML = `
+                    <div class="no-transactions">
+                        <img src="assets/no-transactions.png" alt="No transactions" style="width: 230px; height: 300px;">
+                    </div>
+                `;
+                return;
+            }
+
+            transactions.forEach(transaction => {
+                const transactionElement = createTransactionItem(transaction);
+                transactionsList.appendChild(transactionElement);
+            });
+        }
+
+        // Event handlers
+        function handleBack() {
+            window.history.back();
+        }
+
+        function handleTransfer() {
+            // Redirect to edittransaction.html
+            window.location.href = 'edittransaction.html';
+        }
+
+        function handleChangeCard() {
+            // Implement change card functionality
+            console.log('Change card clicked');
+        }
+
+        function handleAddTransaction() {
+            // Implement add transaction functionality
+            console.log('Add transaction clicked');
+        }
+
+        function loginWithPayPal() {
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTransactions();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            const profileImg = document.getElementById('profileImg');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Handle profile image click
+            profileImage.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle file selection
+            profilePictureInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImg.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Fetch and display payment method from API
+        async function fetchPaymentMethod() {
+            try {
+                const response = await fetch('/api/payment-method');
+                if (!response.ok) throw new Error('Failed to fetch payment method');
+                const data = await response.json();
+
+                const paymentMethodContainer = document.querySelector('.card-container');
+                if (data.method === 'creditCard' && data.cardDetails) {
+                    paymentMethodContainer.innerHTML = `
+                        <div class="credit-card">
+                            <div class="card-header">
+                                <img src="assets/${data.cardDetails.type.toLowerCase()}.png" alt="${data.cardDetails.type}" class="card-logo">
+                            </div>
+                            <div class="card-details">
+                                <span class="card-number">${data.cardDetails.number}</span>
+                                <span class="card-expiry">${data.cardDetails.expiry}</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (data.method === 'paypal') {
+                    paymentMethodContainer.innerHTML = `
+                        <div class="paypal-method">
+                            <h3>PayPal</h3>
+                            <p>You've selected PayPal as your payment method.</p>
+                        </div>
+                    `;
+                } else {
+                    paymentMethodContainer.innerHTML = `
+                        <p>No payment method selected. Please go to the onboarding page to select a payment method.</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error fetching payment method:', error);
+            }
+        }
+
+        // Fetch and display transactions from API
+        async function fetchTransactions() {
+            try {
+                const response = await fetch('/api/transactions');
+                if (!response.ok) throw new Error('Failed to fetch transactions');
+                const transactions = await response.json();
+
+                const transactionsList = document.getElementById('transactions-list');
+                transactionsList.innerHTML = '';
+
+                if (transactions.length === 0) {
+                    transactionsList.innerHTML = `
+                        <div class="no-transactions">
+                            <p>No transactions found.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const transactionElement = document.createElement('div');
+                    transactionElement.className = 'transaction-item';
+                    transactionElement.innerHTML = `
+                        <div class="transaction-icon">
+                            <span class="material-icons">monetization_on</span>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">${transaction.name}</div>
+                            <div class="transaction-type">${transaction.type}</div>
+                        </div>
+                        <div class="transaction-info">
+                            <div class="transaction-amount">${transaction.amount}</div>
+                            <div class="transaction-time">${new Date(transaction.timestamp).toLocaleString()}</div>
+                        </div>
+                    `;
+                    transactionsList.appendChild(transactionElement);
+                });
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        }
+
+        // Fetch and display stats from API
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/stats');
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                const stats = await response.json();
+
+                // Example: update stats in the DOM
+                document.querySelector('.stats-container .stat-box:nth-child(1) .amount').textContent = stats.moneyCashedOut;
+                document.querySelector('.stats-container .stat-box:nth-child(2) .amount').textContent = stats.spending;
+                // Add more as needed
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch and display user profile info from API (for profile picture, etc.)
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const profile = await response.json();
+
+                // Example: update profile picture
+                const profileImg = document.getElementById('profileImg');
+                if (profileImg && profile.profilePictureUrl) {
+                    profileImg.src = profile.profilePictureUrl;
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPaymentMethod();
+            fetchTransactions();
+            fetchStats();
+            fetchUserProfile();
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+</body>
+</html>
