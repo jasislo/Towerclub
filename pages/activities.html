@@ -338,6 +338,113 @@ header p {
     font-size: 1.2rem;
     color: #666666;
 }
+
+/* Cancel Button Styles */
+.cancel-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.cancel-btn:hover {
+    background-color: #cc0000;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 400px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.modal-body {
+    margin-bottom: 20px;
+}
+
+.modal-body p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.modal-btn.confirm {
+    background-color: #ff4444;
+    color: white;
+}
+
+.modal-btn.confirm:hover {
+    background-color: #cc0000;
+}
+
+.modal-btn.cancel {
+    background-color: #6c757d;
+    color: white;
+}
+
+.modal-btn.cancel:hover {
+    background-color: #545b62;
+}
     </style>
     <!-- Add translation manager script -->
     <script type="module">
@@ -382,7 +489,7 @@ header p {
         </header>
 
         <section id="activity-summary" class="data-section">
-            <h2>Activity Summary</h2>
+            <h2>Activities Summary</h2>
             <div class="summary-cards">
                 <div class="card">
                     <h3 data-i18n="activities-total-income">Total Income</h3>
@@ -422,6 +529,7 @@ header p {
                             <th>Category</th>
                             <th>Description</th>
                             <th>Amount</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -431,6 +539,7 @@ header p {
                             <td>Food</td>
                             <td>Grocery Shopping</td>
                             <td>-$50.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Grocery Shopping', '-$50.00', '2024-07-28')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-27</td>
@@ -438,13 +547,15 @@ header p {
                             <td>Salary</td>
                             <td>Paycheck</td>
                             <td>$2000.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Paycheck', '$2000.00', '2024-07-27')">Cancel</button></td>
                         </tr>
-<tr>
-<td>2024-07-26</td>
+                        <tr>
+                            <td>2024-07-26</td>
                             <td>Expense</td>
                             <td>Utilities</td>
                             <td>Electricity Bill</td>
                             <td>-$75.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Electricity Bill', '-$75.00', '2024-07-26')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-25</td>
@@ -452,6 +563,7 @@ header p {
                             <td>Transportation</td>
                             <td>Gasoline</td>
                             <td>-$30.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Gasoline', '-$30.00', '2024-07-25')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-24</td>
@@ -459,6 +571,7 @@ header p {
                             <td>Investment</td>
                             <td>Stock Sale</td>
                             <td>$500.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Stock Sale', '$500.00', '2024-07-24')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-23</td>
@@ -466,6 +579,7 @@ header p {
                             <td>Entertainment</td>
                             <td>Movie Tickets</td>
                             <td>-$20.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Movie Tickets', '-$20.00', '2024-07-23')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-22</td>
@@ -473,6 +587,7 @@ header p {
                             <td>Housing</td>
                             <td>Rent</td>
                             <td>-$1200.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Rent', '-$1200.00', '2024-07-22')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-21</td>
@@ -480,6 +595,7 @@ header p {
                             <td>Freelance</td>
                             <td>Web Design Project</td>
                             <td>$300.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Web Design Project', '$300.00', '2024-07-21')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-20</td>
@@ -487,6 +603,7 @@ header p {
                             <td>Dining</td>
                             <td>Restaurant</td>
                             <td>-$40.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('Restaurant', '-$40.00', '2024-07-20')">Cancel</button></td>
                         </tr>
                         <tr>
                             <td>2024-07-19</td>
@@ -494,62 +611,7 @@ header p {
                             <td>Clothing</td>
                             <td>New Shoes</td>
                             <td>-$80.00</td>
-                        </tr>
-<tr>
-<td>2024-07-26</td>
-                            <td>Expense</td>
-                            <td>Utilities</td>
-                            <td>Electricity Bill</td>
-                            <td>-$75.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-25</td>
-                            <td>Expense</td>
-                            <td>Transportation</td>
-                            <td>Gasoline</td>
-                            <td>-$30.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-24</td>
-                            <td>Income</td>
-                            <td>Investment</td>
-                            <td>Stock Sale</td>
-                            <td>$500.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-23</td>
-                            <td>Expense</td>
-                            <td>Entertainment</td>
-                            <td>Movie Tickets</td>
-                            <td>-$20.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-22</td>
-                            <td>Expense</td>
-                            <td>Housing</td>
-                            <td>Rent</td>
-                            <td>-$1200.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-21</td>
-                            <td>Income</td>
-                            <td>Freelance</td>
-                            <td>Web Design Project</td>
-                            <td>$300.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-20</td>
-                            <td>Expense</td>
-                            <td>Dining</td>
-                            <td>Restaurant</td>
-                            <td>-$40.00</td>
-                        </tr>
-                        <tr>
-                            <td>2024-07-19</td>
-                            <td>Expense</td>
-                            <td>Clothing</td>
-                            <td>New Shoes</td>
-                            <td>-$80.00</td>
+                            <td><button class="cancel-btn" onclick="showCancelModal('New Shoes', '-$80.00', '2024-07-19')">Cancel</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -569,6 +631,27 @@ header p {
                 <canvas id="expense-chart"></canvas>
             </div>
         </section>
+    </div>
+
+    <!-- Cancel Transaction Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Cancel Transaction</h3>
+                <span class="close" onclick="closeCancelModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to cancel this transaction?</p>
+                <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+                <p><strong>Amount:</strong> <span id="modalAmount"></span></p>
+                <p><strong>Date:</strong> <span id="modalDate"></span></p>
+                <p style="color: #ff4444; font-weight: 600;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeCancelModal()">No, Keep It</button>
+                <button class="modal-btn confirm" onclick="confirmCancelTransaction()">Yes, Cancel Transaction</button>
+            </div>
+        </div>
     </div>
 
     <footer class="main-footer">
@@ -630,6 +713,76 @@ header p {
 
     <script type="module">
         import { requireAuth, handleLogout } from '/scripts/auth-utils.js';
+
+        // Global variables for modal
+        let currentTransactionData = null;
+
+        // Show cancel modal
+        window.showCancelModal = function(description, amount, date) {
+            currentTransactionData = { description, amount, date };
+            document.getElementById('modalDescription').textContent = description;
+            document.getElementById('modalAmount').textContent = amount;
+            document.getElementById('modalDate').textContent = date;
+            document.getElementById('cancelModal').style.display = 'block';
+        };
+
+        // Close cancel modal
+        window.closeCancelModal = function() {
+            document.getElementById('cancelModal').style.display = 'none';
+            currentTransactionData = null;
+        };
+
+        // Confirm transaction cancellation
+        window.confirmCancelTransaction = function() {
+            if (currentTransactionData) {
+                // Here you would typically make an API call to cancel the transaction
+                // For now, we'll just show a success message and remove the row from the table
+                
+                // Find and remove the transaction row
+                const table = document.getElementById('transaction-table');
+                const rows = table.getElementsByTagName('tr');
+                
+                for (let i = 1; i < rows.length; i++) { // Start from 1 to skip header
+                    const cells = rows[i].getElementsByTagName('td');
+                    if (cells.length >= 4) {
+                        const rowDescription = cells[3].textContent;
+                        const rowAmount = cells[4].textContent;
+                        const rowDate = cells[0].textContent;
+                        
+                        if (rowDescription === currentTransactionData.description && 
+                            rowAmount === currentTransactionData.amount && 
+                            rowDate === currentTransactionData.date) {
+                            rows[i].remove();
+                            break;
+                        }
+                    }
+                }
+                
+                // Show success message
+                alert(`Transaction "${currentTransactionData.description}" has been cancelled successfully.`);
+                
+                // Close modal
+                closeCancelModal();
+                
+                // Update summary (you would recalculate totals here)
+                updateTransactionSummary();
+            }
+        };
+
+        // Update transaction summary after cancellation
+        function updateTransactionSummary() {
+            // This function would recalculate totals after a transaction is cancelled
+            // For now, we'll just log that it should be updated
+            console.log('Transaction summary should be updated');
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('cancelModal');
+            if (event.target === modal) {
+                closeCancelModal();
+            }
+        };
 
         // Check authentication on page load
         document.addEventListener('DOMContentLoaded', function() {

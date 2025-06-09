@@ -204,8 +204,8 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #ccc;
             margin-right: 12px;
+            overflow: hidden;
         }
 
         .chat-info {
@@ -216,6 +216,13 @@
             font-weight: 600;
             color: var(--text-color);
             margin-bottom: 4px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .chat-name:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
         }
 
         .chat-message {
@@ -238,6 +245,12 @@
             font-size: 18px;
             font-weight: 600;
             text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .chat-interface-header:hover {
+            background-color: #357ABD;
         }
 
         .chat-messages {
@@ -460,24 +473,30 @@
                 <a href="Chatssection.html" class="chat-list-header">
                     Messages
                 </a>
-                <div class="chat-item">
-                    <div class="chat-avatar"></div>
+                <div class="chat-item" onclick="updateChatInterface('John Doe')">
+                    <div class="chat-avatar">
+                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
                     <div class="chat-info">
-                        <p class="chat-name">John Doe</p>
+                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('John Doe')">John Doe</p>
                         <p class="chat-message">Hey, how are you?</p>
                     </div>
                 </div>
-                <div class="chat-item">
-                    <div class="chat-avatar"></div>
+                <div class="chat-item" onclick="updateChatInterface('Jane Smith')">
+                    <div class="chat-avatar">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
                     <div class="chat-info">
-                        <p class="chat-name">Jane Smith</p>
+                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('Jane Smith')">Jane Smith</p>
                         <p class="chat-message">Let's catch up later!</p>
                     </div>
                 </div>
-                <div class="chat-item">
-                    <div class="chat-avatar"></div>
+                <div class="chat-item" onclick="updateChatInterface('Mike Johnson')">
+                    <div class="chat-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                    </div>
                     <div class="chat-info">
-                        <p class="chat-name">Mike Johnson</p>
+                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('Mike Johnson')">Mike Johnson</p>
                         <p class="chat-message">Got it, thanks!</p>
                     </div>
                 </div>
@@ -485,7 +504,7 @@
 
             <!-- Chat Interface -->
             <div class="chat-interface">
-                <div class="chat-interface-header">John Doe</div>
+                <div class="chat-interface-header" onclick="redirectToProfile('John Doe')">John Doe</div>
                 <div class="chat-messages">
                     <div class="message received">
                         <div class="message-content">Hey, how are you?</div>
@@ -652,6 +671,20 @@
         // Redirect to crypto.html with the selected cryptocurrency as a query parameter
         function redirectToCrypto(crypto) {
             window.location.href = `crypto.html?currency=${crypto}`;
+        }
+
+        // Redirect to user's profile page
+        function redirectToProfile(userName) {
+            // Convert the user name to a URL-friendly format
+            const profileUrl = userName.toLowerCase().replace(/\s+/g, '_') + '_profile.html';
+            window.location.href = profileUrl;
+        }
+
+        // Update chat interface when a chat item is clicked
+        function updateChatInterface(userName) {
+            const chatHeader = document.querySelector('.chat-interface-header');
+            chatHeader.textContent = userName;
+            chatHeader.onclick = () => redirectToProfile(userName);
         }
 
         // Fetch cryptocurrency data from the API

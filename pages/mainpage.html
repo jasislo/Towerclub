@@ -131,6 +131,50 @@
             color: var(--accent-color);
         }
 
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
+            min-width: 18px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .notification-indicator {
+            position: relative;
+            margin-left: 10px;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
         .main-content {
             display: flex;
             flex-direction: column;
@@ -397,6 +441,9 @@
     </style>
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
+        import accessControl from '../scripts/access-control.js';
+        import userDataManager from '../scripts/user-data-manager.js';
+        import messagingService from '../scripts/messaging-service.js';
     </script>
 </head>
 
@@ -415,19 +462,19 @@
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-actions">
-                <div class="profile-picture-container">
+                <div class="profile-picture-container" id="profilePictureContainer">
                     <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60"
-                        alt="Profile Picture">
+                        alt="Profile Picture" id="userProfilePicture">
                 </div>
-                <a href="logout.html" class="btn-outline">Log out</a>
+                <a href="#" class="btn-outline" id="logoutBtn">Log out</a>
             </div>
         </div>
     </nav>
 
     <div class="main-content">
         <div class="dashboard-header">
-            <h1 class="welcome-message">Welcome Back to TowerClub!</h1>
-            <p class="dashboard-subtitle">Here's an overview of your account.</p>
+            <h1 class="welcome-message" id="welcomeMessage">Welcome Back to TowerClub!</h1>
+            <p class="dashboard-subtitle" id="dashboardSubtitle">Here's an overview of your account.</p>
         </div>
 
         <div class="quick-actions">
@@ -443,11 +490,23 @@
                 <span class="material-icons">stacked_line_chart_rounded</span>
                 <h3>Activity</h3>
             </a>
+            <a href="Chatssection.html" class="quick-action-item">
+                <span class="material-icons">chat_bubble_outline</span>
+                <h3>Messages</h3>
+            </a>
+            <a href="complete_profile.html" class="quick-action-item">
+                <span class="material-icons">person_outline</span>
+                <h3>Profile</h3>
+            </a>
+            <a href="referral profile.html" class="quick-action-item">
+                <span class="material-icons">share</span>
+                <h3>Referrals</h3>
+            </a>
         </div>
 
         <a href="dashboard2.html" class="wallet-balance">
             <h2>Wallet Balance</h2>
-            <p class="balance">$7,302</p>
+            <p class="balance" id="walletBalance">$7,302</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -456,7 +515,7 @@
 
         <a href="crypto.html" class="bitcoin-section">
             <h2>Bitcoin</h2>
-            <p class="balance">$5,201.02</p>
+            <p class="balance" id="bitcoinBalance">$5,201.02</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -465,7 +524,7 @@
 
         <a href="referral profile.html" class="referral-reward">
             <h2>Referral Reward</h2>
-            <p class="reward">2,340</p>
+            <p class="reward" id="referralReward">2,340</p>
             <p class="portfolio">40% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -534,28 +593,297 @@
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/lang.js"></script>
-    <script>
-        // REMOVE login restriction for now
+    <script type="module">
+        import accessControl from '../scripts/access-control.js';
+        import userDataManager from '../scripts/user-data-manager.js';
+        import messagingService from '../scripts/messaging-service.js';
 
-        // Optionally, update welcome message with a generic greeting
+        // Initialize access control
         document.addEventListener('DOMContentLoaded', function() {
-            const welcomeMessage = document.querySelector('.welcome-message');
-            if (welcomeMessage) {
-                welcomeMessage.textContent = `Welcome Back to TowerClub!`;
+            // Check if user has full access
+            if (!accessControl.hasFullAccess()) {
+                accessControl.redirectBasedOnAccess();
+                return;
             }
 
-            // Handle logout
-            const logoutButton = document.querySelector('.btn-outline');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    // Clear any session data
-                    localStorage.removeItem('rememberedEmail');
-                    // Redirect to login
-                    window.location.href = 'login.html';
+            // Load and display user data
+            loadUserData();
+            
+            // Initialize interactive features
+            initializeInteractiveFeatures();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Update real-time data
+            updateRealTimeData();
+            
+            // Initialize notifications
+            initializeNotifications();
+        });
+
+        function loadUserData() {
+            try {
+                // Get user data from various sources
+                const currentUser = userDataManager.getCurrentUser();
+                const memberProfile = userDataManager.getMemberProfile();
+                const onboardingData = userDataManager.getOnboardingData();
+                const userPreferences = userDataManager.getUserPreferences();
+                const userFinancialData = JSON.parse(localStorage.getItem('userFinancialData') || '{}');
+
+                // Determine user's name
+                const userName = currentUser.fullName || 
+                               memberProfile.fullName || 
+                               onboardingData.fullName || 
+                               `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() ||
+                               'User';
+
+                // Update welcome message
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome back, ${userName.split(' ')[0]}!`;
+                }
+
+                // Update user name in header
+                const userNameElement = document.getElementById('userName');
+                if (userNameElement) {
+                    userNameElement.textContent = userName.split(' ')[0];
+                }
+
+                // Update profile picture
+                const profilePicture = currentUser.profilePicture || 
+                                     memberProfile.profilePicture || 
+                                     onboardingData.profilePicture;
+                
+                if (profilePicture) {
+                    const userProfilePicture = document.getElementById('userProfilePicture');
+                    if (userProfilePicture) {
+                        userProfilePicture.src = profilePicture;
+                    }
+                }
+
+                // Update financial data
+                updateFinancialData(userFinancialData, currentUser);
+
+                // Update dashboard subtitle with user info
+                const dashboardSubtitle = document.getElementById('dashboardSubtitle');
+                if (dashboardSubtitle) {
+                    const memberSince = currentUser.memberSince || onboardingData.registrationDate;
+                    if (memberSince) {
+                        const memberDate = new Date(memberSince);
+                        const daysSince = Math.floor((new Date() - memberDate) / (1000 * 60 * 60 * 24));
+                        dashboardSubtitle.textContent = `Member since ${memberDate.toLocaleDateString()} • ${daysSince} days with us`;
+                    }
+                }
+
+                console.log('User data loaded successfully:', {
+                    userName,
+                    currentUser,
+                    memberProfile,
+                    onboardingData
+                });
+
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        function updateFinancialData(userFinancialData, currentUser) {
+            // Update wallet balance
+            const walletBalance = document.getElementById('walletBalance');
+            if (walletBalance) {
+                const balance = userFinancialData.balance || currentUser.balance || 7302;
+                walletBalance.textContent = `$${balance.toLocaleString()}`;
+            }
+
+            // Update Bitcoin balance (mock data for now)
+            const bitcoinBalance = document.getElementById('bitcoinBalance');
+            if (bitcoinBalance) {
+                const btcBalance = userFinancialData.bitcoinBalance || 5201.02;
+                bitcoinBalance.textContent = `$${btcBalance.toLocaleString()}`;
+            }
+
+            // Update referral reward
+            const referralReward = document.getElementById('referralReward');
+            if (referralReward) {
+                const reward = userFinancialData.referralReward || 2340;
+                referralReward.textContent = reward.toLocaleString();
+            }
+        }
+
+        function initializeInteractiveFeatures() {
+            // Add hover effects and click handlers for quick actions
+            const quickActionItems = document.querySelectorAll('.quick-action-item');
+            quickActionItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add click handlers for financial cards
+            const financialCards = document.querySelectorAll('.wallet-balance, .bitcoin-section, .referral-reward');
+            financialCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Add click animation
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // Profile picture click handler
+            const profilePictureContainer = document.getElementById('profilePictureContainer');
+            if (profilePictureContainer) {
+                profilePictureContainer.addEventListener('click', function() {
+                    window.location.href = 'complete_profile.html';
                 });
             }
-        });
+        }
+
+        function setupEventListeners() {
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Show confirmation dialog
+                    if (confirm('Are you sure you want to log out?')) {
+                        // Clear user session and data
+                        accessControl.logout();
+                    }
+                });
+            }
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + L for logout
+                if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
+                    e.preventDefault();
+                    logoutBtn.click();
+                }
+                
+                // Ctrl/Cmd + D for dashboard
+                if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                    e.preventDefault();
+                    window.location.href = 'dashboard.html';
+                }
+                
+                // Ctrl/Cmd + T for transfer
+                if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                    e.preventDefault();
+                    window.location.href = 'add-transaction.html';
+                }
+                
+                // Ctrl/Cmd + M for messages
+                if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+                    e.preventDefault();
+                    window.location.href = 'Chatssection.html';
+                }
+            });
+        }
+
+        function initializeNotifications() {
+            // Get current user ID
+            const currentUser = userDataManager.getCurrentUser();
+            const userId = currentUser.userId || currentUser.id;
+            
+            if (!userId) return;
+
+            // Update notification counts
+            updateNotificationCounts(userId);
+            
+            // Set up periodic updates
+            setInterval(() => {
+                updateNotificationCounts(userId);
+            }, 10000); // Update every 10 seconds
+        }
+
+        function updateNotificationCounts(userId) {
+            try {
+                // Get unread message count
+                const unreadMessages = messagingService.getUnreadMessageCount(userId);
+                const messageBadge = document.getElementById('messageBadge');
+                
+                if (messageBadge) {
+                    if (unreadMessages > 0) {
+                        messageBadge.textContent = unreadMessages > 99 ? '99+' : unreadMessages;
+                        messageBadge.style.display = 'inline-block';
+                    } else {
+                        messageBadge.style.display = 'none';
+                    }
+                }
+
+                // Get unread notification count
+                const unreadNotifications = messagingService.getUnreadNotificationCount(userId);
+                const notificationIndicator = document.getElementById('notificationIndicator');
+                
+                if (notificationIndicator) {
+                    if (unreadNotifications > 0) {
+                        notificationIndicator.style.display = 'block';
+                    } else {
+                        notificationIndicator.style.display = 'none';
+                    }
+                }
+
+                // Add click handler for message badge
+                const messagesLink = document.getElementById('messagesLink');
+                if (messagesLink && unreadMessages > 0) {
+                    messagesLink.addEventListener('click', function() {
+                        // Mark messages as read when clicking the link
+                        const userMessages = messagingService.getUserMessages(userId);
+                        userMessages.forEach(msg => {
+                            if (!msg.read && msg.recipientId === userId) {
+                                messagingService.markMessageAsRead(msg.id);
+                            }
+                        });
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error updating notification counts:', error);
+            }
+        }
+
+        function updateRealTimeData() {
+            // Update data every 30 seconds
+            setInterval(() => {
+                // Update session activity
+                accessControl.updateUserSession();
+                
+                // Update last activity
+                const currentUser = userDataManager.getCurrentUser();
+                if (currentUser) {
+                    currentUser.lastActivity = new Date().toISOString();
+                    userDataManager.updateCurrentUser(currentUser);
+                }
+                
+                // Simulate real-time balance updates (in a real app, this would fetch from API)
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    const currentBalance = parseFloat(walletBalance.textContent.replace(/[$,]/g, ''));
+                    const change = (Math.random() - 0.5) * 10; // Random change between -5 and +5
+                    const newBalance = Math.max(0, currentBalance + change);
+                    walletBalance.textContent = `$${newBalance.toLocaleString()}`;
+                }
+            }, 30000);
+        }
+
+        // Export functions for use in other scripts
+        window.TowerClubMainPage = {
+            loadUserData,
+            updateFinancialData,
+            initializeInteractiveFeatures,
+            setupEventListeners,
+            updateRealTimeData,
+            updateNotificationCounts,
+            initializeNotifications
+        };
 
         applyTranslations(); // Call this on page load
     </script>
