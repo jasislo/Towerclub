@@ -13,6 +13,15 @@ const PAYPAL_SECRET = 'EDx7bP228aExk61SSWhmmtjAfJqEeU6yWBEbfaB8fuVWSmkM8IUfRdh2b
 // PayPal API base URL
 const PAYPAL_API = 'https://api-m.sandbox.paypal.com'; // Use 'https://api-m.paypal.com' for live
 
+// Payment verification middleware
+function verifyPaymentMiddleware(req, res, next) {
+    const paymentComplete = req.session && req.session.paymentComplete;
+    if (!paymentComplete) {
+        return res.status(403).json({ error: 'Payment not completed' });
+    }
+    next();
+}
+
 // Create an order
 app.post('/create-order', async (req, res) => {
     try {
@@ -68,11 +77,22 @@ app.post('/capture-order', async (req, res) => {
             },
         });
 
+        // Mark payment as complete in session
+        if (req.session) {
+            req.session.paymentComplete = true;
+        }
+
         res.json(capture.data);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error capturing PayPal order');
     }
+});
+
+// Payment verification endpoint
+app.get('/verify-payment', (req, res) => {
+    const paymentComplete = req.session && req.session.paymentComplete;
+    res.json({ paymentComplete: !!paymentComplete });
 });
 
 app.get('/pages/crypto.html', async (req, res) => {
@@ -97,6 +117,11 @@ app.get('/pages/crypto.html', async (req, res) => {
                 },
             });
             console.log(userInfo.data);
+
+            // Mark payment as complete
+            if (req.session) {
+                req.session.paymentComplete = true;
+            }
 
             // Redirect back to crypto.html
             res.redirect('/pages/crypto.html');
@@ -139,6 +164,11 @@ app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`)
                 body: JSON.stringify({ orderID: data.orderID }),
             });
             const capture = await response.json();
+            
+            // Mark payment as complete in client-side storage
+            window.paymentSecured = true;
+            sessionStorage.setItem('paymentComplete', 'true');
+            
             alert('Payment successful!');
         },
         onError: (err) => {

@@ -13,12 +13,14 @@ const planPrices = {
 // Membership selection algorithm for "Get Started" buttons
 document.querySelectorAll('.get-started-btn').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default link behavior
+        e.preventDefault(); // Prevent default link behavior and NO redirect
+        e.stopPropagation(); // Stop event bubbling
 
         // Remove "Selected" from all buttons and reset text
         document.querySelectorAll('.get-started-btn').forEach(function(b) {
             b.textContent = 'Get Started';
             b.classList.remove('selected-plan');
+            b.style.pointerEvents = 'auto'; // Make all buttons clickable again
         });
 
         // Set this button as selected
@@ -26,14 +28,28 @@ document.querySelectorAll('.get-started-btn').forEach(function(btn) {
         btn.classList.add('selected-plan');
         selectedPlan = btn.getAttribute('data-plan');
         selectedPlanAmount = planPrices[selectedPlan];
+        btn.style.pointerEvents = 'auto'; // Keep selected button clickable
+        
+        // Store the selected state
+        btn.setAttribute('data-selected', 'true');
+    });
 
-        // Redirect to pay.html if not already there
-        if (!window.location.pathname.toLowerCase().includes('pay.html')) {
-            window.location.href = 'PAY.HTML';
-        } else {
-            // Optionally, scroll to payment section if already on pay.html
-            document.querySelector('.payment-section').scrollIntoView({ behavior: 'smooth' });
+    // Ensure "Selected" text persists on hover
+    btn.addEventListener('mouseenter', function() {
+        if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
+            btn.textContent = 'Selected';
         }
+    });
+
+    btn.addEventListener('mouseleave', function() {
+        if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
+            btn.textContent = 'Selected';
+        }
+    });
+
+    // Prevent any default link behavior
+    btn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
     });
 });
 
@@ -41,7 +57,7 @@ document.querySelectorAll('.get-started-btn').forEach(function(btn) {
 document.getElementById('cardPaymentForm').addEventListener('submit', function(event) {
     event.preventDefault();
     if (!selectedPlan || !selectedPlanAmount) {
-        alert(translationManager.getTranslation('payment-select-plan'));
+        alert('Please select a plan before making payment.');
         return;
     }
     const cardNumber = document.getElementById('cardNumber').value;
@@ -50,7 +66,7 @@ document.getElementById('cardPaymentForm').addEventListener('submit', function(e
     const cardHolder = document.getElementById('cardHolder').value;
 
     // Simulate payment processing for the selected plan
-    alert(translationManager.getTranslation('payment-processing-payment', { amount: selectedPlanAmount.toFixed(2), plan: selectedPlan, cardHolder: cardHolder, cardEnding: cardNumber.slice(-4) }));
+    alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan. Card ending in ${cardNumber.slice(-4)} under ${cardHolder}.`);
     window.paymentSecured = true;
     
     // Show success message and enable proceed button
@@ -59,22 +75,56 @@ document.getElementById('cardPaymentForm').addEventListener('submit', function(e
 
 // PayPal Payment Button Logic
 document.getElementById('paypalButton').addEventListener('click', function () {
-    // Redirect to PayPal login, then back to pay.html after login
-    window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/PAY.HTML");
+    if (!selectedPlan || !selectedPlanAmount) {
+        alert('Please select a plan before making payment.');
+        return;
+    }
+    
+    // Check if already logged in with PayPal
+    const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
+    
+    if (!isLoggedInWithPayPal) {
+        // First time login - simulate PayPal login process
+        alert('PayPal login simulation: You would be redirected to PayPal to sign in, then return here to complete payment.');
+        
+        // Mark as logged in with PayPal
+        sessionStorage.setItem('paypalLoggedIn', 'true');
+        
+        // Update button text to show logged in status
+        this.textContent = 'Logged with PayPal';
+        this.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
+        this.style.color = '#ffffff';
+        
+        // In a real implementation, you would redirect to PayPal like this:
+        // window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/PAY.HTML");
+    } else {
+        // Already logged in - just show payment button
+        alert('Already logged in with PayPal. Ready to make payment.');
+    }
+    
+    // Show the Make Payment button after PayPal login
+    document.getElementById('makePaypalPayment').style.display = 'block';
+    document.getElementById('makePaypalPayment').textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
 });
 
 // Make Payment with PayPal button handler
 document.getElementById('makePaypalPayment').addEventListener('click', function() {
     if (!selectedPlan || !selectedPlanAmount) {
-        alert(translationManager.getTranslation('payment-select-plan'));
+        alert('Please select a plan before making payment.');
         return;
     }
+    
     // Process the payment with the selected plan
-    alert(translationManager.getTranslation('payment-processing-paypal-payment', { amount: selectedPlanAmount.toFixed(2), plan: selectedPlan }));
+    alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
     window.paymentSecured = true;
     
     // Show success message and enable proceed button
     showPaymentSuccess();
+    
+    // Store payment status for session
+    sessionStorage.setItem('paymentComplete', 'true');
+    sessionStorage.setItem('selectedPlan', selectedPlan);
+    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
 });
 
 // Special handling for Get Started buttons
@@ -88,37 +138,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Hero section Get Started button - proceed to register after payment
+    // Hero section Get Started Now button - allow direct navigation to register.html
     const heroGetStarted = document.querySelector('.hero-actions .btn-primary');
     if (heroGetStarted) {
         heroGetStarted.addEventListener('click', function(e) {
             e.preventDefault();
-            if (window.paymentSecured) {
-                window.location.href = 'register.html';
-            } else {
-                document.querySelector('.pricing-section').scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-                alert(translationManager.getTranslation('payment-reminder'));
-            }
+            window.location.href = 'register.html';
         });
     }
 
-    // Watch Demo button - scroll to demo section
-    const watchDemoBtn = document.querySelector('.hero-actions .btn-outline');
-    if (watchDemoBtn) {
-        watchDemoBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            const demoSection = document.getElementById('demo');
-            if (demoSection) {
-                demoSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+    // Allow all links to register.html without payment requirement
+    document.querySelectorAll('a[href="register.html"], a[href="./register.html"], a[href="../pages/register.html"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            // Allow navigation without any restrictions
+            // No prevention of default behavior
         });
-    }
+    });
 });
 
 // Update the enableProceedButtons function to handle different button behaviors
@@ -138,20 +173,12 @@ function enableProceedButtons() {
         btn.classList.add('payment-complete');
     });
 
-    // Enable hero section buttons with payment check
+    // Enable hero section buttons without payment check
     document.querySelectorAll('.hero-actions .btn').forEach(function(btn) {
         if (btn.classList.contains('btn-primary')) {
             btn.onclick = function(e) {
                 e.preventDefault();
-                if (window.paymentSecured) {
-                    window.location.href = 'register.html';
-                } else {
-                    document.querySelector('.pricing-section').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    alert(translationManager.getTranslation('payment-reminder'));
-                }
+                window.location.href = 'register.html';
             };
         }
         btn.classList.add('payment-complete');
@@ -179,6 +206,52 @@ document.addEventListener('DOMContentLoaded', function() {
     if (sessionStorage.getItem('paymentComplete') === 'true') {
         window.paymentSecured = true;
         enableProceedButtons();
+    }
+    
+    // Restore selected plan if returning from PayPal
+    const savedPlan = sessionStorage.getItem('selectedPlan');
+    const savedAmount = sessionStorage.getItem('selectedPlanAmount');
+    if (savedPlan && savedAmount) {
+        selectedPlan = savedPlan;
+        selectedPlanAmount = parseFloat(savedAmount);
+        
+        // Update the button to show selected state
+        const selectedButton = document.querySelector(`[data-plan="${savedPlan}"]`);
+        if (selectedButton) {
+            selectedButton.textContent = 'Selected';
+            selectedButton.classList.add('selected-plan');
+            selectedButton.setAttribute('data-selected', 'true');
+        }
+        
+        // Show PayPal payment button if payment not completed
+        if (!window.paymentSecured) {
+            const makePaypalPayment = document.getElementById('makePaypalPayment');
+            if (makePaypalPayment) {
+                makePaypalPayment.style.display = 'block';
+                makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
+            }
+        }
+    }
+    
+    // Check if returning from PayPal (you can add URL parameters to detect this)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('paypal_return') === 'true') {
+        // User returned from PayPal, show payment button
+        const makePaypalPayment = document.getElementById('makePaypalPayment');
+        if (makePaypalPayment && selectedPlan) {
+            makePaypalPayment.style.display = 'block';
+            makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
+        }
+    }
+    
+    // Check PayPal login status and update button accordingly
+    const paypalButton = document.getElementById('paypalButton');
+    const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
+    
+    if (paypalButton && isLoggedInWithPayPal) {
+        paypalButton.textContent = 'Logged with PayPal';
+        paypalButton.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
+        paypalButton.style.color = '#ffffff';
     }
 });
 
@@ -236,17 +309,31 @@ function showPaymentSuccess() {
     successMessage.className = 'payment-success';
     successMessage.style.cssText = 'background-color: #22c55e; color: white; padding: 20px; border-radius: 5px; margin-top: 15px; text-align: center;';
     successMessage.innerHTML = `
-        <p style="margin-bottom: 15px; font-size: 1.1rem;" data-i18n="payment-success-message">Payment successful! Choose your next step:</p>
+        <p style="margin-bottom: 15px; font-size: 1.1rem;">Payment successful! Choose your next step:</p>
         <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <a href="register.html" class="btn btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px;" data-i18n="payment-create-account">
+            <a href="register.html" class="btn btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px;">
                 Create Account
             </a>
-            <a href="register.html" class="btn btn-outline" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px; background: white; color: #22c55e; border: 2px solid white;" data-i18n="payment-proceed-registration">
+            <a href="register.html" class="btn btn-outline" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px; background: white; color: #22c55e; border: 2px solid white;">
                 Proceed to Registration
             </a>
         </div>
     `;
     document.querySelector('.payment-form').appendChild(successMessage);
-    // Apply translations to the new elements
-    translationManager.updatePageContent(translationManager.translations);
 }
+
+// Add payment verification function
+function verifyPaymentStatus() {
+    return window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true';
+}
+
+// Remove payment requirement for register.html links
+document.addEventListener('DOMContentLoaded', function() {
+    // Allow all links to register.html without payment requirement
+    document.querySelectorAll('a[href="register.html"], a[href="./register.html"], a[href="../pages/register.html"]').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            // Allow navigation without any restrictions
+            // No prevention of default behavior
+        });
+    });
+});
