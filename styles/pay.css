@@ -220,6 +220,30 @@
     background: linear-gradient(135deg, #ffffff, #f3f4f6); /* Subtle gradient for featured card */
 }
 
+#makePaypalPayment {
+    background-color: #00968A;   /* Exact green as .btn-credit-card */
+    color: #fff;                 /* White text */
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 0;
+    width: 260px;
+    max-width: 100%;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+    letter-spacing: 0.01em;
+    display: block;
+}
+
+#makePaypalPayment:hover {
+    background-color: #00796B;   /* Same hover green as .btn-credit-card:hover */
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+}
+
 @media (max-width: 768px) {
     .pricing-grid {
         grid-template-columns: 1fr; /* Single column layout for smaller screens */
