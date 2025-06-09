@@ -451,6 +451,168 @@
         .income-spending .spending-card .amount {
             color: #f06a6a; /* Red for spending */
         }
+
+        /* Virtual Card Generation Form Styles */
+        .card-generation-form {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #15161E;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            background-color: #ffffff;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .form-actions {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Card Details Section Styles */
+        .card-details-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-item .label {
+            font-weight: 500;
+            color: #606A85;
+        }
+
+        .detail-item .value {
+            font-weight: 600;
+            color: #15161E;
+        }
+
+        .detail-item .value.active {
+            color: #22c55e;
+        }
+
+        .detail-item .value.inactive {
+            color: #ef4444;
+        }
+
+        /* Card Actions Styles */
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card-actions .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        /* No Card Message Styles */
+        .no-card-message {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .no-card-message h3 {
+            color: #606A85;
+            margin-bottom: 10px;
+        }
+
+        .no-card-message p {
+            color: #9ca3af;
+            margin-bottom: 20px;
+        }
+
+        /* No Transactions Styles */
+        .no-transactions {
+            text-align: center;
+            color: #9ca3af;
+            padding: 20px;
+            font-style: italic;
+        }
+
+        /* Responsive Design for Form */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .card-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .card-actions .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -496,10 +658,57 @@
                 <h3 data-i18n="virtual-card-title">My Towerclub Virtual Card</h3>
                 <div class="card-number">**** **** **** 0250</div>
                 <div class="card-details">
-                    <span data-i18n="card-exp">Expiry: 06/25</span>
-                    <span>Cardholder: Andrew Smith</span>
+                    <span class="expiry-date">Expiry: 06/25</span>
+                    <span class="cardholder-name">Cardholder: Andrew Smith</span>
+                </div>
+                <div class="card-actions">
+                    <button id="toggleCardBtn" class="btn btn-outline">Show Number</button>
+                    <button id="copyCardBtn" class="btn btn-outline">Copy Number</button>
+                    <button id="freezeCardBtn" class="btn btn-outline">Freeze Card</button>
                 </div>
             </div>
+        </div>
+
+        <!-- Virtual Card Generation Section -->
+        <div class="section-title">Generate New Virtual Card</div>
+        <div class="card-generation-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cardTypeSelect">Card Type:</label>
+                    <select id="cardTypeSelect" class="form-control">
+                        <option value="VISA">VISA</option>
+                        <option value="MASTERCARD">Mastercard</option>
+                        <option value="PAYPAL">PayPal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="providerSelect">Provider:</label>
+                    <select id="providerSelect" class="form-control">
+                        <option value="LOCAL">Local Generation</option>
+                        <option value="VISA">VISA API</option>
+                        <option value="PAYPAL">PayPal API</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cardholderName">Cardholder Name:</label>
+                    <input type="text" id="cardholderName" class="form-control" placeholder="Enter cardholder name" value="VIRTUAL CARD">
+                </div>
+                <div class="form-group">
+                    <label for="creditLimit">Credit Limit ($):</label>
+                    <input type="number" id="creditLimit" class="form-control" placeholder="1000" value="1000" min="100" max="50000">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button id="generateCardBtn" class="btn btn-primary">Generate Virtual Card</button>
+            </div>
+        </div>
+
+        <!-- Card Details Section -->
+        <div class="section-title">Card Details</div>
+        <div id="cardDetails" class="card-details-section">
+            <p>Generate a virtual card to see details here.</p>
         </div>
 
         <!-- Income and Spending Section -->
@@ -611,133 +820,17 @@
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/lang.js"></script>
-    <script>
-        applyTranslations(); // Call this on page load
+    <script type="module">
+        import { VirtualCardUI } from '../scripts/virtual-card-integration.js';
+        
+        // Initialize virtual card system
+        document.addEventListener('DOMContentLoaded', () => {
+            const virtualCardUI = new VirtualCardUI();
+            window.virtualCardUI = virtualCardUI; // Make globally available for debugging
+        });
     </script>
     <script>
-        const profilePicture = document.getElementById('profilePicture');
-        const profilePictureInput = document.getElementById('profilePictureInput');
-
-        // Make the profile picture clickable
-        profilePicture.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Handle the file input change event
-        profilePictureInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePicture.src = e.target.result; // Update the profile picture preview
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const transactions = await fetchRecentTransactions();
-
-                const transactionsContainer = document.querySelector('.transactions');
-                transactionsContainer.innerHTML = ''; // Clear existing transactions
-
-                transactions.forEach(transaction => {
-                    const transactionItem = document.createElement('div');
-                    transactionItem.classList.add('transaction-item');
-                    transactionItem.innerHTML = `
-                        <div class="details">
-                            <span>${transaction.description}</span>
-                            <span>${transaction.type}</span>
-                        </div>
-                        <div class="amount ${transaction.amount < 0 ? 'negative' : 'positive'}">
-                            ${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount)}
-                        </div>
-                    `;
-                    transactionsContainer.appendChild(transactionItem);
-                });
-            } catch (error) {
-                console.error('Error fetching transactions:', error);
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const balanceData = await fetchAccountBalance();
-                document.querySelector('.info-card .positive').textContent = `+$${balanceData.income}`;
-                document.querySelector('.info-card .negative').textContent = `-$${balanceData.spending}`;
-            } catch (error) {
-                console.error('Error fetching account balance:', error);
-            }
-        });
-
-        async function logActivity(transactionId, description) {
-            try {
-                await logTransactionActivity(transactionId, {
-                    description,
-                    type: 'transaction',
-                    timestamp: new Date().toISOString(),
-                });
-                console.log('Activity logged successfully');
-            } catch (error) {
-                console.error('Error logging activity:', error);
-            }
-        }
-
-        document.querySelector('#makeTransactionButton').addEventListener('click', async () => {
-            const transactionData = {
-                amount: 100, // Example amount
-                recipient: 'John Doe', // Example recipient
-            };
-
-            try {
-                const transactionResponse = await makeTransaction(transactionData);
-                console.log('Transaction successful:', transactionResponse);
-
-                // Log the activity
-                await logActivity(transactionResponse.id, `Transaction of $${transactionData.amount} to ${transactionData.recipient}`);
-
-                // Optionally update the UI
-                alert('Transaction completed and activity logged!');
-            } catch (error) {
-                console.error('Error processing transaction:', error);
-                alert('Failed to complete the transaction.');
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const cryptoData = await getCryptoData();
-
-                document.getElementById('btcPrice').textContent = `$${cryptoData.bitcoin.usd.toFixed(2)}`;
-                document.getElementById('ethPrice').textContent = `$${cryptoData.ethereum.usd.toFixed(2)}`;
-                document.getElementById('ltcPrice').textContent = `$${cryptoData.litecoin.usd.toFixed(2)}`;
-            } catch (error) {
-                console.error('Error fetching cryptocurrency data:', error);
-            }
-        });
-
-        // Handle the charge form submission
-        document.getElementById('chargeForm').addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent the default form submission
-
-            const amount = document.getElementById('chargeAmount').value;
-            const description = document.getElementById('chargeDescription').value;
-
-            try {
-                // Call your API or function to create the charge
-                const response = await createCharge({ amount, description });
-
-                // Optionally, you can log this activity as well
-                await logActivity(response.id, `Charge of $${amount} created`);
-
-                alert('Charge created successfully!');
-                // Optionally, refresh the transactions or perform other UI updates
-            } catch (error) {
-                console.error('Error creating charge:', error);
-                alert('Failed to create charge.');
-            }
-        });
+        applyTranslations(); // Call this on page load
     </script>
 </body>
 </html>
