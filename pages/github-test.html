@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Integration Test - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #22c55e;
+            --secondary-color: #a855f7;
+            --background-color: #ffffff;
+            --card-background: #f3f4f6;
+            --text-color: #1a1f24;
+            --text-secondary: #6b7280;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .test-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .test-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .test-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .test-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .test-form {
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .test-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            margin-top: 24px;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .result-item.success {
+            border-left-color: var(--success-color);
+        }
+
+        .result-item.error {
+            border-left-color: var(--error-color);
+        }
+
+        .result-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .result-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-card">
+            <div class="test-header">
+                <h1>GitHub Integration Test</h1>
+                <p>Test the GitHub API integration with your token</p>
+            </div>
+
+            <div class="test-form">
+                <div class="form-group">
+                    <label for="githubUsername">GitHub Username</label>
+                    <div class="input-group">
+                        <input type="text" id="githubUsername" placeholder="Enter a GitHub username to test">
+                        <button type="button" class="test-button" id="testBtn">Test Integration</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results" id="results"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import githubIntegration from '../scripts/github-integration.js';
+        import { validateConfig } from '../scripts/config.js';
+
+        document.getElementById('testBtn').addEventListener('click', async function() {
+            const username = document.getElementById('githubUsername').value.trim();
+            const resultsDiv = document.getElementById('results');
+            
+            if (!username) {
+                alert('Please enter a GitHub username');
+                return;
+            }
+
+            // Disable button and show loading
+            this.disabled = true;
+            this.textContent = 'Testing...';
+            resultsDiv.innerHTML = '<div class="loading">Running tests...</div>';
+
+            const results = [];
+
+            try {
+                // Test 1: Validate configuration
+                const configValidation = validateConfig();
+                results.push({
+                    title: 'Configuration Validation',
+                    success: configValidation.isValid,
+                    content: `Valid: ${configValidation.isValid}\nErrors: ${configValidation.errors.join(', ') || 'None'}\nWarnings: ${configValidation.warnings.join(', ') || 'None'}`
+                });
+
+                // Test 2: Validate GitHub token
+                const tokenValid = await githubIntegration.validateToken();
+                results.push({
+                    title: 'GitHub Token Validation',
+                    success: tokenValid,
+                    content: tokenValid ? 'Token is valid and working' : 'Token is invalid or expired'
+                });
+
+                // Test 3: Get user info
+                const userInfo = await githubIntegration.getUserInfo(username);
+                results.push({
+                    title: 'Get User Information',
+                    success: userInfo.success,
+                    content: userInfo.success ? 
+                        `Username: ${userInfo.user.username}\nName: ${userInfo.user.name || 'N/A'}\nPublic Repos: ${userInfo.user.publicRepos}\nFollowers: ${userInfo.user.followers}\nFollowing: ${userInfo.user.following}` :
+                        `Error: ${userInfo.error}`
+                });
+
+                // Test 4: Get user repositories
+                const repos = await githubIntegration.getUserRepositories(username);
+                results.push({
+                    title: 'Get User Repositories',
+                    success: repos.success,
+                    content: repos.success ? 
+                        `Found ${repos.repositories.length} repositories\nTop languages: ${repos.repositories.slice(0, 3).map(r => r.language).filter(Boolean).join(', ') || 'None'}` :
+                        `Error: ${repos.error}`
+                });
+
+                // Test 5: Get contribution stats
+                const stats = await githubIntegration.getContributionStats(username);
+                results.push({
+                    title: 'Get Contribution Statistics',
+                    success: stats.success,
+                    content: stats.success ? 
+                        `Total Repos: ${stats.stats.totalRepos}\nPublic Repos: ${stats.stats.publicRepos}\nTotal Stars: ${stats.stats.totalStars}\nTotal Forks: ${stats.stats.totalForks}` :
+                        `Error: ${stats.error}`
+                });
+
+            } catch (error) {
+                results.push({
+                    title: 'Test Execution Error',
+                    success: false,
+                    content: `Error: ${error.message}`
+                });
+            }
+
+            // Display results
+            resultsDiv.innerHTML = results.map(result => `
+                <div class="result-item ${result.success ? 'success' : 'error'}">
+                    <div class="result-title">${result.title}</div>
+                    <div class="result-content">${result.content}</div>
+                </div>
+            `).join('');
+
+            // Re-enable button
+            this.disabled = false;
+            this.textContent = 'Test Integration';
+        });
+    </script>
+</body>
+</html> 
