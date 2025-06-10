@@ -444,6 +444,7 @@
         import accessControl from '../scripts/access-control.js';
         import userDataManager from '../scripts/user-data-manager.js';
         import messagingService from '../scripts/messaging-service.js';
+        import DarkMode from '/scripts/dark-mode.js';
     </script>
 </head>
 
@@ -886,6 +887,10 @@
         };
 
         applyTranslations(); // Call this on page load
+    </script>
+    <script type="module">
+        import profilePictureManager from '/scripts/profile-picture-manager.js';
+        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
     </script>
 </body>
 

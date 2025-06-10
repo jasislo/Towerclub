@@ -1196,10 +1196,10 @@
                 setTimeout(() => {
                     // For demo purposes, we'll simulate the PayPal login process
                     // In production, you would redirect to actual PayPal login
-                    const paypalLoginUrl = 'https://www.paypal.com/signin';
+                const paypalLoginUrl = 'https://www.paypal.com/signin';
                     const returnUrl = encodeURIComponent(window.location.href + '?paypal_return=true');
-                    const fullPaypalUrl = `${paypalLoginUrl}?returnUrl=${returnUrl}`;
-                    
+                const fullPaypalUrl = `${paypalLoginUrl}?returnUrl=${returnUrl}`;
+                
                     // For demo: simulate successful login and return
                     alert('Simulating PayPal login... You would be redirected to PayPal here.');
                     

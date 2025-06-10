@@ -349,6 +349,23 @@
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Set switch state based on saved preference
+    const switchEl = document.getElementById('darkModeSwitch');
+    switchEl.checked = localStorage.getItem('darkMode') === 'true';
+
+    switchEl.addEventListener('change', () => {
+        localStorage.setItem('darkMode', switchEl.checked ? 'true' : 'false');
+        DarkMode.setDarkMode(switchEl.checked);
+    });
+
+    // Initialize dark mode on settings page
+    DarkMode.init();
+});
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -418,6 +435,14 @@
 
         <div style="text-align: center; margin-top: 30px;">
             <button class="button" id="darkModeToggle" data-i18n="dark-mode-toggle">Dark Mode</button>
+        </div>
+
+        <!-- Dark Mode Switch -->
+        <div style="text-align: center; margin-top: 20px;">
+            <label>
+                <input type="checkbox" id="darkModeSwitch">
+                Enable Dark Mode
+            </label>
         </div>
     </div>
 
