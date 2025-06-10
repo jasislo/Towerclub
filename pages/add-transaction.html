@@ -465,6 +465,86 @@
                 margin-top: 10px;
             }
         }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-details-container {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-overview {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-card {
+            background: #3d3d3d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-card h3 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-history {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-item {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-item:hover {
+            background: #4d4d4d;
+        }
+
+        body.dark-mode .transaction-title {
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-date {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .main-footer {
+            background-color: #1a1a1a;
+        }
+
+        body.dark-mode .footer-brand .brand-description {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .footer-column ul li a {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .footer-column ul li a:hover {
+            color: #ffffff;
+        }
+
+        body.dark-mode .footer-bottom {
+            color: #b0b0b0;
+        }
+
+        /* Dark mode button styles */
+        body.dark-mode .btn-outline {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .btn-outline:hover {
+            background: #4d4d4d;
+            color: #22c55e;
+        }
     </style>
 </head>
 <body>
@@ -492,8 +572,10 @@
                     <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
+                <!-- Dark Mode Button -->
+                <button id="darkModeToggle" class="btn-outline">Dark Mode</button>
                 <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <button id="logoutBtn" class="btn-outline">Log out</button>
             </div>
         </div>
     </nav>
@@ -639,6 +721,119 @@
     <script type="module" src="/scripts/transactions/transaction-details.js"></script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
+    <script src="/netlify/functions/header.js"></script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
+    <script>
+        // Page-specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize page functionality
+            initializePage();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Load initial data
+            loadTransactionData();
+        });
+
+        function initializePage() {
+            console.log('Add Transaction page initialized');
+            
+            // Check if user is authenticated
+            const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
+            if (!isAuthenticated) {
+                // Redirect to login if not authenticated
+                window.location.href = '/pages/login.html';
+                return;
+            }
+        }
+
+        function setupEventListeners() {
+            // Back button functionality
+            const backButton = document.querySelector('.btn-icon');
+            if (backButton) {
+                backButton.addEventListener('click', function() {
+                    history.back();
+                });
+            }
+
+            // Transfer button functionality
+            const transferButton = document.getElementById('editBtn');
+            if (transferButton) {
+                transferButton.addEventListener('click', function() {
+                    window.location.href = 'edittransaction.html';
+                });
+            }
+
+            // Cancel button functionality
+            const cancelButton = document.getElementById('deleteBtn');
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                        history.back();
+                    }
+                });
+            }
+
+            // Listen for dark mode changes
+            document.addEventListener('darkModeChange', function(e) {
+                updatePageForDarkMode(e.detail.isDarkMode);
+            });
+        }
+
+        function loadTransactionData() {
+            // Load balance data
+            updateBalanceDisplay();
+            
+            // Load transaction history
+            loadTransactionHistory();
+        }
+
+        function updateBalanceDisplay() {
+            // This would typically load from an API
+            // For now, using static data
+            const moneyIn = 12340.00;
+            const moneyOut = 8120.00;
+            const totalBalance = moneyIn - moneyOut;
+
+            document.getElementById('moneyIn').textContent = `$${moneyIn.toFixed(2)}`;
+            document.getElementById('moneyOut').textContent = `$${moneyOut.toFixed(2)}`;
+            document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
+        }
+
+        function loadTransactionHistory() {
+            // This would typically load from an API
+            // For now, the data is already in the HTML
+            console.log('Transaction history loaded');
+        }
+
+        function updatePageForDarkMode(isDarkMode) {
+            // Additional dark mode updates specific to this page
+            const body = document.body;
+            
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        }
+
+        // Export functions for use in other scripts
+        window.AddTransactionPage = {
+            initializePage,
+            setupEventListeners,
+            loadTransactionData,
+            updateBalanceDisplay,
+            loadTransactionHistory,
+            updatePageForDarkMode
+        };
+    </script>
+    <script type="module">
+    import profilePictureManager from '/scripts/profile-picture-manager.js';
+    // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+</script>
 </body>
 </html>

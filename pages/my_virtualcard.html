@@ -642,7 +642,7 @@
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <!-- Log Out Button -->
-                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Logout</a>
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Log out</a>
             </div>
         </div>
     </nav>
@@ -831,6 +831,14 @@
     </script>
     <script>
         applyTranslations(); // Call this on page load
+    </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
+    <script type="module">
+        import profilePictureManager from '/scripts/profile-picture-manager.js';
+        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
     </script>
 </body>
 </html>

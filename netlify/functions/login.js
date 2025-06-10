@@ -179,11 +179,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Redirect to registration page when "Sign Up" is clicked
+    // Redirect to payment page when "Sign Up" is clicked
     if (signUpLink) {
         signUpLink.addEventListener('click', (e) => {
             e.preventDefault();
-            window.location.href = '/pages/register.html';  // Redirect to register page
+            window.location.href = '/pages/PAY.HTML';  // Redirect to payment page
         });
     }
 

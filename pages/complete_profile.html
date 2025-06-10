@@ -26,7 +26,7 @@
 
         body {
             font-family: 'Lexend', sans-serif;
-            background-color: var(--secondary-color);
+            background-color: #fff; /* Ensure white background for light mode */
             color: var(--text-color);
             line-height: 1.6;
             padding-top: 80px; /* Add padding for fixed navigation */
@@ -428,6 +428,14 @@
     <!-- Add translation manager script -->
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
+    <script type="module">
+        import profilePictureManager from '/scripts/profile-picture-manager.js';
+        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
     </script>
 </head>
 <body>
