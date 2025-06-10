@@ -89,4 +89,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export the DarkMode module
-export default DarkMode;
+export default DarkMode; 
