@@ -281,7 +281,8 @@
             </div>
             <div class="nav-actions">
                 <div class="profile-picture-container">
-                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture">
+                    <img id="profilePicture" src="..." alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <a href="/pages/logout.html" class="btn-outline">Log Out</a>
             </div>
@@ -457,5 +458,13 @@
             </div>
         </div>
     </footer>
+    <script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    // DarkMode.init() is called automatically on DOMContentLoaded
+</script>
+<script type="module">
+    import profilePictureManager from '/scripts/profile-picture-manager.js';
+    // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+</script>
 </body>
 </html>

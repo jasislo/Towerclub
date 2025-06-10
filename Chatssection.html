@@ -796,5 +796,13 @@
     <script>
       applyTranslations(); // Call this on page load
     </script>
+    <script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
+    <script type="module">
+    import profilePictureManager from '/scripts/profile-picture-manager.js';
+    // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+    </script>
 </body>
 </html>

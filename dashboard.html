@@ -542,6 +542,10 @@
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
 </head>
 <body>
     <!-- Header -->
@@ -832,5 +836,9 @@
         });
     </script>
     <script src="/scripts/sync.js"></script>
+    <script type="module">
+        import profilePictureManager from '/scripts/profile-picture-manager.js';
+        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+    </script>
 </body>
 </html>
