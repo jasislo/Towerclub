@@ -98,6 +98,65 @@ class Auth {
     }
 }
 
+// PayPal Session Management
+class PayPalAuth {
+    static isLoggedIn() {
+        return localStorage.getItem('paypalLoggedIn') === 'true' || 
+               sessionStorage.getItem('paypalLoggedIn') === 'true';
+    }
+    
+    static login() {
+        localStorage.setItem('paypalLoggedIn', 'true');
+        sessionStorage.setItem('paypalLoggedIn', 'true');
+        localStorage.setItem('paypalLoginTime', Date.now().toString());
+    }
+    
+    static logout() {
+        localStorage.removeItem('paypalLoggedIn');
+        sessionStorage.removeItem('paypalLoggedIn');
+        localStorage.removeItem('paypalLoginTime');
+        localStorage.removeItem('paypalUserData');
+    }
+    
+    static requirePayPalAuth() {
+        if (!this.isLoggedIn()) {
+            alert('Please log in with PayPal to access this feature.');
+            return false;
+        }
+        return true;
+    }
+    
+    static getLoginTime() {
+        const loginTime = localStorage.getItem('paypalLoginTime');
+        return loginTime ? parseInt(loginTime) : null;
+    }
+    
+    static isSessionValid() {
+        const loginTime = this.getLoginTime();
+        if (!loginTime) return false;
+        
+        // Session expires after 24 hours
+        const sessionDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+        const now = Date.now();
+        
+        if (now - loginTime > sessionDuration) {
+            this.logout();
+            return false;
+        }
+        
+        return true;
+    }
+    
+    static getUserData() {
+        const userData = localStorage.getItem('paypalUserData');
+        return userData ? JSON.parse(userData) : null;
+    }
+    
+    static setUserData(data) {
+        localStorage.setItem('paypalUserData', JSON.stringify(data));
+    }
+}
+
 // UI utilities
 class UI {
     static showLoading(element) {
@@ -141,4 +200,19 @@ class UI {
 // Export for use in other files
 window.API = API;
 window.Auth = Auth;
-window.UI = UI; 
+window.PayPalAuth = PayPalAuth;
+window.UI = UI;
+
+// Check PayPal authentication on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (!PayPalAuth.requirePayPalAuth()) {
+        // User will be redirected or shown alert
+        return;
+    }
+    
+    // Your page functionality here
+    // PayPal user is authenticated
+});
+
+PayPalAuth.login();
+PayPalAuth.setUserData(paypalUserData); // Store user data if needed 
