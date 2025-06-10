@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - TowerClub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #16a34a;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #22c55e;
+        }
+        .error {
+            border-left-color: #ef4444;
+            background: #fef2f2;
+        }
+        .success {
+            border-left-color: #10b981;
+            background: #f0fdf4;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 TowerClub API Test Page</h1>
+    <p>Use this page to test all the Netlify functions and verify they're working correctly.</p>
+
+    <!-- Include our API utilities -->
+    <script src="static/js/api.js"></script>
+
+    <div class="test-section">
+        <h2>1. Database Connection Test</h2>
+        <button class="test-button" onclick="testDatabase()">Test Database Connection</button>
+        <div id="dbResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Registration Test</h2>
+        <button class="test-button" onclick="testRegistration()">Test User Registration</button>
+        <div id="registerResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Login Test</h2>
+        <button class="test-button" onclick="testLogin()">Test User Login</button>
+        <div id="loginResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Virtual Cards Test</h2>
+        <button class="test-button" onclick="testVirtualCards()">Test Virtual Cards API</button>
+        <div id="cardsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Transactions Test</h2>
+        <button class="test-button" onclick="testTransactions()">Test Transactions API</button>
+        <div id="transactionsResult" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>6. Authentication Status</h2>
+        <button class="test-button" onclick="checkAuthStatus()">Check Auth Status</button>
+        <div id="authResult" class="result"></div>
+    </div>
+
+    <script>
+        // Test Database Connection
+        async function testDatabase() {
+            const resultDiv = document.getElementById('dbResult');
+            resultDiv.innerHTML = 'Testing database connection...';
+            
+            try {
+                const result = await API.testDatabase();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Database connection successful!<br>
+                        Timestamp: ${result.timestamp}<br>
+                        Environment: ${result.environment}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Database connection failed:<br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test Registration
+        async function testRegistration() {
+            const resultDiv = document.getElementById('registerResult');
+            resultDiv.innerHTML = 'Testing registration...';
+            
+            const testUser = {
+                username: 'testuser' + Date.now(),
+                email: 'test' + Date.now() + '@example.com',
+                password: 'testpassword123',
+                first_name: 'Test',
+                last_name: 'User',
+                phone: '+1234567890'
+            };
+            
+            try {
+                const result = await API.register(testUser);
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Registration successful!<br>
+                        User ID: ${result.user.id}<br>
+                        Username: ${result.user.username}<br>
+                        Email: ${result.user.email}
+                    </div>
+                `;
+                
+                // Store test user for login test
+                localStorage.setItem('testUser', JSON.stringify(testUser));
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Registration failed:<br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test Login
+        async function testLogin() {
+            const resultDiv = document.getElementById('loginResult');
+            resultDiv.innerHTML = 'Testing login...';
+            
+            const testUser = JSON.parse(localStorage.getItem('testUser'));
+            if (!testUser) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ No test user found. Please run registration test first.
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const result = await API.login(testUser.email, testUser.password);
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Login successful!<br>
+                        Token received: ${result.token ? 'Yes' : 'No'}<br>
+                        User: ${result.user.username}<br>
+                        Email: ${result.user.email}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Login failed:<br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test Virtual Cards
+        async function testVirtualCards() {
+            const resultDiv = document.getElementById('cardsResult');
+            resultDiv.innerHTML = 'Testing virtual cards...';
+            
+            if (!Auth.isAuthenticated()) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Not authenticated. Please login first.
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const result = await API.getVirtualCards();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Virtual cards API working!<br>
+                        Cards found: ${result.cards.length}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Virtual cards API failed:<br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test Transactions
+        async function testTransactions() {
+            const resultDiv = document.getElementById('transactionsResult');
+            resultDiv.innerHTML = 'Testing transactions...';
+            
+            if (!Auth.isAuthenticated()) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Not authenticated. Please login first.
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const result = await API.getTransactions();
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Transactions API working!<br>
+                        Transactions found: ${result.transactions.length}
+                    </div>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Transactions API failed:<br>
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Check Authentication Status
+        function checkAuthStatus() {
+            const resultDiv = document.getElementById('authResult');
+            const isAuth = Auth.isAuthenticated();
+            const user = Auth.getUser();
+            
+            if (isAuth && user) {
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        ✅ Authenticated<br>
+                        User: ${user.username}<br>
+                        Email: ${user.email}<br>
+                        ID: ${user.id}
+                    </div>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        ❌ Not authenticated
+                    </div>
+                `;
+            }
+        }
+
+        // Auto-run database test on page load
+        window.addEventListener('load', function() {
+            testDatabase();
+        });
+    </script>
+</body>
+</html> 

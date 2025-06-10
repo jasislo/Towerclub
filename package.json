@@ -1,0 +1,23 @@
+{
+  "name": "towerclub-web-app",
+  "version": "1.0.0",
+  "description": "TowerClub financial web application",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required for static HTML'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "pg": "^8.11.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "keywords": ["finance", "web-app", "netlify"],
+  "author": "TowerClub Team",
+  "license": "MIT"
+} 
