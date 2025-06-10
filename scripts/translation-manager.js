@@ -1,7 +1,14 @@
 // Translation Manager
 class TranslationManager {
     constructor() {
-        this.currentLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        // Use browser language if no language is set in localStorage
+        const savedLang = localStorage.getItem('selectedLanguage');
+        let browserLang = navigator.language ? navigator.language.split('-')[0] : 'en';
+        // Supported languages
+        const supported = ['en', 'es', 'fr', 'zh', 'ar'];
+        if (!supported.includes(browserLang)) browserLang = 'en';
+
+        this.currentLanguage = savedLang || browserLang;
         this.translations = {};
         this.translationCache = new Map();
         this.pageTranslations = new Map(); // Cache translations per page
@@ -320,4 +327,4 @@ document.addEventListener('DOMContentLoaded', () => {
     translationManager.applyCurrentLanguage();
 });
 
-export default translationManager; 
+export default translationManager;
