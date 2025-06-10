@@ -1118,6 +1118,13 @@
                 
                 // Store the selected state
                 btn.setAttribute('data-selected', 'true');
+                
+                // If payment is already completed, redirect to register.html
+                if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                    setTimeout(() => {
+                        window.location.href = 'register.html';
+                    }, 500);
+                }
             });
 
             // Ensure "Selected" text persists on hover
@@ -1159,8 +1166,8 @@
             alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan. Card ending in ${cardNumber.slice(-4)} under ${cardHolder}.`);
             window.paymentSecured = true;
             
-            // Show success message and enable proceed button
-            showPaymentSuccess();
+            // Show success message and redirect to register.html
+            showPaymentSuccessAndRedirect();
         });
 
         // PayPal Payment Button Logic
@@ -1174,27 +1181,23 @@
             const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
             
             if (!isLoggedInWithPayPal) {
-                // First time login - simulate PayPal login process
-                alert('PayPal login simulation: You would be redirected to PayPal to sign in, then return here to complete payment.');
+                // Store current page state for return
+                sessionStorage.setItem('returnToPayPage', 'true');
+                sessionStorage.setItem('selectedPlan', selectedPlan);
+                sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
                 
-                // Mark as logged in with PayPal
-                sessionStorage.setItem('paypalLoggedIn', 'true');
+                // Redirect to actual PayPal login page
+                const paypalLoginUrl = 'https://www.paypal.com/signin';
+                const returnUrl = encodeURIComponent(window.location.href);
+                const fullPaypalUrl = `${paypalLoginUrl}?returnUrl=${returnUrl}`;
                 
-                // Update button text to show logged in status
-                this.textContent = 'Logged with PayPal';
-                this.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
-                this.style.color = '#ffffff';
-                
-                // In a real implementation, you would redirect to PayPal like this:
-                // window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/PAY.HTML");
+                window.location.href = fullPaypalUrl;
             } else {
                 // Already logged in - just show payment button
                 alert('Already logged in with PayPal. Ready to make payment.');
+                document.getElementById('makePaypalPayment').style.display = 'block';
+                document.getElementById('makePaypalPayment').textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
             }
-            
-            // Show the Make Payment button after PayPal login
-            document.getElementById('makePaypalPayment').style.display = 'block';
-            document.getElementById('makePaypalPayment').textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
         });
 
         // Make Payment with PayPal button handler
@@ -1208,8 +1211,8 @@
             alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
             window.paymentSecured = true;
             
-            // Show success message and enable proceed button
-            showPaymentSuccess();
+            // Show success message and redirect to register.html
+            showPaymentSuccessAndRedirect();
             
             // Store payment status for session
             sessionStorage.setItem('paymentComplete', 'true');
@@ -1233,7 +1236,13 @@
             if (heroGetStarted) {
                 heroGetStarted.addEventListener('click', function(e) {
                     e.preventDefault();
-                    window.location.href = 'register.html';
+                    // Check if payment is completed, if so redirect to register.html
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        // If no payment, still allow registration
+                        window.location.href = 'register.html';
+                    }
                 });
             }
 
@@ -1293,6 +1302,51 @@
 
         // Check for existing payment on page load
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if returning from PayPal login
+            const returningFromPayPal = sessionStorage.getItem('returnToPayPage') === 'true';
+            
+            if (returningFromPayPal) {
+                // Clear the return flag
+                sessionStorage.removeItem('returnToPayPage');
+                
+                // Mark as logged in with PayPal
+                sessionStorage.setItem('paypalLoggedIn', 'true');
+                
+                // Update PayPal button to show logged in state
+                const paypalButton = document.getElementById('paypalButton');
+                if (paypalButton) {
+                    paypalButton.textContent = 'Logged with PayPal';
+                    paypalButton.style.backgroundColor = '#22c55e';
+                    paypalButton.style.color = '#ffffff';
+                }
+                
+                // Show success message
+                alert('Successfully logged in with PayPal! You can now proceed with payment.');
+                
+                // Show the payment button if plan is selected
+                const savedPlan = sessionStorage.getItem('selectedPlan');
+                const savedAmount = sessionStorage.getItem('selectedPlanAmount');
+                if (savedPlan && savedAmount) {
+                    selectedPlan = savedPlan;
+                    selectedPlanAmount = parseFloat(savedAmount);
+                    
+                    // Update the button to show selected state
+                    const selectedButton = document.querySelector(`[data-plan="${savedPlan}"]`);
+                    if (selectedButton) {
+                        selectedButton.textContent = 'Selected';
+                        selectedButton.classList.add('selected-plan');
+                        selectedButton.setAttribute('data-selected', 'true');
+                    }
+                    
+                    // Show PayPal payment button
+                    const makePaypalPayment = document.getElementById('makePaypalPayment');
+                    if (makePaypalPayment) {
+                        makePaypalPayment.style.display = 'block';
+                        makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
+                    }
+                }
+            }
+            
             if (sessionStorage.getItem('paymentComplete') === 'true') {
                 window.paymentSecured = true;
                 enableProceedButtons();
@@ -1393,23 +1447,39 @@
             // Optionally: Save code to localStorage/session or send to backend
         });
 
-        // Update payment success messages
-        function showPaymentSuccess() {
+        // Update payment success messages and redirect to register.html
+        function showPaymentSuccessAndRedirect() {
             const successMessage = document.createElement('div');
             successMessage.className = 'payment-success';
             successMessage.style.cssText = 'background-color: #22c55e; color: white; padding: 20px; border-radius: 5px; margin-top: 15px; text-align: center;';
             successMessage.innerHTML = `
-                <p style="margin-bottom: 15px; font-size: 1.1rem;">Payment successful! Choose your next step:</p>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <a href="register.html" class="btn btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px;">
-                        Create Account
-                    </a>
-                    <a href="register.html" class="btn btn-outline" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px; background: white; color: #22c55e; border: 2px solid white;">
-                        Proceed to Registration
-                    </a>
+                <p style="margin-bottom: 15px; font-size: 1.1rem;">Payment successful! Redirecting to registration...</p>
+                <div style="display: flex; justify-content: center;">
+                    <div class="spinner" style="width: 30px; height: 30px; border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                 </div>
             `;
+            
+            // Add CSS for spinner animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
             document.querySelector('.payment-form').appendChild(successMessage);
+            
+            // Store payment completion status
+            sessionStorage.setItem('paymentComplete', 'true');
+            sessionStorage.setItem('selectedPlan', selectedPlan);
+            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+            
+            // Redirect to register.html after 2 seconds
+            setTimeout(() => {
+                window.location.href = 'register.html';
+            }, 2000);
         }
 
         // Add payment verification function
