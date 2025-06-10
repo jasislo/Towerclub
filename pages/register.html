@@ -476,7 +476,7 @@
                     const result = await API.register(userData);
 
                     if (result.message) {
-                        showSuccess('Account created successfully! Redirecting to login...');
+                        showSuccess('Account created successfully! Redirecting to onboarding...');
                         
                         // Store user data for onboarding
                         const onboardingData = {
@@ -504,9 +504,9 @@
                         localStorage.setItem('needsOnboarding', 'true');
                         localStorage.setItem('registrationTimestamp', Date.now().toString());
 
-                        // Redirect to login after a short delay
+                        // Redirect to onboarding after a short delay
                         setTimeout(() => {
-                            window.location.href = 'login.html';
+                            window.location.href = 'onboarding.html';
                         }, 2000);
                     }
                 } catch (error) {
