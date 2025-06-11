@@ -747,7 +747,9 @@
     </script>
     <script type="module">
         import DarkMode from '/scripts/dark-mode.js';
-        // DarkMode.init() is called automatically on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+        });
     </script>
 </body>
 </html>

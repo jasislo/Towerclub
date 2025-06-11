@@ -751,8 +751,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -767,105 +767,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    // Load onboarding data from registration
-    const onboardingData = JSON.parse(localStorage.getItem('onboardingData') || '{}');
-    const userRegistrationData = JSON.parse(localStorage.getItem('userRegistrationData') || '{}');
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-    // Update onboarding progress
-    if (onboardingData.onboardingStep) {
-        localStorage.setItem('onboardingStep', onboardingData.onboardingStep.toString());
-    }
-
-    // Prefill Complete Profile section with comprehensive user data
-    if (onboardingData) {
-        // Prefill with registration data
-        if (onboardingData.fullName && document.getElementById('name')) {
-            document.getElementById('name').value = onboardingData.fullName;
-        }
-        if (onboardingData.email && document.getElementById('email')) {
-            document.getElementById('email').value = onboardingData.email;
-        }
-        if (onboardingData.phone && document.getElementById('phone')) {
-            document.getElementById('phone').value = onboardingData.phone;
-        }
-        
-        // Generate username from email if not provided
-        if (!document.getElementById('username')?.value && onboardingData.email) {
-            const username = onboardingData.email.split('@')[0];
-            if (document.getElementById('username')) {
-                document.getElementById('username').value = username;
-            }
-        }
-    }
-
-    // Also check for existing memberProfile data (backward compatibility)
-    const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
-    if (memberProfile) {
-        if (memberProfile.fullName && document.getElementById('name') && !document.getElementById('name').value) {
-            document.getElementById('name').value = memberProfile.fullName;
-        }
-        if (memberProfile.email && document.getElementById('email') && !document.getElementById('email').value) {
-            document.getElementById('email').value = memberProfile.email;
-        }
-        if (memberProfile.phone && document.getElementById('phone') && !document.getElementById('phone').value) {
-            document.getElementById('phone').value = memberProfile.phone;
-        }
-        if (memberProfile.username && document.getElementById('username') && !document.getElementById('username').value) {
-            document.getElementById('username').value = memberProfile.username;
-        }
-        if (memberProfile.age && document.getElementById('age') && !document.getElementById('age').value) {
-            document.getElementById('age').value = memberProfile.age;
-        }
-    }
-
-    // Function to check if profile form is complete and enable/disable Complete Profile button
-    function checkProfileFormCompletion() {
-        const name = document.getElementById('name')?.value || '';
-        const username = document.getElementById('username')?.value || '';
-        const age = document.getElementById('age')?.value || '';
-        const email = document.getElementById('email')?.value || '';
-        const phone = document.getElementById('phone')?.value || '';
-        
-        const completeProfileBtn = document.getElementById('completeProfileBtn');
-        
-        // Check if all required fields are filled
-        const isComplete = name.trim() !== '' && 
-                          username.trim() !== '' && 
-                          age.trim() !== '' && 
-                          email.trim() !== '' && 
-                          phone.trim() !== '';
-        
-        if (completeProfileBtn) {
-            if (isComplete) {
-                completeProfileBtn.disabled = false;
-                completeProfileBtn.style.opacity = '1';
-                completeProfileBtn.style.cursor = 'pointer';
-                completeProfileBtn.style.background = 'linear-gradient(90deg, #22c55e, #a855f7)';
-                completeProfileBtn.style.color = '#ffffff';
-            } else {
-                completeProfileBtn.disabled = true;
-                completeProfileBtn.style.opacity = '0.6';
-                completeProfileBtn.style.cursor = 'not-allowed';
-                completeProfileBtn.style.background = '#cccccc';
-                completeProfileBtn.style.color = '#666666';
-            }
-        }
-    }
-
-    // Add event listeners to form fields to check completion
-    const profileFields = ['name', 'username', 'age', 'email', 'phone'];
-    profileFields.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('input', checkProfileFormCompletion);
-            field.addEventListener('change', checkProfileFormCompletion);
-        }
-    });
-
-    // Initial check for form completion
-    checkProfileFormCompletion();
-
     // Handle Credit/Debit Card Payment
     document.getElementById('cardPaymentForm').addEventListener('submit', function (event) {
         event.preventDefault();
@@ -933,7 +834,6 @@
     if (profileForm) {
         profileForm.addEventListener('submit', function (event) {
             event.preventDefault();
-            
             // Collect profile info
             const name = document.getElementById('name')?.value || '';
             const username = document.getElementById('username')?.value || '';
@@ -942,152 +842,84 @@
             const phone = document.getElementById('phone')?.value || '';
             const profilePicture = localStorage.getItem('profilePicture') || '';
 
-            // Create comprehensive user data
-            const comprehensiveUserData = {
-                // Basic Profile
+            // Save profile info to localStorage
+            const updatedProfile = {
                 fullName: name,
-                firstName: name.split(' ')[0],
-                lastName: name.split(' ').slice(1).join(' '),
-                username: username,
-                age: parseInt(age),
-                email: email,
-                phone: phone,
-                profilePicture: profilePicture,
-                
-                // Account Status
-                userId: currentUser.id || onboardingData.userId || Date.now().toString(),
-                registrationDate: onboardingData.registrationDate || new Date().toISOString(),
-                isActive: true,
-                isVerified: true,
-                profileComplete: true,
-                onboardingCompleted: true,
-                
-                // Preferences & Settings
-                preferences: {
-                    notifications: true,
-                    language: 'en',
-                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                    currency: 'USD',
-                    theme: 'light'
-                },
-                
-                // Session & Activity
-                sessionId: onboardingData.sessionId || Date.now().toString(),
-                lastActivity: new Date().toISOString(),
-                lastLogin: new Date().toISOString(),
-                
-                // Financial Data
-                balance: 0,
-                totalTransactions: 0,
-                memberSince: new Date().toISOString().split('T')[0],
-                
-                // Security
-                phoneVerified: true,
-                emailVerified: true,
-                twoFactorEnabled: false,
-                
-                // Additional Profile
-                bio: '',
-                location: '',
-                company: '',
-                website: '',
-                socialLinks: {}
+                username,
+                age,
+                email,
+                phone,
+                profilePicture
             };
-
-            // Update onboarding data with comprehensive information
-            const updatedOnboardingData = {
-                ...onboardingData,
-                ...comprehensiveUserData,
-                onboardingCompleted: true,
-                onboardingStep: 4,
-                completedAt: new Date().toISOString()
-            };
-
-            // Save comprehensive data to localStorage
-            localStorage.setItem('onboardingData', JSON.stringify(updatedOnboardingData));
-            localStorage.setItem('memberProfile', JSON.stringify(comprehensiveUserData));
-            localStorage.setItem('currentUser', JSON.stringify(comprehensiveUserData));
-            localStorage.setItem('userRegistrationData', JSON.stringify({
-                ...userRegistrationData,
-                ...comprehensiveUserData
-            }));
-            
-            // Set authentication and access flags
-            localStorage.setItem('needsOnboarding', 'false');
-            localStorage.setItem('onboardingCompleted', 'true');
-            localStorage.setItem('profileComplete', 'true');
-            localStorage.setItem('userAuthenticated', 'true');
-            localStorage.setItem('userLoggedIn', 'true');
-            localStorage.setItem('accountActive', 'true');
-            
-            // Set user session
-            localStorage.setItem('userSession', JSON.stringify({
-                userId: comprehensiveUserData.userId,
-                sessionId: comprehensiveUserData.sessionId,
-                loginTime: comprehensiveUserData.lastLogin,
-                isActive: true
-            }));
-
-            // Store user preferences
-            localStorage.setItem('userPreferences', JSON.stringify(comprehensiveUserData.preferences));
-            
-            // Store user financial data
-            localStorage.setItem('userFinancialData', JSON.stringify({
-                balance: 0,
-                totalTransactions: 0,
-                memberSince: comprehensiveUserData.memberSince,
-                paymentMethods: [],
-                transactions: []
-            }));
-
-            // Show success message
-            alert('Profile completed successfully! Welcome to TowerClub. You now have full access to all features.');
+            localStorage.setItem('memberProfile', JSON.stringify(updatedProfile));
 
             // Navigate to mainpage.html
             window.location.href = 'mainpage.html';
         });
     }
 
-    function showCardPaymentForm() {
-        document.getElementById('cardPaymentFormContainer').style.display = 'block';
-        document.getElementById('paypalPaymentFormContainer').style.display = 'none';
-
-        // Add active class to Credit/Debit Card option
-        document.getElementById('creditCardOption').classList.add('active');
-        document.getElementById('paypalOption').classList.remove('active');
-    }
-
-    function showPayPalPaymentForm() {
-        document.getElementById('cardPaymentFormContainer').style.display = 'none';
-        document.getElementById('paypalPaymentFormContainer').style.display = 'block';
-
-        // Add active class to PayPal option
-        document.getElementById('paypalOption').classList.add('active');
-        document.getElementById('creditCardOption').classList.remove('active');
-    }
-
-    function startPayPalPayment() {
-        const returnUrl = encodeURIComponent(window.location.href); // Current page URL
-        window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
-    }
-
-    function toggleMenu() {
-        const navLinks = document.querySelector('.nav-links');
-        navLinks.classList.toggle('show');
-    }
-
-    function previewProfileImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                document.getElementById('profileImagePreview').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+    // Prefill Complete Profile section with info from register.html if available
+    const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+    if (memberProfile) {
+        if (memberProfile.fullName && document.getElementById('name')) {
+            document.getElementById('name').value = memberProfile.fullName;
+        }
+        if (memberProfile.email && document.getElementById('email')) {
+            document.getElementById('email').value = memberProfile.email;
+        }
+        if (memberProfile.phone && document.getElementById('phone')) {
+            document.getElementById('phone').value = memberProfile.phone;
+        }
+        // Optionally prefill username or age if you stored them
+        if (memberProfile.username && document.getElementById('username')) {
+            document.getElementById('username').value = memberProfile.username;
+        }
+        if (memberProfile.age && document.getElementById('age')) {
+            document.getElementById('age').value = memberProfile.age;
         }
     }
+});
 
-    // Budget form logic
+        function showCardPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'block';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'none';
+
+            // Add active class to Credit/Debit Card option
+            document.getElementById('creditCardOption').classList.add('active');
+            document.getElementById('paypalOption').classList.remove('active');
+        }
+
+        function showPayPalPaymentForm() {
+            document.getElementById('cardPaymentFormContainer').style.display = 'none';
+            document.getElementById('paypalPaymentFormContainer').style.display = 'block';
+
+            // Add active class to PayPal option
+            document.getElementById('paypalOption').classList.add('active');
+            document.getElementById('creditCardOption').classList.remove('active');
+        }
+
+        function startPayPalPayment() {
+            const returnUrl = encodeURIComponent(window.location.href); // Current page URL
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('show');
+        }
+
+        function previewProfileImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Budget form logic
     const budgetForm = document.getElementById('budgetForm');
     if (budgetForm) {
         const amountInput = document.getElementById('amount');
@@ -1133,16 +965,6 @@
             paymentSection.style.display = 'none';
         }
 
-        // Update user preferences to indicate sections were skipped
-        const currentPreferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
-        const updatedPreferences = {
-            ...currentPreferences,
-            budgetSkipped: true,
-            paymentSkipped: true,
-            onboardingSectionsSkipped: ['budget', 'payment']
-        };
-        localStorage.setItem('userPreferences', JSON.stringify(updatedPreferences));
-
         // Enable the Complete Profile button
         const completeProfileBtn = document.getElementById('completeProfileBtn');
         if (completeProfileBtn) {
@@ -1152,9 +974,6 @@
             completeProfileBtn.style.background = 'linear-gradient(90deg, #22c55e, #a855f7)';
             completeProfileBtn.style.color = '#ffffff';
         }
-
-        // Show message about skipped sections
-        alert('Budget and payment sections skipped. You can complete these later in your account settings.');
     }
 
     function handlePayPalLogin() {
@@ -1192,7 +1011,6 @@
             localStorage.setItem('paymentMethod', 'paypal');
         }
     });
-});
     </script>
     <script src="/scripts/lang.js"></script>
     <script>
@@ -1201,9 +1019,5 @@
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script type="module">
-    import DarkMode from '/scripts/dark-mode.js';
-    // DarkMode.init() is called automatically on DOMContentLoaded
-</script>
 </body>
 </html>

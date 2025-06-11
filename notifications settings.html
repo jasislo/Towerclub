@@ -12,13 +12,11 @@
         import translationManager from '../scripts/translation-manager.js';
     </script>
     <script type="module">
-        import DarkMode from '/scripts/dark-mode.js';
-        // DarkMode.init() is called automatically on DOMContentLoaded
-    </script>
-    <script type="module">
-        import profilePictureManager from '/scripts/profile-picture-manager.js';
-        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
-    </script>
+    import DarkMode from '/scripts/dark-mode.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
+</script>
     <style>
         :root {
             --primary-color: #39D2C0;
@@ -417,7 +415,7 @@
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <!-- Log Out Button -->
-                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Logout</a>
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Log out</a>
             </div>
         </div>
     </nav>
@@ -480,7 +478,7 @@
                 <span>Edit Pictutes Profile</span>
                 <i class="fas fa-chevron-right"></i>
             </div>
-            <div class="menu-item" onclick="navigateTo('change-password')">
+            <div class="menu-item" onclick="navigateTo('forgot-password.html')">
                 <span>Change Password</span>
                 <i class="fas fa-chevron-right"></i>
             </div>
@@ -535,8 +533,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>

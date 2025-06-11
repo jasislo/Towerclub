@@ -490,7 +490,7 @@
         </div>
 
         <div class="quick-actions">
-            <a href="payment methods.html" class="quick-action-item">
+            <a href="payment methods.html" class="quick-action-item" id="myBankBtn">
                 <span class="material-icons">account_balance_outlined</span>
                 <h3>My Bank</h3>
             </a>
@@ -517,7 +517,7 @@
         </div>
 
         <a href="dashboard2.html" class="wallet-balance">
-            <h2>Wallet Balance</h2>
+            <h2>My Towerclub Balance</h2>
             <p class="balance" id="walletBalance">$7,302</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
@@ -536,7 +536,7 @@
 
         <a href="referral profile.html" class="referral-reward">
             <h2>Referral Reward</h2>
-            <p class="reward" id="referralReward">2,340</p>
+            <p class="reward" id="referralReward">$2,340</p>
             <p class="portfolio">40% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -1236,6 +1236,18 @@
     <script type="module">
         import profilePictureManager from '/scripts/profile-picture-manager.js';
         // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+    </script>
+    <script>
+        // Ensure My Bank button always redirects to payment methods.html
+        document.addEventListener('DOMContentLoaded', function() {
+            const myBankBtn = document.getElementById('myBankBtn');
+            if (myBankBtn) {
+                myBankBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'payment methods.html';
+                });
+            }
+        });
     </script>
 </body>
 

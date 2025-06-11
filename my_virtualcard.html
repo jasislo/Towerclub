@@ -642,7 +642,7 @@
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <!-- Log Out Button -->
-                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Log out</a>
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Logout</a>
             </div>
         </div>
     </nav>
@@ -657,8 +657,9 @@
             <div class="card-content">
                 <h3 data-i18n="virtual-card-title">My Towerclub Virtual Card</h3>
                 <div class="card-number">**** **** **** 0250</div>
-                <div class="card-details">
+                <div class="card-details" style="display: flex; justify-content: center; gap: 24px; margin-top: 10px;">
                     <span class="expiry-date">Expiry: 06/25</span>
+                    <span class="cvv">CVV: 123</span>
                     <span class="cardholder-name">Cardholder: Andrew Smith</span>
                 </div>
                 <div class="card-actions">
@@ -696,7 +697,7 @@
                     <input type="text" id="cardholderName" class="form-control" placeholder="Enter cardholder name" value="VIRTUAL CARD">
                 </div>
                 <div class="form-group">
-                    <label for="creditLimit">Credit Limit ($):</label>
+                    <label for="creditLimit">Card Limit ($):</label>
                     <input type="number" id="creditLimit" class="form-control" placeholder="1000" value="1000" min="100" max="50000">
                 </div>
             </div>
@@ -721,19 +722,6 @@
             <div class="service-card spending-card">
                 <h4>Spending</h4>
                 <div class="amount negative">-$8,392</div>
-            </div>
-        </div>
-
-        <!-- Quick Service Section -->
-        <div class="section-title">Quick Service</div>
-        <div class="quick-service">
-            <div class="service-card" onclick="window.location.href='edittransaction.html'">
-                <i class="material-icons">swap_horiz</i>
-                <div data-i18n="action-transfer">Transfer</div>
-            </div>
-            <div class="service-card" onclick="window.location.href='my_card.html'">
-                <i class="material-icons">add_card</i>
-                <div data-i18n="action-change-card">Change Card</div>
             </div>
         </div>
 
@@ -802,8 +790,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -832,13 +820,70 @@
     <script>
         applyTranslations(); // Call this on page load
     </script>
-    <script type="module">
-        import DarkMode from '/scripts/dark-mode.js';
-        // DarkMode.init() is called automatically on DOMContentLoaded
-    </script>
-    <script type="module">
-        import profilePictureManager from '/scripts/profile-picture-manager.js';
-        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
-    </script>
+    <script>
+// Utility: Get current balance and budget from localStorage (or your backend)
+function getUserBalance() {
+    // Example: get from localStorage or API
+    return parseFloat(localStorage.getItem('accountBalance') || '1000');
+}
+function getUserBudget() {
+    return parseFloat(localStorage.getItem('userBudget') || '0');
+}
+
+// Update Card Limit input and Card Details section
+function updateCardLimitDisplay() {
+    const balance = getUserBalance();
+    const budget = getUserBudget();
+    const cardLimit = balance + budget;
+
+    // Update the input field
+    const cardLimitInput = document.getElementById('creditLimit');
+    if (cardLimitInput) {
+        cardLimitInput.value = cardLimit;
+    }
+
+    // Update Card Details section if present
+    const cardDetailsSection = document.getElementById('cardDetails');
+    if (cardDetailsSection) {
+        // Find and update Card Limit in details
+        const limitSpan = cardDetailsSection.querySelector('.card-limit-value');
+        if (limitSpan) {
+            limitSpan.textContent = `$${cardLimit.toLocaleString()}`;
+        }
+    }
+}
+
+// Call this after any balance/budget change
+document.addEventListener('DOMContentLoaded', () => {
+    updateCardLimitDisplay();
+
+    // Example: When a new budget is created, update everything
+    document.getElementById('budgetForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById('amount').value.replace(/,/g, '') || '0');
+        localStorage.setItem('userBudget', amount);
+        updateCardLimitDisplay();
+        updateMainBalance();
+    });
+
+    // Example: When funds are added/charged, update everything
+    // (You should call updateCardLimitDisplay and updateMainBalance after any transaction)
+});
+
+// Update My Towerclub Balance on mainpage.html
+function updateMainBalance() {
+    const balance = getUserBalance();
+    const budget = getUserBudget();
+    const total = balance + budget;
+    // Save to localStorage for mainpage.html to read
+    localStorage.setItem('accountBalance', total);
+
+    // If on mainpage.html, update the balance display
+    const walletBalance = document.getElementById('walletBalance');
+    if (walletBalance) {
+        walletBalance.textContent = `$${total.toLocaleString()}`;
+    }
+}
+</script>
 </body>
 </html>
