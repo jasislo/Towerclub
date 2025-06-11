@@ -445,6 +445,17 @@
         import userDataManager from '../scripts/user-data-manager.js';
         import messagingService from '../scripts/messaging-service.js';
         import DarkMode from '/scripts/dark-mode.js';
+        import { 
+            getUserData, 
+            updateUserProfile, 
+            uploadProfileImage, 
+            getTransactions, 
+            getCryptoData, 
+            fetchFinancialNews, 
+            fetchAccountBalance, 
+            fetchRecentTransactions, 
+            fetchPortfolioData 
+        } from '../scripts/api-service.js';
     </script>
 </head>
 
@@ -515,7 +526,7 @@
         </a>
 
         <a href="crypto.html" class="bitcoin-section">
-            <h2>Bitcoin</h2>
+            <h2>Crypto</h2>
             <p class="balance" id="bitcoinBalance">$5,201.02</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
@@ -576,8 +587,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -598,45 +609,81 @@
         import accessControl from '../scripts/access-control.js';
         import userDataManager from '../scripts/user-data-manager.js';
         import messagingService from '../scripts/messaging-service.js';
+        import { 
+            getUserData, 
+            updateUserProfile, 
+            uploadProfileImage, 
+            getTransactions, 
+            getCryptoData, 
+            fetchFinancialNews, 
+            fetchAccountBalance, 
+            fetchRecentTransactions, 
+            fetchPortfolioData 
+        } from '../scripts/api-service.js';
+
+        // Global state for real-time data
+        let realTimeDataInterval;
+        let userFinancialData = {};
+        let cryptoData = {};
+        let portfolioData = {};
 
         // Initialize access control
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user has full access
-            if (!accessControl.hasFullAccess()) {
-                accessControl.redirectBasedOnAccess();
-                return;
-            }
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Check if user has full access
+                if (!accessControl.hasFullAccess()) {
+                    accessControl.redirectBasedOnAccess();
+                    return;
+                }
 
-            // Load and display user data
-            loadUserData();
-            
-            // Initialize interactive features
-            initializeInteractiveFeatures();
-            
-            // Set up event listeners
-            setupEventListeners();
-            
-            // Update real-time data
-            updateRealTimeData();
-            
-            // Initialize notifications
-            initializeNotifications();
+                // Load and display user data
+                await loadUserData();
+                
+                // Initialize interactive features
+                initializeInteractiveFeatures();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Load real-time data
+                await loadRealTimeData();
+                
+                // Initialize notifications
+                initializeNotifications();
+                
+                // Start real-time updates
+                startRealTimeUpdates();
+                
+                console.log('Main page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing main page:', error);
+                showNotification('Failed to load page data. Please refresh.', 'error');
+            }
         });
 
-        function loadUserData() {
+        async function loadUserData() {
             try {
+                // Fetch user data from API
+                const apiUserData = await getUserData();
+                
                 // Get user data from various sources
                 const currentUser = userDataManager.getCurrentUser();
                 const memberProfile = userDataManager.getMemberProfile();
                 const onboardingData = userDataManager.getOnboardingData();
                 const userPreferences = userDataManager.getUserPreferences();
-                const userFinancialData = JSON.parse(localStorage.getItem('userFinancialData') || '{}');
+                
+                // Merge API data with local data
+                const mergedUserData = {
+                    ...currentUser,
+                    ...apiUserData,
+                    ...memberProfile,
+                    ...onboardingData
+                };
 
                 // Determine user's name
-                const userName = currentUser.fullName || 
-                               memberProfile.fullName || 
-                               onboardingData.fullName || 
-                               `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() ||
+                const userName = mergedUserData.fullName || 
+                               mergedUserData.name ||
+                               `${mergedUserData.firstName || ''} ${mergedUserData.lastName || ''}`.trim() ||
                                'User';
 
                 // Update welcome message
@@ -645,16 +692,10 @@
                     welcomeMessage.textContent = `Welcome back, ${userName.split(' ')[0]}!`;
                 }
 
-                // Update user name in header
-                const userNameElement = document.getElementById('userName');
-                if (userNameElement) {
-                    userNameElement.textContent = userName.split(' ')[0];
-                }
-
                 // Update profile picture
-                const profilePicture = currentUser.profilePicture || 
-                                     memberProfile.profilePicture || 
-                                     onboardingData.profilePicture;
+                const profilePicture = mergedUserData.profilePicture || 
+                                     mergedUserData.avatar ||
+                                     mergedUserData.profile?.avatar;
                 
                 if (profilePicture) {
                     const userProfilePicture = document.getElementById('userProfilePicture');
@@ -663,53 +704,256 @@
                     }
                 }
 
-                // Update financial data
-                updateFinancialData(userFinancialData, currentUser);
-
                 // Update dashboard subtitle with user info
                 const dashboardSubtitle = document.getElementById('dashboardSubtitle');
                 if (dashboardSubtitle) {
-                    const memberSince = currentUser.memberSince || onboardingData.registrationDate;
+                    const memberSince = mergedUserData.memberSince || 
+                                      mergedUserData.registrationDate ||
+                                      mergedUserData.createdAt;
                     if (memberSince) {
                         const memberDate = new Date(memberSince);
                         const daysSince = Math.floor((new Date() - memberDate) / (1000 * 60 * 60 * 24));
                         dashboardSubtitle.textContent = `Member since ${memberDate.toLocaleDateString()} • ${daysSince} days with us`;
+                    } else {
+                        dashboardSubtitle.textContent = 'Welcome to TowerClub!';
                     }
                 }
 
+                // Store merged user data
+                userDataManager.updateCurrentUser(mergedUserData);
+
                 console.log('User data loaded successfully:', {
                     userName,
-                    currentUser,
-                    memberProfile,
-                    onboardingData
+                    mergedUserData
                 });
 
             } catch (error) {
                 console.error('Error loading user data:', error);
+                // Fallback to local data only
+                loadLocalUserData();
             }
         }
 
-        function updateFinancialData(userFinancialData, currentUser) {
-            // Update wallet balance
+        function loadLocalUserData() {
+            try {
+                const currentUser = userDataManager.getCurrentUser();
+                const memberProfile = userDataManager.getMemberProfile();
+                const onboardingData = userDataManager.getOnboardingData();
+
+                const userName = currentUser.fullName || 
+                               memberProfile.fullName || 
+                               onboardingData.fullName || 
+                               `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() ||
+                               'User';
+
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome back, ${userName.split(' ')[0]}!`;
+                }
+
+                const dashboardSubtitle = document.getElementById('dashboardSubtitle');
+                if (dashboardSubtitle) {
+                    dashboardSubtitle.textContent = 'Welcome to TowerClub!';
+                }
+            } catch (error) {
+                console.error('Error loading local user data:', error);
+            }
+        }
+
+        async function loadRealTimeData() {
+            try {
+                // Load financial data
+                await loadFinancialData();
+                
+                // Load crypto data
+                await loadCryptoData();
+                
+                // Load portfolio data
+                await loadPortfolioData();
+                
+                // Load recent transactions
+                await loadRecentTransactions();
+                
+                // Load financial news
+                await loadFinancialNews();
+                
+            } catch (error) {
+                console.error('Error loading real-time data:', error);
+                showNotification('Some data may not be up to date', 'warning');
+            }
+        }
+
+        async function loadFinancialData() {
+            try {
+                const balanceData = await fetchAccountBalance();
+                userFinancialData = balanceData;
+                
+                // Update wallet balance
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance && balanceData.balance !== undefined) {
+                    walletBalance.textContent = `$${balanceData.balance.toLocaleString()}`;
+                }
+                
+                // Update referral reward
+                const referralReward = document.getElementById('referralReward');
+                if (referralReward && balanceData.referralReward !== undefined) {
+                    referralReward.textContent = balanceData.referralReward.toLocaleString();
+                }
+                
+            } catch (error) {
+                console.error('Error loading financial data:', error);
+                // Use fallback data
+                updateFinancialDataWithFallback();
+            }
+        }
+
+        async function loadCryptoData() {
+            try {
+                cryptoData = await getCryptoData();
+                
+                // Update Bitcoin balance
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance && cryptoData.bitcoin) {
+                    const btcPrice = cryptoData.bitcoin.usd;
+                    const btcBalance = userFinancialData.bitcoinBalance || 0.15; // Default BTC amount
+                    const btcValue = btcBalance * btcPrice;
+                    bitcoinBalance.textContent = `$${btcValue.toFixed(2)}`;
+                }
+                
+            } catch (error) {
+                console.error('Error loading crypto data:', error);
+                // Use fallback data
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance) {
+                    bitcoinBalance.textContent = '$5,201.02';
+                }
+            }
+        }
+
+        async function loadPortfolioData() {
+            try {
+                portfolioData = await fetchPortfolioData();
+                
+                // Update portfolio percentages
+                updatePortfolioPercentages(portfolioData);
+                
+            } catch (error) {
+                console.error('Error loading portfolio data:', error);
+                // Use default percentages
+                updatePortfolioPercentages({
+                    walletPercentage: 32,
+                    cryptoPercentage: 32,
+                    referralPercentage: 40
+                });
+            }
+        }
+
+        async function loadRecentTransactions() {
+            try {
+                const transactions = await fetchRecentTransactions();
+                
+                // Store transactions for potential use
+                userFinancialData.recentTransactions = transactions;
+                
+                // Update transaction count or other indicators
+                updateTransactionIndicators(transactions);
+                
+            } catch (error) {
+                console.error('Error loading recent transactions:', error);
+            }
+        }
+
+        async function loadFinancialNews() {
+            try {
+                const news = await fetchFinancialNews();
+                
+                // Store news data for potential use
+                userFinancialData.financialNews = news;
+                
+                // Update news indicators if needed
+                updateNewsIndicators(news);
+                
+            } catch (error) {
+                console.error('Error loading financial news:', error);
+            }
+        }
+
+        function updateFinancialDataWithFallback() {
             const walletBalance = document.getElementById('walletBalance');
             if (walletBalance) {
-                const balance = userFinancialData.balance || currentUser.balance || 7302;
-                walletBalance.textContent = `$${balance.toLocaleString()}`;
+                walletBalance.textContent = '$7,302';
             }
-
-            // Update Bitcoin balance (mock data for now)
-            const bitcoinBalance = document.getElementById('bitcoinBalance');
-            if (bitcoinBalance) {
-                const btcBalance = userFinancialData.bitcoinBalance || 5201.02;
-                bitcoinBalance.textContent = `$${btcBalance.toLocaleString()}`;
-            }
-
-            // Update referral reward
+            
             const referralReward = document.getElementById('referralReward');
             if (referralReward) {
-                const reward = userFinancialData.referralReward || 2340;
-                referralReward.textContent = reward.toLocaleString();
+                referralReward.textContent = '2,340';
             }
+        }
+
+        function updatePortfolioPercentages(data) {
+            // Update progress bars with actual percentages
+            const walletProgress = document.querySelector('.wallet-balance .progress');
+            if (walletProgress && data.walletPercentage) {
+                walletProgress.style.width = `${data.walletPercentage}%`;
+            }
+            
+            const cryptoProgress = document.querySelector('.bitcoin-section .progress');
+            if (cryptoProgress && data.cryptoPercentage) {
+                cryptoProgress.style.width = `${data.cryptoPercentage}%`;
+            }
+            
+            const referralProgress = document.querySelector('.referral-reward .progress');
+            if (referralProgress && data.referralPercentage) {
+                referralProgress.style.width = `${data.referralPercentage}%`;
+            }
+        }
+
+        function updateTransactionIndicators(transactions) {
+            // Update transaction-related UI elements
+            const pendingTransactions = transactions.filter(t => t.status === 'pending');
+            
+            if (pendingTransactions.length > 0) {
+                // Show pending transaction indicator
+                showPendingTransactionIndicator(pendingTransactions.length);
+            }
+        }
+
+        function updateNewsIndicators(news) {
+            // Update news-related UI elements if needed
+            if (news && news.length > 0) {
+                // Could show news count or latest news preview
+                console.log(`Loaded ${news.length} financial news items`);
+            }
+        }
+
+        function showPendingTransactionIndicator(count) {
+            // Create or update pending transaction indicator
+            let indicator = document.getElementById('pendingTransactionIndicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'pendingTransactionIndicator';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: #f59e0b;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    font-size: 0.875rem;
+                    z-index: 1000;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                `;
+                document.body.appendChild(indicator);
+            }
+            
+            indicator.textContent = `${count} pending transaction${count > 1 ? 's' : ''}`;
+            indicator.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 5000);
         }
 
         function initializeInteractiveFeatures() {
@@ -790,98 +1034,199 @@
         }
 
         function initializeNotifications() {
-            // Get current user ID
-            const currentUser = userDataManager.getCurrentUser();
-            const userId = currentUser.userId || currentUser.id;
-            
-            if (!userId) return;
+            try {
+                // Get current user ID
+                const currentUser = userDataManager.getCurrentUser();
+                const userId = currentUser.userId || currentUser.id;
+                
+                if (!userId) return;
 
-            // Update notification counts
-            updateNotificationCounts(userId);
-            
-            // Set up periodic updates
-            setInterval(() => {
+                // Update notification counts
                 updateNotificationCounts(userId);
-            }, 10000); // Update every 10 seconds
+                
+                // Set up periodic updates
+                setInterval(() => {
+                    updateNotificationCounts(userId);
+                }, 10000); // Update every 10 seconds
+                
+            } catch (error) {
+                console.error('Error initializing notifications:', error);
+            }
         }
 
         function updateNotificationCounts(userId) {
             try {
                 // Get unread message count
                 const unreadMessages = messagingService.getUnreadMessageCount(userId);
-                const messageBadge = document.getElementById('messageBadge');
                 
-                if (messageBadge) {
-                    if (unreadMessages > 0) {
-                        messageBadge.textContent = unreadMessages > 99 ? '99+' : unreadMessages;
-                        messageBadge.style.display = 'inline-block';
-                    } else {
-                        messageBadge.style.display = 'none';
-                    }
-                }
-
                 // Get unread notification count
                 const unreadNotifications = messagingService.getUnreadNotificationCount(userId);
-                const notificationIndicator = document.getElementById('notificationIndicator');
                 
-                if (notificationIndicator) {
-                    if (unreadNotifications > 0) {
-                        notificationIndicator.style.display = 'block';
-                    } else {
-                        notificationIndicator.style.display = 'none';
-                    }
-                }
-
-                // Add click handler for message badge
-                const messagesLink = document.getElementById('messagesLink');
-                if (messagesLink && unreadMessages > 0) {
-                    messagesLink.addEventListener('click', function() {
-                        // Mark messages as read when clicking the link
-                        const userMessages = messagingService.getUserMessages(userId);
-                        userMessages.forEach(msg => {
-                            if (!msg.read && msg.recipientId === userId) {
-                                messagingService.markMessageAsRead(msg.id);
-                            }
-                        });
-                    });
-                }
-
+                // Update UI indicators if they exist
+                updateMessageIndicator(unreadMessages);
+                updateNotificationIndicator(unreadNotifications);
+                
             } catch (error) {
                 console.error('Error updating notification counts:', error);
             }
         }
 
-        function updateRealTimeData() {
-            // Update data every 30 seconds
-            setInterval(() => {
-                // Update session activity
-                accessControl.updateUserSession();
-                
-                // Update last activity
-                const currentUser = userDataManager.getCurrentUser();
-                if (currentUser) {
-                    currentUser.lastActivity = new Date().toISOString();
-                    userDataManager.updateCurrentUser(currentUser);
+        function updateMessageIndicator(unreadCount) {
+            // Update message indicator in navigation if it exists
+            const messagesLink = document.querySelector('a[href="Chatssection.html"]');
+            if (messagesLink && unreadCount > 0) {
+                let badge = messagesLink.querySelector('.notification-badge');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'notification-badge';
+                    messagesLink.appendChild(badge);
                 }
-                
-                // Simulate real-time balance updates (in a real app, this would fetch from API)
-                const walletBalance = document.getElementById('walletBalance');
-                if (walletBalance) {
-                    const currentBalance = parseFloat(walletBalance.textContent.replace(/[$,]/g, ''));
-                    const change = (Math.random() - 0.5) * 10; // Random change between -5 and +5
-                    const newBalance = Math.max(0, currentBalance + change);
-                    walletBalance.textContent = `$${newBalance.toLocaleString()}`;
+                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = 'inline-block';
+            }
+        }
+
+        function updateNotificationIndicator(unreadCount) {
+            // Update notification indicator if it exists
+            const notificationIndicator = document.getElementById('notificationIndicator');
+            if (notificationIndicator) {
+                if (unreadCount > 0) {
+                    notificationIndicator.style.display = 'block';
+                } else {
+                    notificationIndicator.style.display = 'none';
+                }
+            }
+        }
+
+        function startRealTimeUpdates() {
+            // Update data every 30 seconds
+            realTimeDataInterval = setInterval(async () => {
+                try {
+                    // Update session activity
+                    accessControl.updateUserSession();
+                    
+                    // Update last activity
+                    const currentUser = userDataManager.getCurrentUser();
+                    if (currentUser) {
+                        currentUser.lastActivity = new Date().toISOString();
+                        userDataManager.updateCurrentUser(currentUser);
+                    }
+                    
+                    // Update crypto prices
+                    await updateCryptoPrices();
+                    
+                    // Update financial data
+                    await updateFinancialData();
+                    
+                } catch (error) {
+                    console.error('Error in real-time update:', error);
                 }
             }, 30000);
         }
 
+        async function updateCryptoPrices() {
+            try {
+                const newCryptoData = await getCryptoData();
+                cryptoData = newCryptoData;
+                
+                // Update Bitcoin balance with new price
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance && cryptoData.bitcoin) {
+                    const btcPrice = cryptoData.bitcoin.usd;
+                    const btcBalance = userFinancialData.bitcoinBalance || 0.15;
+                    const btcValue = btcBalance * btcPrice;
+                    bitcoinBalance.textContent = `$${btcValue.toFixed(2)}`;
+                }
+                
+            } catch (error) {
+                console.error('Error updating crypto prices:', error);
+            }
+        }
+
+        async function updateFinancialData() {
+            try {
+                const newBalanceData = await fetchAccountBalance();
+                userFinancialData = { ...userFinancialData, ...newBalanceData };
+                
+                // Update wallet balance
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance && newBalanceData.balance !== undefined) {
+                    walletBalance.textContent = `$${newBalanceData.balance.toLocaleString()}`;
+                }
+                
+            } catch (error) {
+                console.error('Error updating financial data:', error);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.backgroundColor = '#22c55e';
+                    break;
+                case 'error':
+                    notification.style.backgroundColor = '#ef4444';
+                    break;
+                case 'warning':
+                    notification.style.backgroundColor = '#f59e0b';
+                    break;
+                default:
+                    notification.style.backgroundColor = '#3b82f6';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (realTimeDataInterval) {
+                clearInterval(realTimeDataInterval);
+            }
+        });
+
         // Export functions for use in other scripts
         window.TowerClubMainPage = {
             loadUserData,
+            loadRealTimeData,
+            updateCryptoPrices,
             updateFinancialData,
+            showNotification,
             initializeInteractiveFeatures,
             setupEventListeners,
-            updateRealTimeData,
             updateNotificationCounts,
             initializeNotifications
         };
