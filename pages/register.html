@@ -378,18 +378,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="githubUsername">GitHub Username (Optional)</label>
-                    <div class="input-group">
-                        <span class="material-icons">code</span>
-                        <input type="text" id="githubUsername" name="githubUsername" placeholder="Enter your GitHub username">
-                        <button type="button" class="verify-github-btn" id="verifyGithubBtn">
-                            <span class="material-icons">verified</span>
-                        </button>
-                    </div>
-                    <div id="githubStatus" class="github-status" style="display: none;"></div>
-                </div>
-
-                <div class="form-group">
                     <label for="password" data-i18n="form-password">Password</label>
                     <div class="input-group">
                         <span class="material-icons">lock</span>
@@ -440,70 +428,6 @@
             }
             setupToggle('password', 'passwordToggle');
             setupToggle('confirmPassword', 'confirmPasswordToggle');
-
-            // GitHub username verification
-            const githubUsernameInput = document.getElementById('githubUsername');
-            const verifyGithubBtn = document.getElementById('verifyGithubBtn');
-            const githubStatus = document.getElementById('githubStatus');
-
-            verifyGithubBtn.addEventListener('click', async function() {
-                const username = githubUsernameInput.value.trim();
-                
-                if (!username) {
-                    showGithubStatus('Please enter a GitHub username', 'error');
-                    return;
-                }
-
-                // Show verifying state
-                verifyGithubBtn.classList.add('verifying');
-                verifyGithubBtn.innerHTML = '<span class="material-icons">sync</span>';
-                showGithubStatus('Verifying GitHub username...', 'info');
-
-                try {
-                    // Import auth API functions
-                    const { verifyGitHubUsername } = await import('../scripts/auth-api.js');
-                    
-                    const result = await verifyGitHubUsername(username);
-                    
-                    if (result.success) {
-                        verifyGithubBtn.classList.remove('verifying', 'error');
-                        verifyGithubBtn.classList.add('verified');
-                        verifyGithubBtn.innerHTML = '<span class="material-icons">verified</span>';
-                        
-                        const userInfo = result.user;
-                        if (userInfo) {
-                            showGithubStatus(`✓ Verified: ${userInfo.name || userInfo.username} (${userInfo.publicRepos} repos)`, 'success');
-                        } else {
-                            showGithubStatus('✓ GitHub username verified', 'success');
-                        }
-                    } else {
-                        verifyGithubBtn.classList.remove('verifying', 'verified');
-                        verifyGithubBtn.classList.add('error');
-                        verifyGithubBtn.innerHTML = '<span class="material-icons">error</span>';
-                        showGithubStatus(result.error, 'error');
-                    }
-                } catch (error) {
-                    verifyGithubBtn.classList.remove('verifying', 'verified');
-                    verifyGithubBtn.classList.add('error');
-                    verifyGithubBtn.innerHTML = '<span class="material-icons">error</span>';
-                    showGithubStatus('Failed to verify GitHub username', 'error');
-                }
-            });
-
-            function showGithubStatus(message, type) {
-                githubStatus.textContent = message;
-                githubStatus.className = `github-status ${type}`;
-                githubStatus.style.display = 'flex';
-            }
-
-            // Clear GitHub status when username changes
-            githubUsernameInput.addEventListener('input', function() {
-                if (this.value.trim() !== '') {
-                    verifyGithubBtn.classList.remove('verified', 'error');
-                    verifyGithubBtn.innerHTML = '<span class="material-icons">verified</span>';
-                    githubStatus.style.display = 'none';
-                }
-            });
         });
 
         document.getElementById('registerForm').addEventListener('submit', async function (event) {
