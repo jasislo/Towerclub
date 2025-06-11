@@ -884,6 +884,17 @@ function updateMainBalance() {
         walletBalance.textContent = `$${total.toLocaleString()}`;
     }
 }
+
+// Sync profile picture everywhere on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedPic) {
+        ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.src = savedPic;
+        });
+    }
+});
 </script>
 </body>
 </html>

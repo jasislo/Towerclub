@@ -570,6 +570,17 @@
             }
         });
 
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
         function enableEdit(card) {
             // Prevent editing "My Towerclub Card"
             const cardTitle = card.querySelector('h3').innerText;
