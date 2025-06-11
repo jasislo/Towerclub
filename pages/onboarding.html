@@ -878,6 +878,15 @@
             document.getElementById('age').value = memberProfile.age;
         }
     }
+
+    // Sync profile picture everywhere on page load
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedPic) {
+        ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.src = savedPic;
+        });
+    }
 });
 
         function showCardPaymentForm() {
