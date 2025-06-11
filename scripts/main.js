@@ -10,8 +10,8 @@ function initializeApp() {
     // Load wallet balance
     loadWalletBalance();
 
-    // Load quick actions
-    loadQuickActions();
+    // Load quick actions - commented out to preserve static HTML content
+    // loadQuickActions();
 
     // Load Bitcoin and referral data
     loadBitcoinData();
@@ -75,7 +75,10 @@ function loadQuickActions() {
         const quickActions = [
             { icon: 'account_balance_outlined', title: 'My Bank', link: 'payment methods.html' },
             { icon: 'swap_horiz_outlined', title: 'Transfer', link: 'edittransaction.html' },
-            { icon: 'stacked_line_chart_rounded', title: 'Activity', link: 'socialmedia2.html' }
+            { icon: 'stacked_line_chart_rounded', title: 'Activity', link: 'socialmedia2.html' },
+            { icon: 'chat_bubble_outline', title: 'Messages', link: 'Chatssection.html' },
+            { icon: 'person_outline', title: 'Profile', link: 'complete_profile.html' },
+            { icon: 'share', title: 'Referrals', link: 'referral profile.html' }
         ];
 
         const quickActionsContainer = document.querySelector('.quick-actions');

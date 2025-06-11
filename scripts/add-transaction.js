@@ -9,54 +9,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileNameDisplay = document.querySelector('.file-name');
 
     // Set default date to today
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.value = today;
+    dateInput.value = new Date().toISOString().split('T')[0];
 
-    // Handle transaction type selection
+    // Transaction type selection
     typeButtons.forEach(button => {
         button.addEventListener('click', () => {
             typeButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
-            // Update category options based on transaction type
             updateCategoryOptions(button.dataset.type);
         });
     });
 
-    // Handle file upload
+    // File upload display
     fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            fileNameDisplay.textContent = file.name;
-        } else {
-            fileNameDisplay.textContent = 'No file chosen';
-        }
+        fileNameDisplay.textContent = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
     });
 
-    // Format amount input
+    // Amount input formatting
     amountInput.addEventListener('input', (e) => {
         let value = e.target.value.replace(/[^\d.]/g, '');
-        
-        // Ensure only one decimal point
         const decimalCount = (value.match(/\./g) || []).length;
-        if (decimalCount > 1) {
-            value = value.replace(/\.+$/, '');
-        }
-        
-        // Limit to 2 decimal places
+        if (decimalCount > 1) value = value.replace(/\.+$/, '');
         const parts = value.split('.');
         if (parts[1] && parts[1].length > 2) {
             parts[1] = parts[1].substring(0, 2);
             value = parts.join('.');
         }
-        
         e.target.value = value;
     });
 
-    // Handle form submission
+    // Form submission
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const activeTypeBtn = document.querySelector('.type-btn.active');
         if (!activeTypeBtn) {
             showError('Please select a transaction type');
@@ -69,28 +53,19 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('category', categorySelect.value);
         formData.append('date', dateInput.value);
         formData.append('description', descriptionInput.value);
-        
-        if (fileInput.files[0]) {
-            formData.append('attachment', fileInput.files[0]);
-        }
+        if (fileInput.files[0]) formData.append('attachment', fileInput.files[0]);
 
         try {
             showLoading();
-            
             const response = await fetch('/api/transactions', {
                 method: 'POST',
                 body: formData
             });
-
-            if (!response.ok) {
-                throw new Error('Failed to add transaction');
-            }
-
+            if (!response.ok) throw new Error('Failed to add transaction');
             showSuccess('Transaction added successfully');
             setTimeout(() => {
                 window.location.href = '/transactions';
             }, 1500);
-
         } catch (error) {
             console.error('Error:', error);
             showError('Failed to add transaction. Please try again.');
@@ -99,39 +74,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Load initial data for the page
+    // Initial data load
     loadTransactionSummary();
     loadTransactionHistory();
 });
 
-// Helper functions
+// Helper: Update category options
 function updateCategoryOptions(transactionType) {
     const categorySelect = document.querySelector('#category');
     categorySelect.innerHTML = '';
-
-    const categories = transactionType === 'expense' 
+    const categories = transactionType === 'expense'
         ? [
-            'Food & Dining',
-            'Transportation',
-            'Shopping',
-            'Bills & Utilities',
-            'Entertainment',
-            'Health & Fitness',
-            'Travel',
-            'Education',
-            'Gifts & Donations',
-            'Other'
+            'Food & Dining', 'Transportation', 'Shopping', 'Bills & Utilities',
+            'Entertainment', 'Health & Fitness', 'Travel', 'Education',
+            'Gifts & Donations', 'Other'
         ]
         : [
-            'Salary',
-            'Business',
-            'Investments',
-            'Rental',
-            'Sale',
-            'Gifts',
-            'Other'
+            'Salary', 'Business', 'Investments', 'Rental',
+            'Sale', 'Gifts', 'Other'
         ];
-
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category.toLowerCase().replace(/\s+/g, '-');
@@ -140,31 +101,36 @@ function updateCategoryOptions(transactionType) {
     });
 }
 
+// Helper: Show loading state
 function showLoading() {
     const submitBtn = document.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span class="material-icons loading">sync</span> Adding...';
 }
 
+// Helper: Hide loading state
 function hideLoading() {
     const submitBtn = document.querySelector('button[type="submit"]');
     submitBtn.disabled = false;
     submitBtn.innerHTML = 'Add Transaction';
 }
 
+// Helper: Show error
 function showError(message) {
-    alert(message); // Replace with a custom error notification system if needed
+    alert(message); // Replace with custom UI as needed
 }
 
+// Helper: Show success
 function showSuccess(message) {
-    alert(message); // Replace with a custom success notification system if needed
+    alert(message); // Replace with custom UI as needed
 }
 
+// Load transaction summary from API
 async function loadTransactionSummary() {
     try {
         const response = await fetch('/api/transactions/summary');
+        if (!response.ok) throw new Error('Failed to load summary');
         const summary = await response.json();
-
         document.getElementById('moneyIn').textContent = formatCurrency(summary.moneyIn);
         document.getElementById('moneyOut').textContent = formatCurrency(summary.moneyOut);
         document.getElementById('totalBalance').textContent = formatCurrency(summary.totalBalance);
@@ -173,16 +139,17 @@ async function loadTransactionSummary() {
     }
 }
 
+// Load transaction history from API
 async function loadTransactionHistory() {
     try {
         const response = await fetch('/api/transactions/history');
+        if (!response.ok) throw new Error('Failed to load history');
         const transactions = await response.json();
-
         const transactionList = document.querySelector('.transaction-list');
         transactionList.innerHTML = transactions.map(transaction => `
             <div class="transaction-item">
                 <div class="transaction-info">
-                    <h3 class="transaction-title">${transaction.title}</h3>
+                    <h3 class="transaction-title">${transaction.title || transaction.category}</h3>
                     <p class="transaction-date">${new Date(transaction.date).toLocaleDateString()}</p>
                 </div>
                 <div class="transaction-amount ${transaction.type === 'income' ? 'positive' : 'negative'}">
@@ -195,6 +162,7 @@ async function loadTransactionHistory() {
     }
 }
 
+// Format currency helper
 function formatCurrency(amount) {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',

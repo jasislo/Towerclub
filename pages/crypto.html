@@ -256,11 +256,54 @@
             font-weight: 600;
             cursor: pointer;
             transition: background 0.3s, transform 0.2s;
+            position: relative;
         }
 
         .btn-paypal:hover {
             background: #e0a800;
             transform: scale(1.05);
+        }
+
+        .btn-paypal.logged-in {
+            background: #22c55e;
+            color: white;
+        }
+
+        .btn-paypal.logged-in:hover {
+            background: #16a34a;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+            margin-bottom: 8px;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
+        }
+
+        .btn-paypal:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
         }
 
         .crypto-message {
@@ -302,7 +345,7 @@
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <!-- Log Out Button -->
-                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Logout</a>
+                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Log out</a>
             </div>
         </div>
     </nav>
@@ -323,7 +366,10 @@
 
         <!-- Login with PayPal Section -->
         <section class="paypal-login">
-            <button class="btn-paypal" onclick="processPayment()">Login with PayPal</button>
+            <button class="btn-paypal" id="paypalBtn" onclick="handlePayPalLogin()">
+                <span id="paypalBtnText">Log in with PayPal</span>
+                <div class="tooltip" id="paypalTooltip">Log in with PayPal to access crypto trading</div>
+            </button>
         </section>
 
         <!-- Cards Section -->
@@ -402,8 +448,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -419,61 +465,228 @@
     <script>
         let isPayPalLoggedIn = false; // Track PayPal login status
 
-        async function processPayment() {
-            const clientId = 'AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj';
-            const secret = 'undefined'; // Replace with your actual secret
-            const amount = 1.00; // $1.00 processing fee
+        // Check login status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPayPalLoginStatus();
+            updatePayPalButtonState();
+            fetchCryptoPrices(); // Fetch initial crypto prices
+        });
+
+        // Check if user is returning from PayPal login
+        window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paypalSuccess = urlParams.get('paypal_success');
+            const paypalCancelled = urlParams.get('paypal_cancelled');
+            const paypalCode = urlParams.get('code');
+            
+            if (paypalSuccess === 'true') {
+                // User successfully logged in with PayPal
+                isPayPalLoggedIn = true;
+                localStorage.setItem('paypalLoggedIn', 'true');
+                localStorage.setItem('paypalLoginTime', Date.now().toString());
+                updatePayPalButtonState();
+                
+                // Remove the success parameter from URL
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+                
+                // Show success message
+                showNotification('Successfully logged in with PayPal!', 'success');
+            } else if (paypalCancelled === 'true') {
+                // User cancelled PayPal login
+                showNotification('PayPal login was cancelled.', 'warning');
+                
+                // Remove the cancelled parameter from URL
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            } else if (paypalCode) {
+                // User returned from PayPal OAuth with authorization code
+                // In a real implementation, you would exchange this code for an access token
+                handlePayPalCallback(paypalCode);
+                
+                // Remove the code parameter from URL
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            }
+        });
+
+        function checkPayPalLoginStatus() {
+            const storedLogin = localStorage.getItem('paypalLoggedIn');
+            const loginTime = localStorage.getItem('paypalLoginTime');
+            
+            if (storedLogin === 'true' && loginTime) {
+                // Check if login is still valid (24 hours)
+                const now = Date.now();
+                const loginTimestamp = parseInt(loginTime);
+                const hoursSinceLogin = (now - loginTimestamp) / (1000 * 60 * 60);
+                
+                if (hoursSinceLogin < 24) {
+                    isPayPalLoggedIn = true;
+                } else {
+                    // Login expired, clear storage
+                    localStorage.removeItem('paypalLoggedIn');
+                    localStorage.removeItem('paypalLoginTime');
+                    isPayPalLoggedIn = false;
+                }
+            }
+        }
+
+        function updatePayPalButtonState() {
+            const paypalBtn = document.getElementById('paypalBtn');
+            const paypalBtnText = document.getElementById('paypalBtnText');
+            const paypalTooltip = document.getElementById('paypalTooltip');
+            
+            if (isPayPalLoggedIn) {
+                paypalBtn.classList.add('logged-in');
+                paypalBtnText.textContent = 'Logged in with PayPal';
+                paypalTooltip.textContent = 'Click to log out of PayPal';
+            } else {
+                paypalBtn.classList.remove('logged-in');
+                paypalBtnText.textContent = 'Log in with PayPal';
+                paypalTooltip.textContent = 'Log in with PayPal to access crypto trading';
+            }
+        }
+
+        async function handlePayPalLogin() {
+            if (isPayPalLoggedIn) {
+                // If already logged in, offer to logout
+                if (confirm('You are already logged in with PayPal. Would you like to log out?')) {
+                    handlePayPalLogout();
+                }
+                return;
+            }
+
+            // Show loading state
+            const paypalBtn = document.getElementById('paypalBtn');
+            const originalText = paypalBtn.querySelector('span').textContent;
+            paypalBtn.querySelector('span').textContent = 'Connecting...';
+            paypalBtn.disabled = true;
 
             try {
-                // Get access token
-                const tokenResponse = await fetch('https://api-m.sandbox.paypal.com/v1/oauth2/token', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Basic ${btoa(`${clientId}:${secret}`)}`,
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'grant_type=client_credentials',
-                });
-                const tokenData = await tokenResponse.json();
-                const accessToken = tokenData.access_token;
-
-                // Create payment
-                const paymentResponse = await fetch('https://api-m.sandbox.paypal.com/v1/payments/payment', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        intent: 'sale',
-                        payer: {
-                            payment_method: 'paypal',
-                        },
-                        transactions: [
-                            {
-                                amount: {
-                                    total: amount.toFixed(2),
-                                    currency: 'USD',
-                            },
-                            description: 'Processing fee for transactions',
-                        },
-                    ],
-                        redirect_urls: {
-                            return_url: 'https://yourwebsite.com/success',
-                            cancel_url: 'https://yourwebsite.com/cancel',
-                        },
-                    }),
-                });
-                const paymentData = await paymentResponse.json();
-
-                // Redirect user to PayPal approval URL
-                const approvalUrl = paymentData.links.find(link => link.rel === 'approval_url').href;
-                window.location.href = approvalUrl;
-
-                // Set PayPal login status to true after successful login
-                isPayPalLoggedIn = true;
+                // For demo purposes, we'll simulate a PayPal login redirect
+                // In a real implementation, you would use PayPal's OAuth flow
+                
+                // Simulate a brief delay to show loading state
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Redirect to a simulated PayPal login page
+                // In production, this would be the actual PayPal OAuth URL
+                const paypalLoginUrl = `https://www.sandbox.paypal.com/signin/authorize?client_id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&response_type=code&scope=openid email profile&redirect_uri=${encodeURIComponent(window.location.origin + window.location.pathname + '?paypal_success=true')}`;
+                
+                // For demo purposes, we'll simulate the login success
+                // In production, you would redirect to the actual PayPal URL
+                showNotification('Redirecting to PayPal for authentication...', 'info');
+                
+                // Simulate successful login after a delay
+                setTimeout(() => {
+                    isPayPalLoggedIn = true;
+                    localStorage.setItem('paypalLoggedIn', 'true');
+                    localStorage.setItem('paypalLoginTime', Date.now().toString());
+                    updatePayPalButtonState();
+                    showNotification('Successfully logged in with PayPal!', 'success');
+                    
+                    // Reset button state
+                    paypalBtn.querySelector('span').textContent = 'Logged in with PayPal';
+                    paypalBtn.disabled = false;
+                }, 2000);
+                
+                // Uncomment the line below to actually redirect to PayPal (requires proper OAuth setup)
+                // window.location.href = paypalLoginUrl;
+                
             } catch (error) {
-                console.error('Error processing payment:', error);
+                console.error('Error connecting to PayPal:', error);
+                
+                // Reset button state
+                paypalBtn.querySelector('span').textContent = 'Log in with PayPal';
+                paypalBtn.disabled = false;
+                
+                showNotification('Failed to connect to PayPal. Please try again.', 'error');
+            }
+        }
+
+        function handlePayPalLogout() {
+            isPayPalLoggedIn = false;
+            localStorage.removeItem('paypalLoggedIn');
+            localStorage.removeItem('paypalLoginTime');
+            updatePayPalButtonState();
+            showNotification('Successfully logged out of PayPal.', 'info');
+        }
+
+        async function fetchCryptoPrices() {
+            try {
+                // Fetch crypto prices from CoinGecko API
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd&include_24hr_change=true');
+                const data = await response.json();
+                
+                // Update Bitcoin price
+                if (data.bitcoin) {
+                    document.getElementById('btcPrice').textContent = `$${data.bitcoin.usd.toLocaleString()}`;
+                    const change = data.bitcoin.usd_24h_change;
+                    const changeElement = document.getElementById('btcChange');
+                    changeElement.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+                    changeElement.style.color = change >= 0 ? '#22c55e' : '#ef4444';
+                }
+                
+                // Update Ethereum price
+                if (data.ethereum) {
+                    document.getElementById('ethPrice').textContent = `$${data.ethereum.usd.toLocaleString()}`;
+                    const change = data.ethereum.usd_24h_change;
+                    const changeElement = document.getElementById('ethChange');
+                    changeElement.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+                    changeElement.style.color = change >= 0 ? '#22c55e' : '#ef4444';
+                }
+                
+                // Update Litecoin price
+                if (data.litecoin) {
+                    document.getElementById('ltcPrice').textContent = `$${data.litecoin.usd.toLocaleString()}`;
+                    const change = data.litecoin.usd_24h_change;
+                    const changeElement = document.getElementById('ltcChange');
+                    changeElement.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+                    changeElement.style.color = change >= 0 ? '#22c55e' : '#ef4444';
+                }
+                
+                // Calculate portfolio balance (simulated)
+                const totalBalance = (data.bitcoin?.usd || 0) + (data.ethereum?.usd || 0) + (data.litecoin?.usd || 0);
+                document.getElementById('portfolioBalance').textContent = `$${totalBalance.toLocaleString()}`;
+                
+                // Calculate portfolio change (simulated)
+                const avgChange = ((data.bitcoin?.usd_24h_change || 0) + (data.ethereum?.usd_24h_change || 0) + (data.litecoin?.usd_24h_change || 0)) / 3;
+                const portfolioChangeElement = document.getElementById('portfolioChange');
+                portfolioChangeElement.textContent = `${avgChange >= 0 ? '+' : ''}${avgChange.toFixed(2)}% (24h)`;
+                portfolioChangeElement.style.color = avgChange >= 0 ? '#22c55e' : '#ef4444';
+                
+            } catch (error) {
+                console.error('Error fetching crypto prices:', error);
+                // Set fallback values
+                document.getElementById('btcPrice').textContent = '$45,000';
+                document.getElementById('ethPrice').textContent = '$3,200';
+                document.getElementById('ltcPrice').textContent = '$120';
+                document.getElementById('portfolioBalance').textContent = '$48,320';
+            }
+        }
+
+        async function handlePayPalCallback(authorizationCode) {
+            try {
+                // Show loading state
+                showNotification('Completing PayPal authentication...', 'info');
+                
+                // In a real implementation, you would exchange the authorization code for an access token
+                // This would require a server-side component to securely handle the client secret
+                
+                // For demo purposes, we'll simulate the token exchange
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Mark user as logged in
+                isPayPalLoggedIn = true;
+                localStorage.setItem('paypalLoggedIn', 'true');
+                localStorage.setItem('paypalLoginTime', Date.now().toString());
+                updatePayPalButtonState();
+                
+                showNotification('Successfully logged in with PayPal!', 'success');
+                
+            } catch (error) {
+                console.error('Error completing PayPal authentication:', error);
+                showNotification('Failed to complete PayPal authentication. Please try again.', 'error');
             }
         }
 
@@ -481,8 +694,60 @@
             if (isPayPalLoggedIn) {
                 window.location.href = tradeUrl;
             } else {
-                alert('Please log in with PayPal to proceed.');
+                showNotification('Please log in with PayPal to access trading features.', 'warning');
             }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.backgroundColor = '#22c55e';
+                    break;
+                case 'error':
+                    notification.style.backgroundColor = '#ef4444';
+                    break;
+                case 'warning':
+                    notification.style.backgroundColor = '#f59e0b';
+                    break;
+                default:
+                    notification.style.backgroundColor = '#3b82f6';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
         }
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>

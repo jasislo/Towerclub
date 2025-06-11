@@ -206,6 +206,13 @@
             border-radius: 50%;
             margin-right: 12px;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .chat-info {
@@ -218,6 +225,7 @@
             margin-bottom: 4px;
             cursor: pointer;
             transition: color 0.3s;
+            text-decoration: none;
         }
 
         .chat-name:hover {
@@ -473,30 +481,30 @@
                 <a href="Chatssection.html" class="chat-list-header">
                     Messages
                 </a>
-                <div class="chat-item" onclick="updateChatInterface('John Doe')">
-                    <div class="chat-avatar">
-                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <div class="chat-item">
+                    <div class="chat-avatar" onclick="redirectToProfile('John Doe')">
+                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                     </div>
                     <div class="chat-info">
-                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('John Doe')">John Doe</p>
+                        <p class="chat-name" onclick="redirectToChat()">John Doe</p>
                         <p class="chat-message">Hey, how are you?</p>
                     </div>
                 </div>
-                <div class="chat-item" onclick="updateChatInterface('Jane Smith')">
-                    <div class="chat-avatar">
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <div class="chat-item">
+                    <div class="chat-avatar" onclick="redirectToProfile('Jane Smith')">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                     </div>
                     <div class="chat-info">
-                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('Jane Smith')">Jane Smith</p>
+                        <p class="chat-name" onclick="redirectToChat()">Jane Smith</p>
                         <p class="chat-message">Let's catch up later!</p>
                     </div>
                 </div>
-                <div class="chat-item" onclick="updateChatInterface('Mike Johnson')">
-                    <div class="chat-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <div class="chat-item">
+                    <div class="chat-avatar" onclick="redirectToProfile('Mike Johnson')">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                     </div>
                     <div class="chat-info">
-                        <p class="chat-name" onclick="event.stopPropagation(); redirectToProfile('Mike Johnson')">Mike Johnson</p>
+                        <p class="chat-name" onclick="redirectToChat()">Mike Johnson</p>
                         <p class="chat-message">Got it, thanks!</p>
                     </div>
                 </div>
@@ -589,8 +597,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -680,6 +688,11 @@
             window.location.href = profileUrl;
         }
 
+        // Redirect to chat section
+        function redirectToChat() {
+            window.location.href = 'Chatssection.html';
+        }
+
         // Update chat interface when a chat item is clicked
         function updateChatInterface(userName) {
             const chatHeader = document.querySelector('.chat-interface-header');
@@ -720,14 +733,9 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const chatItems = document.querySelectorAll('.chat-item');
-
-            chatItems.forEach((chatItem, index) => {
-                chatItem.addEventListener('click', () => {
-                    // Redirect to socialmedia2.html with a query parameter for the selected chat
-                    window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
-                });
-            });
+            // Remove the old chat item click functionality since we now have separate handlers
+            // for profile pictures and names
+            console.log('Social media page loaded with new click behaviors');
         });
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>

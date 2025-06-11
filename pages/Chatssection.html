@@ -236,6 +236,13 @@
             border-radius: 50%;
             margin-right: 12px;
             overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .chat-avatar:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .chat-info {
@@ -248,6 +255,7 @@
             margin-bottom: 4px;
             cursor: pointer;
             transition: color 0.3s;
+            text-decoration: none;
         }
 
         .chat-name:hover {
@@ -538,29 +546,29 @@
                             </button>
                         </div>
                         <div class="chat-item">
-                            <div class="chat-avatar">
-                                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <div class="chat-avatar" onclick="redirectToProfile('John Doe')">
+                                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                             </div>
                             <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToProfile('John Doe')">John Doe</p>
+                                <p class="chat-name" onclick="redirectToChat()">John Doe</p>
                                 <p class="chat-message">Hey, how are you?</p>
                             </div>
                         </div>
                         <div class="chat-item">
-                            <div class="chat-avatar">
-                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <div class="chat-avatar" onclick="redirectToProfile('Jane Smith')">
+                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                             </div>
                             <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToProfile('Jane Smith')">Jane Smith</p>
+                                <p class="chat-name" onclick="redirectToChat()">Jane Smith</p>
                                 <p class="chat-message">Let's catch up later!</p>
                             </div>
                         </div>
                         <div class="chat-item">
-                            <div class="chat-avatar">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                            <div class="chat-avatar" onclick="redirectToProfile('Mike Johnson')">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                             </div>
                             <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToProfile('Mike Johnson')">Mike Johnson</p>
+                                <p class="chat-name" onclick="redirectToChat()">Mike Johnson</p>
                                 <p class="chat-message">Got it, thanks!</p>
                             </div>
                         </div>
@@ -680,8 +688,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -701,6 +709,11 @@
             // Convert the user name to a URL-friendly format
             const profileUrl = userName.toLowerCase().replace(/\s+/g, '_') + '_profile.html';
             window.location.href = profileUrl;
+        }
+
+        // Redirect to chat section (refresh current page)
+        function redirectToChat() {
+            window.location.href = 'Chatssection.html';
         }
 
         const profilePicture = document.querySelector('.profile-picture-container img');
@@ -776,19 +789,264 @@
 
         // Add click functionality to chat items to update the chat interface
         document.addEventListener('DOMContentLoaded', function() {
-            const chatItems = document.querySelectorAll('.chat-item');
-            const chatInterfaceHeader = document.querySelector('.chat-interface-header');
-
-            chatItems.forEach(function(chatItem) {
-                chatItem.addEventListener('click', function() {
-                    const userName = this.querySelector('.chat-name').textContent;
-                    chatInterfaceHeader.textContent = userName;
-                    chatInterfaceHeader.onclick = function() {
-                        redirectToProfile(userName);
-                    };
-                });
-            });
+            // Remove the old chat item click functionality since we now have separate handlers
+            // for profile pictures and names
+            console.log('Chat section loaded with new click behaviors');
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+    // --- 1. Fetch and render chat list ---
+    async function loadChats() {
+        try {
+            const res = await fetch('/api/chats');
+            if (!res.ok) throw new Error('Failed to load chats');
+            const chats = await res.json();
+            const chatList = document.querySelector('.chat-list');
+            // Remove all .chat-item except the search bar/header
+            chatList.querySelectorAll('.chat-item').forEach(e => e.remove());
+            chats.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.innerHTML = `
+                    <div class="chat-avatar" onclick="redirectToProfile('${chat.name}')">
+                        <img src="${chat.avatar || '/assets/images/default-avatar.png'}" alt="${chat.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+                    </div>
+                    <div class="chat-info">
+                        <p class="chat-name" onclick="redirectToChat()">${chat.name}</p>
+                        <p class="chat-message">${chat.lastMessage || ''}</p>
+                    </div>
+                `;
+                item.addEventListener('click', () => openChat(chat));
+                chatList.appendChild(item);
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // --- 2. Fetch and render messages for a chat ---
+    async function loadMessages(chatId) {
+        try {
+            const res = await fetch(`/api/messages?chatId=${encodeURIComponent(chatId)}`);
+            if (!res.ok) throw new Error('Failed to load messages');
+            const messages = await res.json();
+            const chatMessages = document.querySelector('.chat-messages');
+            chatMessages.innerHTML = '';
+            messages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = 'message ' + (msg.sentByMe ? 'sent' : 'received');
+                div.innerHTML = `<div class="message-content">${msg.content}</div>`;
+                chatMessages.appendChild(div);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // --- 3. Send a message ---
+    async function sendMessage(chatId, content) {
+        try {
+            const res = await fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chatId, content })
+            });
+            if (!res.ok) throw new Error('Failed to send message');
+            await loadMessages(chatId);
+        } catch (err) {
+            alert('Failed to send message.');
+        }
+    }
+
+    // --- 4. Open a chat (update header, load messages, wire send) ---
+    let currentChat = null;
+    function openChat(chat) {
+        currentChat = chat;
+        const chatHeader = document.querySelector('.chat-interface-header');
+        chatHeader.textContent = chat.name;
+        chatHeader.onclick = () => redirectToProfile(chat.name);
+        loadMessages(chat.id);
+
+        // Wire send button
+        const sendBtn = document.querySelector('.send-button');
+        const input = document.querySelector('.chat-input');
+        sendBtn.onclick = async () => {
+            const text = input.value.trim();
+            if (!text) return;
+            await sendMessage(chat.id, text);
+            input.value = '';
+        };
+        input.onkeydown = function(e) {
+            if (e.key === 'Enter') sendBtn.click();
+        };
+    }
+
+    // --- 5. Group chat creation ---
+    document.getElementById('createGroupBtn').onclick = async function() {
+        const name = document.getElementById('groupNameInput').value.trim();
+        const members = document.getElementById('groupMembersInput').value.split(',').map(m => m.trim()).filter(Boolean);
+        if (!name || members.length < 2) {
+            alert('Please enter a group name and at least two members.');
+            return;
+        }
+        try {
+            const res = await fetch('/api/group-chats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, members })
+            });
+            if (!res.ok) throw new Error('Failed to create group chat');
+            document.getElementById('groupChatModal').style.display = 'none';
+            document.getElementById('groupNameInput').value = '';
+            document.getElementById('groupMembersInput').value = '';
+            await loadChats();
+        } catch (err) {
+            alert('Failed to create group chat.');
+        }
+    };
+
+    // --- 6. Initial load ---
+    loadChats();
+
+    // Optionally, open the first chat by default after loading chats
+    // setTimeout(() => {
+    //     const firstChat = document.querySelector('.chat-item');
+    //     if (firstChat) firstChat.click();
+    // }, 500);
+});
+    </script>
+    <script type="module">
+import messagingService, {
+    getUserContacts,
+    getConversation,
+    sendMessage,
+    searchUsers
+} from '../scripts/messaging-service.js';
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Get current user
+    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    const userId = currentUser.userId || currentUser.id;
+
+    // --- 1. Render chat list (contacts) ---
+    function loadChats(filter = '') {
+        const chatList = document.querySelector('.chat-list');
+        // Remove all .chat-item except the search bar/header
+        chatList.querySelectorAll('.chat-item').forEach(e => e.remove());
+
+        let contacts = getUserContacts(userId);
+        if (filter) {
+            contacts = contacts.filter(c =>
+                (c.name || '').toLowerCase().includes(filter.toLowerCase()) ||
+                (c.email || '').toLowerCase().includes(filter.toLowerCase())
+            );
+        }
+
+        contacts.forEach(contact => {
+            const lastConv = getConversation(userId, contact.contactId);
+            const lastMsg = lastConv.length ? lastConv[lastConv.length - 1] : null;
+            const item = document.createElement('div');
+            item.className = 'chat-item';
+            item.innerHTML = `
+                <div class="chat-avatar" onclick="redirectToProfile('${contact.name}')">
+                    <img src="${contact.avatar || '/assets/images/default-avatar.png'}" alt="${contact.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+                </div>
+                <div class="chat-info">
+                    <p class="chat-name" onclick="redirectToChat()">${contact.name}</p>
+                    <p class="chat-message">${lastMsg ? lastMsg.message : ''}</p>
+                </div>
+            `;
+            item.addEventListener('click', () => openChat(contact));
+            chatList.appendChild(item);
+        });
+    }
+
+    // --- 2. Render messages for a conversation ---
+    function loadMessages(contactId) {
+        const chatMessages = document.querySelector('.chat-messages');
+        chatMessages.innerHTML = '';
+        const conv = getConversation(userId, contactId);
+        conv.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = 'message ' + (msg.senderId === userId ? 'sent' : 'received');
+            div.innerHTML = `<div class="message-content">${msg.message}</div>`;
+            chatMessages.appendChild(div);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // --- 3. Send a message ---
+    function wireSendButton(contactId, contactName) {
+        const sendBtn = document.querySelector('.send-button');
+        const input = document.querySelector('.chat-input');
+        sendBtn.onclick = async () => {
+            const text = input.value.trim();
+            if (!text) return;
+            sendMessage(contactId, text, 'text');
+            loadMessages(contactId);
+            loadChats(); // Update last message preview
+            input.value = '';
+        };
+        input.onkeydown = function(e) {
+            if (e.key === 'Enter') sendBtn.click();
+        };
+    }
+
+    // --- 4. Open a chat (update header, load messages, wire send) ---
+    function openChat(contact) {
+        const chatHeader = document.querySelector('.chat-interface-header');
+        chatHeader.textContent = contact.name;
+        chatHeader.onclick = () => redirectToProfile(contact.name);
+        loadMessages(contact.contactId);
+        wireSendButton(contact.contactId, contact.name);
+    }
+
+    // --- 5. Contact search ---
+    document.getElementById('contactSearchInput').addEventListener('input', function () {
+        loadChats(this.value);
+    });
+
+    // --- 6. New Message button: search users and add as contact ---
+    document.getElementById('startNewMessageBtn').onclick = function () {
+        const query = prompt('Enter name or email to search:');
+        if (!query) return;
+        const results = searchUsers(query);
+        if (results.length === 0) {
+            alert('No users found.');
+            return;
+        }
+        // Pick the first result for demo; in real app, show a selection UI
+        const user = results[0];
+        messagingService.addContact({
+            userId: user.id,
+            fullName: user.name,
+            email: user.email,
+            profilePicture: user.avatar
+        });
+        loadChats();
+        // Optionally, open chat with this user
+        const contact = getUserContacts(userId).find(c => c.contactId === user.id);
+        if (contact) openChat(contact);
+    };
+
+    // --- 7. Group chat creation (not implemented in messaging-service.js) ---
+    document.getElementById('createGroupBtn').onclick = function () {
+        alert('Group chat creation is not supported in localStorage demo.');
+        document.getElementById('groupChatModal').style.display = 'none';
+        document.getElementById('groupNameInput').value = '';
+        document.getElementById('groupMembersInput').value = '';
+    };
+
+    // --- 8. Initial load ---
+    loadChats();
+
+    // Optionally, open the first chat by default
+    setTimeout(() => {
+        const firstContact = getUserContacts(userId)[0];
+        if (firstContact) openChat(firstContact);
+    }, 500);
+});
     </script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>

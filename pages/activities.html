@@ -382,7 +382,7 @@ header p {
         </header>
 
         <section id="activity-summary" class="data-section">
-            <h2>Activity Summary</h2>
+            <h2>Activities Summary</h2>
             <div class="summary-cards">
                 <div class="card">
                     <h3 data-i18n="activities-total-income">Total Income</h3>
@@ -614,8 +614,8 @@ header p {
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -668,6 +668,74 @@ header p {
 <script type="module">
     import profilePictureManager from '/scripts/profile-picture-manager.js';
     // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Helper: Parse amount string to number
+    function parseAmount(str) {
+        return Number(str.replace(/[^0-9.-]+/g,""));
+    }
+
+    // Get all transaction rows as objects
+    function getTransactions() {
+        const rows = Array.from(document.querySelectorAll('#transaction-table tbody tr'));
+        return rows.map(row => {
+            const cells = row.children;
+            return {
+                row,
+                date: cells[0].textContent.trim(),
+                type: cells[1].textContent.trim().toLowerCase(),
+                category: cells[2].textContent.trim(),
+                description: cells[3].textContent.trim(),
+                amount: parseAmount(cells[4].textContent.trim()),
+                isIncome: !cells[4].textContent.includes('-')
+            };
+        });
+    }
+
+    // Update summary cards
+    function updateSummary(transactions) {
+        let income = 0, expenses = 0;
+        transactions.forEach(t => {
+            if (t.isIncome) income += t.amount;
+            else expenses += Math.abs(t.amount);
+        });
+        document.getElementById('totalIncome').textContent = income.toFixed(2);
+        document.getElementById('totalExpenses').textContent = expenses.toFixed(2);
+        document.getElementById('netFlow').textContent = (income - expenses).toFixed(2);
+    }
+
+    // Filter and show/hide rows
+    function applyFilter() {
+        const dateVal = document.getElementById('date-filter').value;
+        const typeVal = document.getElementById('type-filter').value;
+        const transactions = getTransactions();
+        let filtered = transactions;
+
+        if (dateVal) {
+            filtered = filtered.filter(t => t.date === dateVal);
+        }
+        if (typeVal !== 'all') {
+            filtered = filtered.filter(t => t.type === typeVal);
+        }
+
+        // Show/hide rows
+        transactions.forEach(t => t.row.style.display = 'none');
+        filtered.forEach(t => t.row.style.display = '');
+
+        updateSummary(filtered);
+    }
+
+    // Initial summary
+    updateSummary(getTransactions());
+
+    // Filter button event
+    document.getElementById('filter-button').addEventListener('click', applyFilter);
+
+    // Optional: update summary when filters change
+    document.getElementById('date-filter').addEventListener('change', applyFilter);
+    document.getElementById('type-filter').addEventListener('change', applyFilter);
+});
 </script>
 </body>
 </html>

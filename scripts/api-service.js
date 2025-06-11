@@ -45,6 +45,73 @@ async function fetchWithAuth(endpoint, options = {}) {
     return response.json();
 }
 
+// Mock API responses for development (remove in production)
+function getMockResponse(endpoint) {
+    const mockData = {
+        '/user/profile': {
+            id: 'user123',
+            fullName: 'John Doe',
+            firstName: 'John',
+            lastName: 'Doe',
+            email: 'john.doe@example.com',
+            profilePicture: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60',
+            memberSince: '2024-01-15T10:30:00Z',
+            balance: 7302.50,
+            bitcoinBalance: 0.15,
+            referralReward: 2340
+        },
+        '/account/balance': {
+            balance: 7302.50,
+            currency: 'USD',
+            referralReward: 2340,
+            bitcoinBalance: 0.15,
+            ethereumBalance: 2.5,
+            litecoinBalance: 15.8
+        },
+        '/transactions/recent': [
+            {
+                id: 'tx1',
+                type: 'transfer',
+                amount: -150.00,
+                description: 'Transfer to Sarah',
+                status: 'completed',
+                timestamp: '2024-01-20T14:30:00Z'
+            },
+            {
+                id: 'tx2',
+                type: 'deposit',
+                amount: 500.00,
+                description: 'Bank deposit',
+                status: 'completed',
+                timestamp: '2024-01-19T09:15:00Z'
+            },
+            {
+                id: 'tx3',
+                type: 'crypto',
+                amount: 75.25,
+                description: 'Bitcoin purchase',
+                status: 'pending',
+                timestamp: '2024-01-18T16:45:00Z'
+            }
+        ],
+        '/portfolio': {
+            totalValue: 12543.75,
+            walletPercentage: 32,
+            cryptoPercentage: 32,
+            referralPercentage: 40,
+            assets: {
+                cash: 7302.50,
+                bitcoin: 5201.02,
+                ethereum: 0,
+                litecoin: 0,
+                referralReward: 2340
+            }
+        }
+    };
+    
+    return mockData[endpoint] || null;
+}
+
 // Get user data from the API
 export async function getUserData() {
     try {
@@ -54,6 +121,12 @@ export async function getUserData() {
         return userData;
     } catch (error) {
         console.error('Error fetching user data:', error);
+        // Return mock data for development
+        const mockData = getMockResponse('/user/profile');
+        if (mockData) {
+            localStorage.setItem('userData', JSON.stringify(mockData));
+            return mockData;
+        }
         // Try to return cached data if available
         const cachedData = localStorage.getItem('userData');
         return cachedData ? JSON.parse(cachedData) : null;
@@ -133,7 +206,8 @@ export async function getTransactions() {
         return transactions;
     } catch (error) {
         console.error('Error fetching transactions:', error);
-        throw error;
+        // Return mock data for development
+        return getMockResponse('/transactions/recent') || [];
     }
 }
 
@@ -147,13 +221,19 @@ export async function getCryptoData() {
         return await response.json();
     } catch (error) {
         console.error('Error fetching cryptocurrency data:', error);
-        throw error;
+        // Return mock data for development
+        return {
+            bitcoin: { usd: 34678.50, usd_24h_change: 2.45 },
+            ethereum: { usd: 2089.75, usd_24h_change: -1.23 },
+            litecoin: { usd: 68.90, usd_24h_change: 0.87 }
+        };
     }
 }
 
 // Fetch Financial News
 export async function fetchFinancialNews() {
     try {
+        // Using a free financial news API (replace with your preferred API)
         const response = await fetch('https://api.example.com/financial-news?apiKey=YOUR_API_KEY');
         if (!response.ok) {
             throw new Error('Failed to fetch financial news');
@@ -161,7 +241,24 @@ export async function fetchFinancialNews() {
         return await response.json();
     } catch (error) {
         console.error('Error fetching financial news:', error);
-        throw error;
+        // Return mock data for development
+        return [
+            {
+                title: 'Bitcoin reaches new yearly high',
+                source: 'CryptoNews',
+                publishedAt: '2024-01-20T10:00:00Z'
+            },
+            {
+                title: 'Federal Reserve maintains interest rates',
+                source: 'Financial Times',
+                publishedAt: '2024-01-19T15:30:00Z'
+            },
+            {
+                title: 'Tech stocks rally on strong earnings',
+                source: 'Bloomberg',
+                publishedAt: '2024-01-18T14:20:00Z'
+            }
+        ];
     }
 }
 
@@ -172,7 +269,12 @@ export async function fetchAccountBalance() {
         return response;
     } catch (error) {
         console.error('Error fetching account balance:', error);
-        throw error;
+        // Return mock data for development
+        return getMockResponse('/account/balance') || {
+            balance: 7302.50,
+            currency: 'USD',
+            referralReward: 2340
+        };
     }
 }
 
@@ -183,7 +285,8 @@ export async function fetchRecentTransactions() {
         return response;
     } catch (error) {
         console.error('Error fetching recent transactions:', error);
-        throw error;
+        // Return mock data for development
+        return getMockResponse('/transactions/recent') || [];
     }
 }
 
@@ -194,80 +297,266 @@ export async function fetchPortfolioData() {
         return response;
     } catch (error) {
         console.error('Error fetching portfolio data:', error);
+        // Return mock data for development
+        return getMockResponse('/portfolio') || {
+            totalValue: 12543.75,
+            walletPercentage: 32,
+            cryptoPercentage: 32,
+            referralPercentage: 40
+        };
+    }
+}
+
+// Get user notifications
+export async function getUserNotifications() {
+    try {
+        const response = await fetchWithAuth('/user/notifications');
+        return response;
+    } catch (error) {
+        console.error('Error fetching notifications:', error);
+        // Return mock data for development
+        return [
+            {
+                id: 'notif1',
+                type: 'transaction',
+                title: 'Transaction completed',
+                message: 'Your transfer to Sarah has been completed',
+                read: false,
+                timestamp: '2024-01-20T14:35:00Z'
+            },
+            {
+                id: 'notif2',
+                type: 'crypto',
+                title: 'Bitcoin price alert',
+                message: 'Bitcoin has increased by 5% in the last hour',
+                read: true,
+                timestamp: '2024-01-20T12:00:00Z'
+            }
+        ];
+    }
+}
+
+// Get user messages
+export async function getUserMessages() {
+    try {
+        const response = await fetchWithAuth('/user/messages');
+        return response;
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        // Return mock data for development
+        return [
+            {
+                id: 'msg1',
+                senderId: 'user456',
+                senderName: 'Sarah Johnson',
+                message: 'Thanks for the transfer!',
+                read: false,
+                timestamp: '2024-01-20T14:30:00Z'
+            },
+            {
+                id: 'msg2',
+                senderId: 'user789',
+                senderName: 'Mike Wilson',
+                message: 'Can you send me your referral code?',
+                read: true,
+                timestamp: '2024-01-19T16:45:00Z'
+            }
+        ];
+    }
+}
+
+// Mark notification as read
+export async function markNotificationAsRead(notificationId) {
+    try {
+        const response = await fetchWithAuth(`/user/notifications/${notificationId}/read`, {
+            method: 'PUT'
+        });
+        return response;
+    } catch (error) {
+        console.error('Error marking notification as read:', error);
         throw error;
     }
 }
 
-class ApiService {
-    constructor() {
-        this.baseUrl = '/api'; // Update this with your actual API base URL
-        this.headers = {
-            'Content-Type': 'application/json',
+// Mark message as read
+export async function markMessageAsRead(messageId) {
+    try {
+        const response = await fetchWithAuth(`/user/messages/${messageId}/read`, {
+            method: 'PUT'
+        });
+        return response;
+    } catch (error) {
+        console.error('Error marking message as read:', error);
+        throw error;
+    }
+}
+
+// Get user statistics
+export async function getUserStats() {
+    try {
+        const response = await fetchWithAuth('/user/stats');
+        return response;
+    } catch (error) {
+        console.error('Error fetching user stats:', error);
+        // Return mock data for development
+        return {
+            totalTransactions: 45,
+            totalTransfers: 23,
+            totalCryptoTransactions: 12,
+            referralCount: 8,
+            memberSince: '2024-01-15T10:30:00Z',
+            lastActivity: '2024-01-20T14:35:00Z'
         };
     }
+}
 
-    // Set the authentication token
+// Get referral data
+export async function getReferralData() {
+    try {
+        const response = await fetchWithAuth('/user/referrals');
+        return response;
+    } catch (error) {
+        console.error('Error fetching referral data:', error);
+        // Return mock data for development
+        return {
+            referralCode: 'JOHN2024',
+            referralCount: 8,
+            totalEarnings: 2340,
+            pendingEarnings: 150,
+            referrals: [
+                {
+                    id: 'ref1',
+                    name: 'Sarah Johnson',
+                    email: 'sarah@example.com',
+                    joinedAt: '2024-01-18T10:00:00Z',
+                    status: 'active',
+                    earnings: 300
+                },
+                {
+                    id: 'ref2',
+                    name: 'Mike Wilson',
+                    email: 'mike@example.com',
+                    joinedAt: '2024-01-17T14:30:00Z',
+                    status: 'pending',
+                    earnings: 0
+                }
+            ]
+        };
+    }
+}
+
+// Send referral invitation
+export async function sendReferralInvitation(email) {
+    try {
+        const response = await fetchWithAuth('/user/referrals/invite', {
+            method: 'POST',
+            body: JSON.stringify({ email })
+        });
+        return response;
+    } catch (error) {
+        console.error('Error sending referral invitation:', error);
+        throw error;
+    }
+}
+
+// Get market data
+export async function getMarketData() {
+    try {
+        const response = await fetchWithAuth('/market/data');
+        return response;
+    } catch (error) {
+        console.error('Error fetching market data:', error);
+        // Return mock data for development
+        return {
+            marketCap: 2500000000000,
+            volume24h: 45000000000,
+            marketTrend: 'bullish',
+            topGainers: [
+                { symbol: 'BTC', change: 2.45 },
+                { symbol: 'ETH', change: 1.87 },
+                { symbol: 'LTC', change: 0.93 }
+            ],
+            topLosers: [
+                { symbol: 'ADA', change: -1.23 },
+                { symbol: 'DOT', change: -0.87 },
+                { symbol: 'LINK', change: -0.45 }
+            ]
+        };
+    }
+}
+
+// Enhanced API class for additional functionality
+class EnhancedAPI {
+    constructor() {
+        this.baseURL = API_BASE_URL;
+        this.authToken = getAuthToken();
+    }
+
     setAuthToken(token) {
-        if (token) {
-            this.headers['Authorization'] = `Bearer ${token}`;
-        } else {
-            delete this.headers['Authorization'];
-        }
+        this.authToken = token;
+        localStorage.setItem('authToken', token);
     }
 
-    // Generic request handler
     async request(endpoint, options = {}) {
-        try {
-            const response = await fetch(`${this.baseUrl}${endpoint}`, {
-                ...options,
-                headers: this.headers,
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || 'An error occurred');
-            }
-
-            return data;
-        } catch (error) {
-            console.error('API Request Error:', error);
-            throw error;
+        if (!this.authToken) {
+            throw new Error('No authentication token available');
         }
+
+        const defaultOptions = {
+            headers: {
+                'Authorization': `Bearer ${this.authToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const response = await fetch(`${this.baseURL}${endpoint}`, {
+            ...defaultOptions,
+            ...options,
+            headers: {
+                ...defaultOptions.headers,
+                ...options.headers,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`API request failed: ${response.statusText}`);
+        }
+
+        return response.json();
     }
 
-    // Phone verification endpoints
     async verifyPhoneCode(code) {
-        return this.request('/verify-phone', {
+        return this.request('/user/verify-phone', {
             method: 'POST',
             body: JSON.stringify({ code }),
         });
     }
 
     async resendVerificationCode(phoneNumber) {
-        return this.request('/resend-code', {
+        return this.request('/user/resend-verification', {
             method: 'POST',
             body: JSON.stringify({ phoneNumber }),
         });
     }
 
-    // Get the phone number from the session/local storage
     getPhoneNumber() {
-        return localStorage.getItem('phoneNumber') || sessionStorage.getItem('phoneNumber');
+        return localStorage.getItem('phoneNumber');
     }
 
-    // Store the phone number temporarily
     setPhoneNumber(phoneNumber, rememberMe = false) {
-        const storage = rememberMe ? localStorage : sessionStorage;
-        storage.setItem('phoneNumber', phoneNumber);
+        if (rememberMe) {
+            localStorage.setItem('phoneNumber', phoneNumber);
+        } else {
+            sessionStorage.setItem('phoneNumber', phoneNumber);
+        }
     }
 }
 
-// Create and export a single instance
-const apiService = new ApiService();
-export default apiService;
+// Create and export singleton instance
+const enhancedAPI = new EnhancedAPI();
+export { enhancedAPI };
 
-// Update user settings
+// Additional utility functions
 export async function updateUserSettings(settings) {
     try {
         const response = await fetchWithAuth('/user/settings', {
@@ -281,14 +570,14 @@ export async function updateUserSettings(settings) {
     }
 }
 
-// Log activity for a transaction
 export async function logTransactionActivity(transactionId, activityDetails) {
     try {
-        const response = await fetchWithAuth('/activities/log', {
+        const response = await fetchWithAuth('/transactions/activity', {
             method: 'POST',
             body: JSON.stringify({
                 transactionId,
                 activityDetails,
+                timestamp: new Date().toISOString(),
             }),
         });
         return response;
@@ -298,105 +587,15 @@ export async function logTransactionActivity(transactionId, activityDetails) {
     }
 }
 
-// Make a transaction and log the activity
 export async function makeTransaction(transactionData) {
     try {
-        // Make the transaction
-        const transactionResponse = await fetchWithAuth('/transactions', {
+        const response = await fetchWithAuth('/transactions', {
             method: 'POST',
             body: JSON.stringify(transactionData),
         });
-
-        // Log the activity
-        await logTransactionActivity(transactionResponse.id, {
-            description: `Transaction of $${transactionData.amount} to ${transactionData.recipient}`,
-            type: 'transaction',
-            timestamp: new Date().toISOString(),
-        });
-
-        return transactionResponse;
+        return response;
     } catch (error) {
         console.error('Error making transaction:', error);
         throw error;
     }
 }
-
-import { fetchFinancialNews, fetchAccountBalance, fetchRecentTransactions, fetchPortfolioData } from './scripts/api-service.js';
-
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        const newsData = await fetchFinancialNews();
-        const balanceData = await fetchAccountBalance();
-        const transactionsData = await fetchRecentTransactions();
-        const portfolioData = await fetchPortfolioData();
-
-        // Update the DOM with fetched data
-        // Example: Update financial news
-        const newsSection = document.querySelector('.news-section');
-        newsSection.innerHTML = '<h2>Financial News</h2>';
-        newsData.articles.forEach(article => {
-            const newsItem = document.createElement('div');
-            newsItem.classList.add('news-item');
-            newsItem.innerHTML = `
-                <span>${article.title}</span>
-                <span>Source: ${article.source.name}</span>
-            `;
-            newsSection.appendChild(newsItem);
-        });
-
-        // Update balance
-        document.querySelector('.balance-card .amount').textContent = `$${balanceData.balance}`;
-
-        // Update transactions
-        const transactionSection = document.querySelector('.transaction-section');
-        transactionSection.innerHTML = '<h2>Recent Transactions</h2>';
-        transactionsData.forEach(transaction => {
-            const transactionItem = document.createElement('div');
-            transactionItem.classList.add('transaction-item');
-            transactionItem.innerHTML = `
-                <span>${transaction.description}</span>
-                <span class="amount">${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount)}</span>
-            `;
-            transactionSection.appendChild(transactionItem);
-        });
-
-        // Update portfolio
-        document.querySelector('.portfolio-value').textContent = `$${portfolioData.totalValue}`;
-    } catch (error) {
-        console.error('Error initializing dashboard:', error);
-    }
-});
-
-document.querySelector('#makeTransactionButton').addEventListener('click', async () => {
-    const transactionData = {
-        amount: 100, // Example amount
-        recipient: 'John Doe', // Example recipient
-    };
-
-    try {
-        const transactionResponse = await makeTransaction(transactionData);
-        console.log('Transaction successful:', transactionResponse);
-
-        // Optionally update the UI or redirect the user
-        alert('Transaction completed and activity logged!');
-    } catch (error) {
-        console.error('Error processing transaction:', error);
-        alert('Failed to complete the transaction.');
-    }
-});
-
-// POST /activities/log
-app.post('/activities/log', authenticate, async (req, res) => {
-    const { transactionId, activityDetails } = req.body;
-
-    try {
-        const activity = await Activity.create({
-            transactionId,
-            ...activityDetails,
-        });
-        res.status(201).json(activity);
-    } catch (error) {
-        console.error('Error logging activity:', error);
-        res.status(500).json({ error: 'Failed to log activity' });
-    }
-});
