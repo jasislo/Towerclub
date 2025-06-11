@@ -574,6 +574,15 @@
             fileInput.type = 'file';
             fileInput.accept = 'image/*';
 
+            // Sync profile picture everywhere on page load
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+
             // Handle profile image click
             profileImage.addEventListener('click', () => {
                 fileInput.click();

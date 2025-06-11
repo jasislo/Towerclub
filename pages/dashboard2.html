@@ -466,6 +466,17 @@
             }
         });
 
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
         // Example API Endpoints (Replace with actual API URLs and keys)
         const financialNewsAPI = 'https://api.example.com/financial-news?apiKey=YOUR_API_KEY';
         const accountBalanceAPI = 'https://api.example.com/account-balance?apiKey=YOUR_API_KEY';

@@ -608,6 +608,17 @@
             reader.readAsDataURL(file);
         }
     });
+
+    // Sync profile picture everywhere on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedPic = localStorage.getItem('profilePicture');
+        if (savedPic) {
+            ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.src = savedPic;
+            });
+        }
+    });
 </script>
 <script src="/scripts/profile-picture-sync.js"></script>
 <script src="/scripts/sync.js"></script>

@@ -561,6 +561,15 @@
                     alert('Error creating budget. Please try again.');
                 }
             });
+
+            // Sync profile picture everywhere on page load
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
         });
 
         // Close form function
