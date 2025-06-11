@@ -424,8 +424,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -523,6 +523,126 @@
             button.addEventListener('click', () => {
                 document.querySelectorAll('.type-btn').forEach((btn) => btn.classList.remove('active'));
                 button.classList.add('active');
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // --- 1. Get transaction ID from URL ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const transactionId = urlParams.get('id');
+            if (!transactionId) {
+                alert('No transaction ID provided.');
+                window.history.back();
+                return;
+            }
+
+            // --- 2. Load transaction data and populate form ---
+            try {
+                const res = await fetch(`/api/transactions/${transactionId}`);
+                if (!res.ok) throw new Error('Failed to load transaction');
+                const tx = await res.json();
+                document.getElementById('amount').value = tx.amount;
+                document.getElementById('paymentMethod').value = tx.paymentMethod || '';
+                document.getElementById('category').value = tx.category || '';
+                document.getElementById('date').value = tx.date ? tx.date.substring(0, 10) : '';
+                document.getElementById('description').value = tx.description || '';
+                // Set transaction type button
+                document.querySelectorAll('.type-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.type === tx.transactionType);
+                });
+                // Show current attachment if exists
+                if (tx.attachmentUrl) {
+                    document.getElementById('currentAttachment').style.display = 'block';
+                    document.getElementById('attachmentPreview').src = tx.attachmentUrl;
+                }
+            } catch (err) {
+                alert('Could not load transaction.');
+                window.history.back();
+            }
+
+            // --- 3. Remove current attachment ---
+            document.getElementById('removeAttachment').onclick = function() {
+                document.getElementById('currentAttachment').style.display = 'none';
+                document.getElementById('attachmentPreview').src = '';
+            };
+
+            // --- 4. Show file name on file select ---
+            document.getElementById('attachment').addEventListener('change', function(e) {
+                const fileName = e.target.files[0] ? e.target.files[0].name : 'No file chosen';
+                document.querySelector('.file-name').textContent = fileName;
+            });
+
+            // --- 5. Save changes (PUT with FormData if file, else JSON) ---
+            document.getElementById('editTransactionForm').addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const amount = document.getElementById('amount').value;
+                const paymentMethod = document.getElementById('paymentMethod').value;
+                const transactionType = document.querySelector('.type-btn.active')?.dataset.type || '';
+                const category = document.getElementById('category').value;
+                const date = document.getElementById('date').value;
+                const description = document.getElementById('description').value;
+                const attachmentInput = document.getElementById('attachment');
+                const removeAttachment = document.getElementById('currentAttachment').style.display === 'none';
+
+                if (!amount || !paymentMethod || !transactionType || !category || !date || !description) {
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+
+                let body, headers;
+                if (attachmentInput.files[0]) {
+                    // Use FormData for file upload
+                    body = new FormData();
+                    body.append('amount', amount);
+                    body.append('paymentMethod', paymentMethod);
+                    body.append('transactionType', transactionType);
+                    body.append('category', category);
+                    body.append('date', date);
+                    body.append('description', description);
+                    body.append('attachment', attachmentInput.files[0]);
+                    body.append('removeAttachment', removeAttachment);
+                    headers = undefined; // Let browser set
+                } else {
+                    // JSON if no file
+                    body = JSON.stringify({
+                        amount: parseFloat(amount),
+                        paymentMethod,
+                        transactionType,
+                        category,
+                        date,
+                        description,
+                        removeAttachment
+                    });
+                    headers = { 'Content-Type': 'application/json' };
+                }
+
+                try {
+                    const response = await fetch(`/api/transactions/${transactionId}`, {
+                        method: 'PUT',
+                        headers,
+                        body
+                    });
+
+                    if (response.ok) {
+                        alert('Changes saved successfully!');
+                        window.location.href = 'transfer.html';
+                    } else {
+                        const error = await response.json();
+                        alert(`Failed to save changes: ${error.message}`);
+                    }
+                } catch (error) {
+                    console.error('Error saving changes:', error);
+                    alert('An error occurred while saving the changes.');
+                }
+            });
+
+            // --- 6. Transaction type toggle ---
+            document.querySelectorAll('.type-btn').forEach((button) => {
+                button.addEventListener('click', () => {
+                    document.querySelectorAll('.type-btn').forEach((btn) => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
             });
         });
     </script>

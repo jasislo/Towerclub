@@ -582,8 +582,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -616,6 +616,46 @@
             reader.readAsDataURL(file);
         }
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    // --- 1. Load Stats ---
+    fetch('/api/financial-profile/stats')
+        .then(res => res.json())
+        .then(stats => {
+            document.querySelectorAll('.stat-card')[0].querySelector('p').textContent = `$${Number(stats.totalBalance).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.querySelectorAll('.stat-card')[1].querySelector('p').textContent = `$${Number(stats.totalProfit).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.querySelectorAll('.stat-card')[2].querySelector('p').textContent = stats.totalTrades;
+            document.querySelector('.balance-card .amount').textContent = `$${Number(stats.currentBalance).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+        });
+
+    // --- 2. Load Recent Activity ---
+    fetch('/api/financial-profile/activities')
+        .then(res => res.json())
+        .then(data => {
+            const activityList = document.querySelector('.activity-list');
+            activityList.innerHTML = '';
+            (data.activities || []).slice(0, 5).forEach(activity => {
+                const div = document.createElement('div');
+                div.className = 'activity-item';
+                div.innerHTML = `
+                    <div class="activity-info">
+                        <h4>${activity.title}</h4>
+                        <p>${activity.timeAgo}</p>
+                    </div>
+                    <div class="activity-amount ${activity.amount >= 0 ? 'positive' : 'negative'}">
+                        ${activity.amount >= 0 ? '+' : '-'}$${Math.abs(activity.amount).toLocaleString(undefined, {minimumFractionDigits:2})}
+                    </div>
+                `;
+                activityList.appendChild(div);
+            });
+        });
+
+    // --- 3. Profile Picture Upload (already present) ---
+    // No changes needed, your code is correct.
+
+    // --- 4. Translations ---
+    if (typeof applyTranslations === 'function') applyTranslations();
+});
 </script>
 <script src="/scripts/sync.js"></script>
 <script src="/scripts/header.js"></script>

@@ -495,8 +495,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -509,96 +509,159 @@
         </div>
     </footer>
 
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('budgetForm');
-            const amountInput = document.getElementById('amount');
-            const budgetNameInput = document.getElementById('budgetName');
-            const descriptionInput = document.getElementById('description');
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('budgetForm');
+    const amountInput = document.getElementById('amount');
+    const budgetNameInput = document.getElementById('budgetName');
+    const descriptionInput = document.getElementById('description');
+    let lastBudgetData = null;
 
-            // Format amount input with commas
-            amountInput.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/,/g, '');
-                if (value) {
-                    value = parseInt(value).toLocaleString();
-                    e.target.value = value;
-                }
-            });
+    // Format amount input with commas
+    amountInput.addEventListener('input', (e) => {
+        let value = e.target.value.replace(/,/g, '');
+        if (value) {
+            value = parseInt(value).toLocaleString();
+            e.target.value = value;
+        }
+    });
 
-            // Handle form submission
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+    // Handle form submission (Create Budget)
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-                const budgetData = {
-                    amount: amountInput.value.replace(/,/g, ''),
-                    name: budgetNameInput.value,
-                    description: descriptionInput.value,
-                    createdAt: new Date().toISOString(),
-                    timeLeft: '45 days left'
-                };
+        const amountValue = amountInput.value.replace(/,/g, '');
+        if (!amountValue || isNaN(amountValue) || parseFloat(amountValue) <= 0) {
+            alert('Please enter a valid amount.');
+            return;
+        }
 
+        const budgetData = {
+            amount: amountValue,
+            name: budgetNameInput.value,
+            description: descriptionInput.value,
+            createdAt: new Date().toISOString(),
+            timeLeft: '45 days left'
+        };
+        lastBudgetData = budgetData;
+
+        // Show PayPal button for $0.95 processing fee
+        showPayPalButton();
+    });
+
+    // Skip for Now logic
+    window.skipForNow = async function() {
+        const amountValue = amountInput.value.replace(/,/g, '');
+        const nameValue = budgetNameInput.value;
+        if (amountValue && nameValue) {
+            // Form is filled, submit to backend
+            const budgetData = {
+                amount: amountValue,
+                name: nameValue,
+                description: descriptionInput.value,
+                createdAt: new Date().toISOString(),
+                timeLeft: '45 days left'
+            };
+            try {
+                await createBudget(budgetData);
+                await updateBalance(budgetData.amount);
+                window.history.back();
+            } catch (error) {
+                alert('Error creating budget. Please try again.');
+            }
+        } else {
+            // Not filled, just go back
+            window.history.back();
+        }
+    };
+
+    // Helper: Create budget via API
+    async function createBudget(budgetData) {
+        const res = await fetch('/api/budgets', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(budgetData)
+        });
+        if (!res.ok) throw new Error('Failed to create budget');
+    }
+
+    // Helper: Update balance via API
+    async function updateBalance(amount) {
+        const res = await fetch('/api/balance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: parseFloat(amount) })
+        });
+        if (!res.ok) throw new Error('Failed to update balance');
+    }
+
+    // Show PayPal button for processing fee
+    function showPayPalButton() {
+        // Remove existing button if present
+        let paypalDiv = document.getElementById('paypal-button-container');
+        if (paypalDiv) paypalDiv.remove();
+
+        paypalDiv = document.createElement('div');
+        paypalDiv.id = 'paypal-button-container';
+        form.parentNode.appendChild(paypalDiv);
+
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: { value: '0.95' }
+                    }]
+                });
+            },
+            onApprove: async function(data, actions) {
+                await actions.order.capture();
+                // After successful payment, create budget and update balance
                 try {
-                    // Here you would typically send this data to your backend
-                    console.log('Budget created:', budgetData);
-
-                    // Simulate moving money to account balance
-                    // (If you have an account balance element, update it here)
-                    // Example: 
-                    // let balanceElem = document.getElementById('accountBalance');
-                    // let currentBalance = parseFloat(balanceElem.textContent.replace(/[^0-9.-]+/g,""));
-                    // balanceElem.textContent = '$' + (currentBalance + parseFloat(budgetData.amount)).toLocaleString();
-
-                    // Show success message
-                    alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
-
-                    // Reset form
+                    await createBudget(lastBudgetData);
+                    await updateBalance(lastBudgetData.amount);
+                    alert(`$${parseFloat(lastBudgetData.amount).toLocaleString()} has been added to your account balance!`);
                     form.reset();
-
-                    // Redirect to payment page (replace with your actual route)
                     window.location.href = '/payment';
                 } catch (error) {
-                    console.error('Error creating budget:', error);
                     alert('Error creating budget. Please try again.');
                 }
-            });
-        });
-
-        // Close form function
-        function closeForm() {
-            window.history.back();
-        }
-
-        // Skip for now function
-        function skipForNow() {
-            window.history.back();
-        }
-
-        // Add animations
-        document.querySelectorAll('.input-group').forEach((group, index) => {
-            group.style.animation = `fadeIn 0.6s ease-out ${index * 0.1}s forwards`;
-            group.style.opacity = '0';
-        });
-
-        const profilePicture = document.getElementById('profilePicture');
-        const profilePictureInput = document.getElementById('profilePictureInput');
-
-        // Make the profile picture clickable
-        profilePicture.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Handle the file input change event
-        profilePictureInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePicture.src = e.target.result; // Update the profile picture preview
-                };
-                reader.readAsDataURL(file);
+            },
+            onError: function(err) {
+                alert('PayPal payment failed. Please try again.');
             }
-        });
-    </script>
+        }).render('#paypal-button-container');
+    }
+
+    // Close form function
+    window.closeForm = function() {
+        window.history.back();
+    };
+
+    // Add animations
+    document.querySelectorAll('.input-group').forEach((group, index) => {
+        group.style.animation = `fadeIn 0.6s ease-out ${index * 0.1}s forwards`;
+        group.style.opacity = '0';
+    });
+
+    // Profile picture logic (unchanged)
+    const profilePicture = document.getElementById('profilePicture');
+    const profilePictureInput = document.getElementById('profilePictureInput');
+    profilePicture.addEventListener('click', () => {
+        profilePictureInput.click();
+    });
+    profilePictureInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profilePicture.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+});
+</script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>

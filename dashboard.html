@@ -769,8 +769,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -840,5 +840,107 @@
         import profilePictureManager from '/scripts/profile-picture-manager.js';
         // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- 1. Load Dashboard Stats ---
+    fetch('/api/dashboard/stats')
+        .then(res => res.json())
+        .then(stats => {
+            document.getElementById('totalBalance').textContent = `$${Number(stats.totalBalance).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('moneyIn').textContent = `$${Number(stats.moneyIn).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('moneyOut').textContent = `$${Number(stats.moneyOut).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+            document.getElementById('savingsRate').textContent = `${stats.savingsRate}%`;
+        });
+
+    // --- 2. Load Portfolio Value ---
+    fetch('/api/portfolio')
+        .then(res => res.json())
+        .then(portfolio => {
+            document.getElementById('portfolioValue').textContent = `$${Number(portfolio.totalValue).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+        });
+
+    // --- 3. Load Recent Transactions ---
+    fetch('/api/transactions/recent')
+        .then(res => res.json())
+        .then(data => {
+            const container = document.getElementById('recentTransactions');
+            container.innerHTML = '';
+            (data.transactions || []).slice(0, 3).forEach(tx => {
+                const div = document.createElement('div');
+                div.className = 'transaction-item';
+                div.innerHTML = `
+                    <span>${tx.title || tx.description}</span>
+                    <span class="amount ${tx.amount >= 0 ? 'positive' : 'negative'}">
+                        ${tx.amount >= 0 ? '+' : '-'}$${Math.abs(tx.amount).toLocaleString(undefined, {minimumFractionDigits:2})}
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        });
+
+    // --- 4. Load Recent Chats ---
+    fetch('/api/chats/recent')
+        .then(res => res.json())
+        .then(data => {
+            const chatList = document.querySelector('.chat-list');
+            chatList.innerHTML = '';
+            (data.chats || []).slice(0, 3).forEach(chat => {
+                const div = document.createElement('div');
+                div.className = 'chat-item';
+                div.innerHTML = `
+                    <span class="material-icons chat-icon">person</span>
+                    <div class="chat-name">${chat.name}</div>
+                    <div class="chat-message">${chat.lastMessage}</div>
+                `;
+                chatList.appendChild(div);
+            });
+        });
+
+    // --- 5. Load Recent Activities ---
+    fetch('/api/activities/recent')
+        .then(res => res.json())
+        .then(data => {
+            const activityList = document.querySelector('.recent-activities-list');
+            activityList.innerHTML = '';
+            (data.activities || []).slice(0, 3).forEach(activity => {
+                const div = document.createElement('div');
+                div.className = 'activity-item';
+                div.innerHTML = `
+                    <span class="material-icons activity-icon">${activity.icon || 'event'}</span>
+                    <div class="activity-title">${activity.title}</div>
+                    <div class="activity-date">${new Date(activity.date || activity.timestamp).toLocaleDateString()}</div>
+                    <div class="activity-amount ${activity.amount >= 0 ? 'positive' : 'negative'}">
+                        ${activity.amount >= 0 ? '+' : '-'}$${Math.abs(activity.amount).toLocaleString(undefined, {minimumFractionDigits:2})}
+                    </div>
+                `;
+                activityList.appendChild(div);
+            });
+        });
+
+    // --- 6. Load Crypto Prices ---
+    fetch('/api/crypto/prices')
+        .then(res => res.json())
+        .then(data => {
+            const cryptoList = document.querySelector('.crypto-list');
+            cryptoList.innerHTML = '';
+            (data.cryptos || []).forEach(crypto => {
+                const div = document.createElement('div');
+                div.className = 'crypto-item';
+                div.innerHTML = `
+                    <div class="crypto-symbol" style="font-size:1.5rem; margin-bottom:2px;">${crypto.symbol}</div>
+                    <div class="crypto-name">${crypto.name}</div>
+                    <div class="crypto-price">$${Number(crypto.price).toLocaleString(undefined, {minimumFractionDigits:2})}</div>
+                    <div class="crypto-trend ${crypto.trend >= 0 ? 'positive' : 'negative'}">
+                        ${crypto.trend >= 0 ? '+' : ''}${crypto.trend}%
+                    </div>
+                `;
+                cryptoList.appendChild(div);
+            });
+        });
+
+    // --- 7. Set Current Date ---
+    document.getElementById('currentDate').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+});
+</script>
 </body>
 </html>
