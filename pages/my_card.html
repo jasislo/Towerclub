@@ -11,14 +11,6 @@
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
-    <script type="module">
-        import DarkMode from '/scripts/dark-mode.js';
-        // DarkMode.init() is called automatically on DOMContentLoaded
-    </script>
-    <script type="module">
-        import profilePictureManager from '/scripts/profile-picture-manager.js';
-        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
-    </script>
     <style>
         /* CSS Variables */
         :root {
@@ -300,6 +292,12 @@
             gap: 20px;
             margin-top: 40px;
         }
+
+        .selected-payment-method {
+            box-shadow: 0 0 0 3px #22c55e, 0 4px 8px rgba(0,0,0,0.2);
+            position: relative;
+            transition: box-shadow 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -350,49 +348,129 @@
 
         <!-- Add Payment Methods -->
         <div class="payment-methods">
-            <div class="card-container" onclick="enableEdit(this)">
+            <div class="card-container" id="creditCardContainer" onclick="selectPaymentMethod('creditCard')">
                 <div class="card-header">
                     <!-- No logo -->
                 </div>
                 <div class="card-content">
                     <h3 contenteditable="false">Credit Card</h3>
-                    <div class="card-number" contenteditable="false">**** **** **** 5678</div>
-                    <div class="card-details">
-                        <span contenteditable="false">Expiry: 11/25</span>
-                        <span contenteditable="false">Cardholder: Jane Doe</span>
+                    <div class="card-number" style="display: flex; align-items: center;">
+                        <span contenteditable="false" id="creditCardNumber">**** **** **** 5678</span>
+                        <button 
+                            type="button" 
+                            class="edit-account-btn" 
+                            style="margin-left: 10px; background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.9em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'creditCardNumber');"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                    <div class="card-details" style="display: flex; gap: 10px;">
+                        <span contenteditable="false" id="creditCardExpiry">Expiry: 11/25</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'creditCardExpiry', true);"
+                        >Edit</button>
+                        <span contenteditable="false" id="creditCardHolder">Cardholder: Jane Doe</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'creditCardHolder', true);"
+                        >Edit</button>
+                        <span contenteditable="false" id="creditCardCVV">CVV: 123</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'creditCardCVV', true);"
+                        >Edit</button>
                     </div>
                 </div>
             </div>
 
-            <div class="card-container" onclick="enableEdit(this)">
+            <div class="card-container" id="debitCardContainer" onclick="selectPaymentMethod('debitCard')">
                 <div class="card-header">
                     <!-- No logo -->
                 </div>
                 <div class="card-content">
                     <h3 contenteditable="false">Debit Card</h3>
-                    <div class="card-number" contenteditable="false">**** **** **** 9012</div>
-                    <div class="card-details">
-                        <span contenteditable="false">Expiry: 10/24</span>
-                        <span contenteditable="false">Cardholder: John Smith</span>
+                    <div class="card-number" style="display: flex; align-items: center;">
+                        <span contenteditable="false" id="debitCardNumber">**** **** **** 9012</span>
+                        <button 
+                            type="button" 
+                            class="edit-account-btn" 
+                            style="margin-left: 10px; background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.9em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'debitCardNumber');"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                    <div class="card-details" style="display: flex; gap: 10px;">
+                        <span contenteditable="false" id="debitCardExpiry">Expiry: 10/24</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'debitCardExpiry', true);"
+                        >Edit</button>
+                        <span contenteditable="false" id="debitCardHolder">Cardholder: John Smith</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'debitCardHolder', true);"
+                        >Edit</button>
+                        <span contenteditable="false" id="debitCardCVV">CVV: 456</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'debitCardCVV', true);"
+                        >Edit</button>
                     </div>
                 </div>
             </div>
 
-            <div class="card-container" onclick="enableEdit(this)">
+            <div class="card-container" id="bankAccountContainer" onclick="selectPaymentMethod('bankAccount')">
                 <div class="card-header">
                     <!-- No logo -->
                 </div>
                 <div class="card-content">
                     <h3 contenteditable="false">Bank Account</h3>
-                    <div class="card-number" contenteditable="false">Account: 123456789</div>
-                    <div class="card-details">
-                        <span contenteditable="false">Routing: 987654321</span>
-                        <span contenteditable="false">Bank: TowerBank</span>
+                    <div class="card-number" style="display: flex; align-items: center;">
+                        <span contenteditable="false" id="bankAccountNumber">Account: 123456789</span>
+                        <button 
+                            type="button" 
+                            class="edit-account-btn" 
+                            style="margin-left: 10px; background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.9em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'bankAccountNumber');"
+                        >
+                            Edit
+                        </button>
+                    </div>
+                    <div class="card-details" style="display: flex; gap: 10px;">
+                        <span contenteditable="false" id="bankRoutingNumber">Routing: 987654321</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'bankRoutingNumber', true);"
+                        >Edit</button>
+                        <span contenteditable="false" id="bankName">Bank: TowerBank</span>
+                        <button 
+                            type="button"
+                            class="edit-account-btn"
+                            style="background: #22c55e; color: white; border: none; border-radius: 4px; padding: 2px 8px; cursor: pointer; font-size: 0.8em;"
+                            onclick="event.stopPropagation(); enableCardEdit(this, 'bankName', true);"
+                        >Edit</button>
                     </div>
                 </div>
             </div>
 
-            <div class="card-container" onclick="redirectToPayPal()">
+            <div class="card-container" id="paypalContainer" onclick="selectPaymentMethod('paypal')">
                 <div class="card-header">
                     <!-- No logo -->
                 </div>
@@ -451,8 +529,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -522,6 +600,133 @@
             const returnUrl = encodeURIComponent(window.location.origin + '/pages/payment methods.html');
             window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
         }
+
+        // Example for Visa card
+        localStorage.setItem('selectedCard', JSON.stringify({
+            type: 'Visa',
+            logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png',
+            number: '**** 0250',
+            expiry: '06/25'
+        }));
+
+        // Example API endpoints (replace with your real endpoints)
+        const API_BASE = 'https://api.example.com/user/payment-methods';
+
+        // Utility: Save edited field to backend
+        async function saveFieldToAPI(methodType, field, value) {
+            try {
+                const response = await fetch(`${API_BASE}/${methodType}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add authentication if needed
+                        // 'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ [field]: value })
+                });
+                if (!response.ok) throw new Error('Failed to save');
+                // Optionally show a success message
+            } catch (err) {
+                alert('Failed to save changes. Please try again.');
+            }
+        }
+
+        // Enhanced enableCardEdit to call API on save
+        function enableCardEdit(btn, spanId, focusEnd = false) {
+            const cardSpan = btn.parentElement.querySelector(`#${spanId}`);
+            if (!cardSpan) return;
+
+            // If already editing, do nothing
+            if (cardSpan.isContentEditable) return;
+
+            cardSpan.setAttribute('contenteditable', 'true');
+            cardSpan.focus();
+
+            // Optionally place cursor at end for expiry/cardholder/cvv
+            if (focusEnd && typeof window.getSelection === "function") {
+                const range = document.createRange();
+                range.selectNodeContents(cardSpan);
+                range.collapse(false);
+                const sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            }
+
+            // Save on blur or Enter key
+            async function saveEdit(e) {
+                if (e.type === 'blur' || (e.type === 'keydown' && e.key === 'Enter')) {
+                    cardSpan.setAttribute('contenteditable', 'false');
+                    cardSpan.removeEventListener('blur', saveEdit);
+                    cardSpan.removeEventListener('keydown', saveEdit);
+
+                    // Determine method type and field
+                    let methodType, field;
+                    if (spanId.startsWith('creditCard')) {
+                        methodType = 'creditCard';
+                        field = spanId.replace('creditCard', '').toLowerCase(); // e.g. number, expiry, holder, cvv
+                    } else if (spanId.startsWith('debitCard')) {
+                        methodType = 'debitCard';
+                        field = spanId.replace('debitCard', '').toLowerCase();
+                    } else if (spanId.startsWith('bank')) {
+                        methodType = 'bankAccount';
+                        field = spanId.replace('bank', '').toLowerCase(); // accountnumber, routingnumber, name
+                    }
+                    // Remove label prefix if present (e.g. "Expiry: 11/25" -> "11/25")
+                    let value = cardSpan.textContent;
+                    if (field === 'expiry' && value.includes(':')) value = value.split(':')[1].trim();
+                    if (field === 'holder' && value.includes(':')) value = value.split(':')[1].trim();
+                    if (field === 'cvv' && value.includes(':')) value = value.split(':')[1].trim();
+                    if (field === 'accountnumber' && value.includes(':')) value = value.split(':')[1].trim();
+                    if (field === 'routingnumber' && value.includes(':')) value = value.split(':')[1].trim();
+                    if (field === 'name' && value.includes(':')) value = value.split(':')[1].trim();
+
+                    // Save to backend
+                    await saveFieldToAPI(methodType, field, value);
+
+                    if (e.type === 'keydown' && e.key === 'Enter') {
+                        e.preventDefault();
+                    }
+                }
+            }
+            cardSpan.addEventListener('blur', saveEdit);
+            cardSpan.addEventListener('keydown', saveEdit);
+        }
+
+        function selectPaymentMethod(method) {
+            // Remove previous selection
+            ['creditCard', 'debitCard', 'bankAccount', 'paypal'].forEach(function(id) {
+                const container = document.getElementById(id + 'Container');
+                if (container) {
+                    container.classList.remove('selected-payment-method');
+                    container.removeAttribute('title');
+                }
+            });
+
+            // Mark selected
+            const selected = document.getElementById(method + 'Container');
+            if (selected) {
+                selected.classList.add('selected-payment-method');
+                selected.setAttribute('title', 'Selected');
+            }
+
+            // Store selection for use on payment_methods.html
+            localStorage.setItem('selectedPaymentMethod', method);
+
+            // Redirect to payment_methods.html after selection
+            window.location.href = 'payment_methods.html';
+        }
+
+        // On page load, restore selection and show tooltip
+        document.addEventListener('DOMContentLoaded', function() {
+            const selected = localStorage.getItem('selectedPaymentMethod');
+            if (selected) {
+                const container = document.getElementById(selected + 'Container');
+                if (container) {
+                    container.classList.add('selected-payment-method');
+                    container.setAttribute('title', 'Selected');
+                }
+            }
+        });
     </script>
 </body>
 </html>

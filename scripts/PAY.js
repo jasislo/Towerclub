@@ -88,63 +88,27 @@ document.getElementById('paypalButton').addEventListener('click', function () {
     const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
     
     if (!isLoggedInWithPayPal) {
-        // Store current page state for return
-        sessionStorage.setItem('returnToPayPage', 'true');
-        sessionStorage.setItem('selectedPlan', selectedPlan);
-        sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-        sessionStorage.setItem('paypalLoginInProgress', 'true');
+        // First time login - simulate PayPal login process
+        alert('PayPal login simulation: You would be redirected to PayPal to sign in, then return here to complete payment.');
         
-        // Show loading message
-        this.textContent = 'Redirecting to PayPal...';
-        this.style.backgroundColor = '#f0f0f0';
-        this.style.color = '#666';
+        // Mark as logged in with PayPal
+        sessionStorage.setItem('paypalLoggedIn', 'true');
         
-        // Simulate PayPal login redirect (in production, this would be the actual PayPal URL)
-        setTimeout(() => {
-            // For demo purposes, we'll simulate the PayPal login process
-            // In production, you would redirect to actual PayPal login
-            const paypalLoginUrl = 'https://www.paypal.com/signin';
-            const returnUrl = encodeURIComponent(window.location.href + '?paypal_return=true');
-            const fullPaypalUrl = `${paypalLoginUrl}?returnUrl=${returnUrl}`;
-            
-            // For demo: simulate successful login and return
-            alert('Simulating PayPal login... You would be redirected to PayPal here.');
-            
-            // Simulate successful login by updating session storage
-            sessionStorage.setItem('paypalLoggedIn', 'true');
-            sessionStorage.removeItem('paypalLoginInProgress');
-            
-            // Update button to show logged in state
-            this.textContent = 'Logged with PayPal';
-            this.style.backgroundColor = '#22c55e';
-            this.style.color = '#ffffff';
-            
-            // Show the payment button
-            const makePaypalPayment = document.getElementById('makePaypalPayment');
-            if (makePaypalPayment) {
-                makePaypalPayment.style.display = 'block';
-                makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-            }
-            
-            alert('Successfully logged in with PayPal! You can now proceed with payment.');
-            
-            // Uncomment this line in production:
-            window.location.href = fullPaypalUrl;
-            
-        }, 2000);
+        // Update button text to show logged in status
+        this.textContent = 'Logged with PayPal';
+        this.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
+        this.style.color = '#ffffff';
         
-        // In production, uncomment this line to actually redirect to PayPal:
-        // window.location.href = fullPaypalUrl;
-        
+        // In a real implementation, you would redirect to PayPal like this:
+        // window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/PAY.HTML");
     } else {
         // Already logged in - just show payment button
         alert('Already logged in with PayPal. Ready to make payment.');
-        const makePaypalPayment = document.getElementById('makePaypalPayment');
-        if (makePaypalPayment) {
-            makePaypalPayment.style.display = 'block';
-            makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-        }
     }
+    
+    // Show the Make Payment button after PayPal login
+    document.getElementById('makePaypalPayment').style.display = 'block';
+    document.getElementById('makePaypalPayment').textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
 });
 
 // Make Payment with PayPal button handler
@@ -243,77 +207,15 @@ document.querySelectorAll('.btn-primary, .btn-outline').forEach(function(btn) {
 
 // Check for existing payment on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if returning from PayPal login
-    const returningFromPayPal = sessionStorage.getItem('returnToPayPage') === 'true';
-    const paypalLoginInProgress = sessionStorage.getItem('paypalLoginInProgress') === 'true';
-    const urlParams = new URLSearchParams(window.location.search);
-    const paypalReturn = urlParams.get('paypal_return') === 'true';
-    
-    // Handle PayPal return flow
-    if (returningFromPayPal || paypalReturn) {
-        // Clear the return flags
-        sessionStorage.removeItem('returnToPayPage');
-        sessionStorage.removeItem('paypalLoginInProgress');
-        
-        // Mark as logged in with PayPal
-        sessionStorage.setItem('paypalLoggedIn', 'true');
-        
-        // Update PayPal button to show logged in state
-        const paypalButton = document.getElementById('paypalButton');
-        if (paypalButton) {
-            paypalButton.textContent = 'Logged with PayPal';
-            paypalButton.style.backgroundColor = '#22c55e';
-            paypalButton.style.color = '#ffffff';
-        }
-        
-        // Show success message
-        alert('Successfully logged in with PayPal! You can now proceed with payment.');
-        
-        // Restore selected plan and show payment button
-        const savedPlan = sessionStorage.getItem('selectedPlan');
-        const savedAmount = sessionStorage.getItem('selectedPlanAmount');
-        if (savedPlan && savedAmount) {
-            selectedPlan = savedPlan;
-            selectedPlanAmount = parseFloat(savedAmount);
-            
-            // Update the button to show selected state
-            const selectedButton = document.querySelector(`[data-plan="${savedPlan}"]`);
-            if (selectedButton) {
-                selectedButton.textContent = 'Selected';
-                selectedButton.classList.add('selected-plan');
-                selectedButton.setAttribute('data-selected', 'true');
-            }
-            
-            // Show PayPal payment button
-            const makePaypalPayment = document.getElementById('makePaypalPayment');
-            if (makePaypalPayment) {
-                makePaypalPayment.style.display = 'block';
-                makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-            }
-        }
-        
-        // Clear URL parameters for clean state
-        if (paypalReturn) {
-            const newUrl = window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
-        }
-    }
-    
-    // Check if payment is already completed
     if (sessionStorage.getItem('paymentComplete') === 'true') {
         window.paymentSecured = true;
         enableProceedButtons();
-        
-        // If payment is complete, redirect to register.html
-        setTimeout(() => {
-            window.location.href = 'register.html';
-        }, 1000);
     }
     
     // Restore selected plan if returning from PayPal
     const savedPlan = sessionStorage.getItem('selectedPlan');
     const savedAmount = sessionStorage.getItem('selectedPlanAmount');
-    if (savedPlan && savedAmount && !returningFromPayPal && !paypalReturn) {
+    if (savedPlan && savedAmount) {
         selectedPlan = savedPlan;
         selectedPlanAmount = parseFloat(savedAmount);
         
@@ -325,13 +227,24 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedButton.setAttribute('data-selected', 'true');
         }
         
-        // Show PayPal payment button if payment not completed and logged in
-        if (!window.paymentSecured && sessionStorage.getItem('paypalLoggedIn') === 'true') {
+        // Show PayPal payment button if payment not completed
+        if (!window.paymentSecured) {
             const makePaypalPayment = document.getElementById('makePaypalPayment');
             if (makePaypalPayment) {
                 makePaypalPayment.style.display = 'block';
                 makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
             }
+        }
+    }
+    
+    // Check if returning from PayPal (you can add URL parameters to detect this)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('paypal_return') === 'true') {
+        // User returned from PayPal, show payment button
+        const makePaypalPayment = document.getElementById('makePaypalPayment');
+        if (makePaypalPayment && selectedPlan) {
+            makePaypalPayment.style.display = 'block';
+            makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
         }
     }
     
@@ -400,33 +313,17 @@ function showPaymentSuccess() {
     successMessage.className = 'payment-success';
     successMessage.style.cssText = 'background-color: #22c55e; color: white; padding: 20px; border-radius: 5px; margin-top: 15px; text-align: center;';
     successMessage.innerHTML = `
-        <p style="margin-bottom: 15px; font-size: 1.1rem;">Payment successful! Redirecting to registration...</p>
-        <div style="display: flex; justify-content: center;">
-            <div class="spinner" style="width: 30px; height: 30px; border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <p style="margin-bottom: 15px; font-size: 1.1rem;">Payment successful! Choose your next step:</p>
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <a href="register.html" class="btn btn-primary" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px;">
+                Create Account
+            </a>
+            <a href="register.html" class="btn btn-outline" style="display: inline-block; text-decoration: none; padding: 12px 24px; min-width: 180px; background: white; color: #22c55e; border: 2px solid white;">
+                Proceed to Registration
+            </a>
         </div>
     `;
-    
-    // Add CSS for spinner animation
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    `;
-    document.head.appendChild(style);
-    
     document.querySelector('.payment-form').appendChild(successMessage);
-    
-    // Store payment completion status
-    sessionStorage.setItem('paymentComplete', 'true');
-    sessionStorage.setItem('selectedPlan', selectedPlan);
-    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-    
-    // Redirect to register.html after 2 seconds
-    setTimeout(() => {
-        window.location.href = 'register.html';
-    }, 2000);
 }
 
 // Add payment verification function

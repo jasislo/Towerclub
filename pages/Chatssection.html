@@ -1056,7 +1056,9 @@ document.addEventListener('DOMContentLoaded', function () {
     </script>
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
-    // DarkMode.init() is called automatically on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
     </script>
     <script type="module">
     import profilePictureManager from '/scripts/profile-picture-manager.js';

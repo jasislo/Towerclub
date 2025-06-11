@@ -250,108 +250,17 @@
         </form>
         <div class="auth-footer">
             <p data-i18n="login-no-account">Don't have an account?</p>
-            <a href="PAY.HTML" id="signUpLink" data-i18n="login-create-account">Sign up</a>
+            <a href="register.html" id="signUpLink" data-i18n="login-create-account">Sign up</a>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="/scripts/header.js"></script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
+    <script src="/scripts/login.js"></script>
     <script src="/scripts/lang.js"></script>
     <script>
         applyTranslations(); // Call this on page load
-        
-        // Password visibility toggle functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const passwordInput = document.getElementById('password');
-            const passwordToggle = document.getElementById('passwordToggle');
-            
-            if (passwordToggle && passwordInput) {
-                passwordToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    // Toggle password visibility
-                    if (passwordInput.type === 'password') {
-                        passwordInput.type = 'text';
-                        this.textContent = 'visibility';
-                        this.style.color = '#22c55e'; // Green when visible
-                    } else {
-                        passwordInput.type = 'password';
-                        this.textContent = 'visibility_off';
-                        this.style.color = '#606A85'; // Default color when hidden
-                    }
-                });
-            }
-            
-            // Handle "Login with Phone Number" button
-            const loginWithPhoneBtn = document.getElementById('loginWithPhoneBtn');
-            if (loginWithPhoneBtn) {
-                loginWithPhoneBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    window.location.href = 'auth_phone.html';
-                });
-            }
-            
-            // Handle form submission
-            const loginForm = document.getElementById('loginForm');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const email = document.getElementById('email').value.trim();
-                    const password = document.getElementById('password').value;
-                    const rememberMe = document.getElementById('rememberMe').checked;
-                    
-                    // Basic validation
-                    if (!email || !password) {
-                        alert('Please enter both email and password.');
-                        return;
-                    }
-                    
-                    // Check if user exists in localStorage
-                    const users = JSON.parse(localStorage.getItem('users') || '[]');
-                    const user = users.find(u => 
-                        (u.email === email || u.username === email) && u.password === password
-                    );
-                    
-                    if (user) {
-                        // Login successful
-                        localStorage.setItem('currentUser', JSON.stringify({
-                            ...user,
-                            lastLogin: new Date().toISOString(),
-                            loginMethod: 'email'
-                        }));
-                        localStorage.setItem('userAuthenticated', 'true');
-                        localStorage.setItem('userLoggedIn', 'true');
-                        
-                        // Remember me functionality
-                        if (rememberMe) {
-                            localStorage.setItem('rememberMe', 'true');
-                            localStorage.setItem('rememberedEmail', email);
-                        } else {
-                            localStorage.removeItem('rememberMe');
-                            localStorage.removeItem('rememberedEmail');
-                        }
-                        
-                        alert('Login successful! Welcome back.');
-                        window.location.href = 'mainpage.html';
-                    } else {
-                        alert('Invalid email/username or password. Please try again.');
-                    }
-                });
-            }
-            
-            // Check for remembered email
-            if (localStorage.getItem('rememberMe') === 'true') {
-                const rememberedEmail = localStorage.getItem('rememberedEmail');
-                if (rememberedEmail) {
-                    document.getElementById('email').value = rememberedEmail;
-                    document.getElementById('rememberMe').checked = true;
-                }
-            }
-        });
     </script>
     <script type="module" src="/scripts/firebase-init.js"></script>
 </body>

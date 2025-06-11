@@ -1,7 +1,3 @@
-<!-- Add this script before the closing </body> tag to handle password recovery via email -->
-<script>
-// Password recovery functionality for forgot password form
-
 document.addEventListener('DOMContentLoaded', () => {
     const forgotPasswordForm = document.getElementById('forgotPasswordForm');
     const emailInput = document.getElementById('email');
@@ -10,41 +6,28 @@ document.addEventListener('DOMContentLoaded', () => {
     forgotPasswordForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Remove previous feedback message
-        let msg = document.getElementById('forgot-msg');
-        if (msg) msg.remove();
-
         const email = emailInput.value.trim();
-        const submitBtn = forgotPasswordForm.querySelector('.submit-btn');
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
 
-        // Basic email validation
         if (!email) {
-            showFeedback('Email is required!', false, forgotPasswordForm);
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Reset Link';
+            showError('Email required!');
             return;
         }
 
         try {
-            // Replace with your real API endpoint
-            const response = await fetch('/api/forgot-password', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            });
-
-            if (response.ok) {
-                showFeedback('If this email is registered, a reset link has been sent.', true, forgotPasswordForm);
-            } else {
-                showFeedback('There was a problem sending the reset link. Please try again.', false, forgotPasswordForm);
-            }
+            // Here you would typically call your authentication service
+            // For example: await authManager.resetPassword(email);
+            console.log('Reset password requested for:', email);
+            
+            // Simulate successful submission
+            showSuccess('Password reset link sent to your email!');
+            
+            // Redirect to login page after a short delay
+            setTimeout(() => {
+                window.location.href = '/login';
+            }, 2000);
         } catch (error) {
-            showFeedback('Network error. Please try again.', false, forgotPasswordForm);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Send Reset Link';
+            console.error('Error resetting password:', error);
+            showError('Error sending reset link. Please try again.');
         }
     });
 
@@ -57,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function validateEmail(input) {
     const email = input.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    
     if (!email) {
         input.setCustomValidity('Email is required');
     } else if (!emailRegex.test(email)) {
@@ -67,12 +50,12 @@ function validateEmail(input) {
     }
 }
 
-function showFeedback(message, success, form) {
-    let msg = document.createElement('p');
-    msg.id = 'forgot-msg';
-    msg.style.marginTop = '20px';
-    msg.style.color = success ? '#22c55e' : '#e11d48';
-    msg.textContent = message;
-    form.appendChild(msg);
+function showError(message) {
+    // You can implement a more sophisticated error display system
+    alert(message);
 }
-</script>
+
+function showSuccess(message) {
+    // You can implement a more sophisticated success display system
+    alert(message);
+} 

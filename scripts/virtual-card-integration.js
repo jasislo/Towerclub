@@ -141,17 +141,18 @@ class VirtualCardUI {
         const detailsContainer = document.getElementById('cardDetails');
         if (!detailsContainer) return;
 
+        if (!this.currentCard) {
+            detailsContainer.innerHTML = `<p>Generate a virtual card to see details here.</p>`;
+            return;
+        }
+
         detailsContainer.innerHTML = `
-            <div class="detail-item">
-                <span class="label">Card ID:</span>
-                <span class="value">${this.currentCard.id}</span>
-            </div>
             <div class="detail-item">
                 <span class="label">Card Type:</span>
                 <span class="value">${this.currentCard.cardType} ${this.currentCard.cardCategory}</span>
             </div>
             <div class="detail-item">
-                <span class="label">Credit Limit:</span>
+                <span class="label">Card Limit:</span>
                 <span class="value">${formatCurrency(this.currentCard.creditLimit, this.currentCard.currency)}</span>
             </div>
             <div class="detail-item">
@@ -390,4 +391,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export for use in other modules
-export { VirtualCardUI }; 
+export { VirtualCardUI };

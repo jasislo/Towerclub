@@ -424,8 +424,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -566,11 +566,9 @@
     </script>
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
-    // DarkMode.init() is called automatically on DOMContentLoaded
-</script>
-<script type="module">
-    import profilePictureManager from '/scripts/profile-picture-manager.js';
-    // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
 </script>
 </body>
 </html>
