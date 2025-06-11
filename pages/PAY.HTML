@@ -1176,85 +1176,52 @@
                 alert('Please select a plan before making payment.');
                 return;
             }
-            
-            // Check if already logged in with PayPal
-            const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
-            
-            if (!isLoggedInWithPayPal) {
-                // Store current page state for return
-                sessionStorage.setItem('returnToPayPage', 'true');
-                sessionStorage.setItem('selectedPlan', selectedPlan);
-                sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-                sessionStorage.setItem('paypalLoginInProgress', 'true');
-                
-                // Show loading message
-                this.textContent = 'Redirecting to PayPal...';
-                this.style.backgroundColor = '#f0f0f0';
-                this.style.color = '#666';
-                
-                // Simulate PayPal login redirect (in production, this would be the actual PayPal URL)
-                setTimeout(() => {
-                    // For demo purposes, we'll simulate the PayPal login process
-                    // In production, you would redirect to actual PayPal login
-                const paypalLoginUrl = 'https://www.paypal.com/signin';
-                    const returnUrl = encodeURIComponent(window.location.href + '?paypal_return=true');
-                const fullPaypalUrl = `${paypalLoginUrl}?returnUrl=${returnUrl}`;
-                
-                    // For demo: simulate successful login and return
-                    alert('Simulating PayPal login... You would be redirected to PayPal here.');
-                    
-                    // Simulate successful login by updating session storage
-                    sessionStorage.setItem('paypalLoggedIn', 'true');
-                    sessionStorage.removeItem('paypalLoginInProgress');
-                    
-                    // Update button to show logged in state
-                    this.textContent = 'Logged with PayPal';
-                    this.style.backgroundColor = '#22c55e';
-                    this.style.color = '#ffffff';
-                    
-                    // Show the payment button
-                    const makePaypalPayment = document.getElementById('makePaypalPayment');
-                    if (makePaypalPayment) {
-                        makePaypalPayment.style.display = 'block';
-                        makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-                    }
-                    
-                    alert('Successfully logged in with PayPal! You can now proceed with payment.');
-                    
-                }, 2000);
-                
-                // In production, uncomment this line to actually redirect to PayPal:
-                // window.location.href = fullPaypalUrl;
-                
-            } else {
-                // Already logged in - just show payment button
-                alert('Already logged in with PayPal. Ready to make payment.');
+
+            // Store current state so you can restore after PayPal login
+            sessionStorage.setItem('returnToPayPage', 'true');
+            sessionStorage.setItem('selectedPlan', selectedPlan);
+            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+
+            // Redirect to PayPal login with return URL to pay.html
+            // Replace YOUR_PAYPAL_CLIENT_ID with your real client ID
+            // This is the PayPal Checkout flow (not demo)
+            const baseUrl = window.location.origin + window.location.pathname;
+            const returnUrl = encodeURIComponent(baseUrl + '?paypal_return=true');
+            // Example PayPal OAuth URL (replace with your real PayPal app's URL if needed)
+            const paypalLoginUrl = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+            window.location.href = paypalLoginUrl;
+        });
+
+        // On page load, check if returning from PayPal
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paypalReturn = urlParams.get('paypal_return') === 'true';
+
+            if (paypalReturn || sessionStorage.getItem('returnToPayPage') === 'true') {
+                // Mark as logged in with PayPal
+                sessionStorage.setItem('paypalLoggedIn', 'true');
+                sessionStorage.removeItem('returnToPayPage');
+
+                // Update PayPal button UI
+                const paypalButton = document.getElementById('paypalButton');
+                if (paypalButton) {
+                    paypalButton.textContent = 'Logged with PayPal';
+                    paypalButton.style.backgroundColor = '#22c55e';
+                    paypalButton.style.color = '#ffffff';
+                }
+
+                // Show PayPal payment button
                 const makePaypalPayment = document.getElementById('makePaypalPayment');
                 if (makePaypalPayment) {
                     makePaypalPayment.style.display = 'block';
-                    makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
+                    makePaypalPayment.textContent = `Pay $${selectedPlanAmount ? Number(selectedPlanAmount).toFixed(2) : ''} with PayPal`;
+                }
+
+                // Clean up URL
+                if (paypalReturn) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
-        });
-
-        // Make Payment with PayPal button handler
-        document.getElementById('makePaypalPayment').addEventListener('click', function() {
-            if (!selectedPlan || !selectedPlanAmount) {
-                alert('Please select a plan before making payment.');
-                return;
-            }
-            
-            // Process the payment with the selected plan
-            alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
-            window.paymentSecured = true;
-            
-            // Show success message and redirect to register.html
-            showPaymentSuccessAndRedirect();
-            
-            // Store payment status for session
-            sessionStorage.setItem('paymentComplete', 'true');
-            sessionStorage.setItem('selectedPlan', selectedPlan);
-            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
         });
 
         // Special handling for Get Started buttons
