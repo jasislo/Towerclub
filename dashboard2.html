@@ -11,14 +11,6 @@
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
-    <script type="module">
-        import DarkMode from '/scripts/dark-mode.js';
-        // DarkMode.init() is called automatically on DOMContentLoaded
-    </script>
-    <script type="module">
-        import profilePictureManager from '/scripts/profile-picture-manager.js';
-        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
-    </script>
     <style>
         :root {
             --primary-color: #4A90E2;
@@ -384,15 +376,13 @@
 
         <section class="section news-section">
             <h2>Financial News</h2>
-            <div id="newsContainer">
-                <div class="news-item">
-                    <span>Loading financial news...</span>
-                    <span>Source: CNBC</span>
-                </div>
-                <div class="news-item">
-                    <span>Please wait...</span>
-                    <span>Source: Reuters</span>
-                </div>
+            <div class="news-item">
+                <span>Market Surges to New Highs</span>
+                <span>Source: Bloomberg</span>
+            </div>
+            <div class="news-item">
+                <span>Interest Rates Remain Unchanged</span>
+                <span>Source: Reuters</span>
             </div>
         </section>
     </div>
@@ -441,8 +431,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">X</a></li>
-                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -477,25 +467,24 @@
         });
 
         // Example API Endpoints (Replace with actual API URLs and keys)
-        const financialNewsAPI = '/api/news';
-        const accountBalanceAPI = '/api/account/balance';
-        const recentTransactionsAPI = '/api/transactions/recent';
-        const portfolioAPI = '/api/portfolio';
-        const recentChatsAPI = '/api/chats/recent';
+        const financialNewsAPI = 'https://api.example.com/financial-news?apiKey=YOUR_API_KEY';
+        const accountBalanceAPI = 'https://api.example.com/account-balance?apiKey=YOUR_API_KEY';
+        const recentTransactionsAPI = 'https://api.example.com/recent-transactions?apiKey=YOUR_API_KEY';
+        const portfolioAPI = 'https://api.example.com/portfolio?apiKey=YOUR_API_KEY';
 
-        // Fetch Financial News using Financial Modeling Prep API
+        // Fetch Financial News
         async function fetchFinancialNews() {
             try {
-                const response = await fetch('https://financialmodelingprep.com/api/v3/stock_news?limit=5');
+                const response = await fetch(financialNewsAPI);
                 const data = await response.json();
                 const newsSection = document.querySelector('.news-section');
                 newsSection.innerHTML = '<h2>Financial News</h2>'; // Clear existing content
-                data.forEach(article => {
+                data.articles.forEach(article => {
                     const newsItem = document.createElement('div');
                     newsItem.classList.add('news-item');
                     newsItem.innerHTML = `
-                        <span><a href="${article.url}" target="_blank" rel="noopener">${article.title}</a></span>
-                        <span>Source: ${article.site}</span>
+                        <span>${article.title}</span>
+                        <span>Source: ${article.source.name}</span>
                     `;
                     newsSection.appendChild(newsItem);
                 });
@@ -509,7 +498,7 @@
             try {
                 const response = await fetch(accountBalanceAPI);
                 const data = await response.json();
-                document.querySelector('.balance-card .amount').textContent = `$${Number(data.balance).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+                document.querySelector('.balance-card .amount').textContent = `$${data.balance}`;
             } catch (error) {
                 console.error('Error fetching account balance:', error);
             }
@@ -527,7 +516,7 @@
                     transactionItem.classList.add('transaction-item');
                     transactionItem.innerHTML = `
                         <span>${transaction.description}</span>
-                        <span class="amount">${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount).toLocaleString(undefined, {minimumFractionDigits:2})}</span>
+                        <span class="amount">${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount)}</span>
                     `;
                     transactionSection.appendChild(transactionItem);
                 });
@@ -541,30 +530,9 @@
             try {
                 const response = await fetch(portfolioAPI);
                 const data = await response.json();
-                document.querySelector('.portfolio-value').textContent = `$${Number(data.totalValue).toLocaleString(undefined, {minimumFractionDigits:2})}`;
+                document.querySelector('.portfolio-value').textContent = `$${data.totalValue}`;
             } catch (error) {
                 console.error('Error fetching portfolio value:', error);
-            }
-        }
-
-        // Fetch Recent Chats
-        async function fetchRecentChats() {
-            try {
-                const response = await fetch(recentChatsAPI);
-                const data = await response.json();
-                const chatSection = document.querySelector('.chat-section');
-                chatSection.innerHTML = '<h2>Chats</h2>'; // Clear existing content
-                data.chats.forEach(chat => {
-                    const chatItem = document.createElement('div');
-                    chatItem.classList.add('chat-item');
-                    chatItem.innerHTML = `
-                        <span>${chat.name}</span>
-                        <span>${chat.lastMessage}</span>
-                    `;
-                    chatSection.appendChild(chatItem);
-                });
-            } catch (error) {
-                console.error('Error fetching recent chats:', error);
             }
         }
 
@@ -574,82 +542,20 @@
             fetchAccountBalance();
             fetchRecentTransactions();
             fetchPortfolioValue();
-            fetchRecentChats();
         });
     </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/lang.js"></script>
     <script>
         applyTranslations(); // Call this on page load
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchFinancialNews();
-        });
-
-        // Financial News API Integration
-        async function fetchFinancialNews() {
-            const newsContainer = document.getElementById('newsContainer');
-            if (!newsContainer) return;
-
-            try {
-                // Fetch from Financial Modeling Prep API
-                const response = await fetch('https://financialmodelingprep.com/api/v3/stock_news?limit=5');
-                const data = await response.json();
-
-                if (Array.isArray(data) && data.length > 0) {
-                    newsContainer.innerHTML = '';
-                    data.forEach(article => {
-                        const newsItem = document.createElement('div');
-                        newsItem.className = 'news-item';
-                        newsItem.innerHTML = `
-                            <span><a href="${article.url}" target="_blank" rel="noopener">${truncateTitle(article.title)}</a></span>
-                            <span>Source: ${article.site}</span>
-                        `;
-                        newsContainer.appendChild(newsItem);
-                    });
-                } else {
-                    displayFallbackNews();
-                }
-            } catch (error) {
-                console.warn('Financial news fetch failed:', error);
-                displayFallbackNews();
-            }
-        }
-
-        function displayFallbackNews() {
-            const newsContainer = document.getElementById('newsContainer');
-            if (!newsContainer) return;
-
-            newsContainer.innerHTML = `
-                <div class="news-item">
-                    <span>Market Surges to New Highs</span>
-                    <span>Source: CNBC</span>
-                </div>
-                <div class="news-item">
-                    <span>Interest Rates Remain Unchanged</span>
-                    <span>Source: Reuters</span>
-                </div>
-                <div class="news-item">
-                    <span>Tech Stocks Rally on Earnings</span>
-                    <span>Source: Bloomberg</span>
-                </div>
-                <div class="news-item">
-                    <span>Oil Prices Stabilize</span>
-                    <span>Source: CNBC</span>
-                </div>
-                <div class="news-item">
-                    <span>Federal Reserve Meeting Today</span>
-                    <span>Source: Reuters</span>
-                </div>
-            `;
-        }
-
-        function truncateTitle(title, maxLength = 50) {
-            if (title.length <= maxLength) return title;
-            return title.substring(0, maxLength) + '...';
-        }
     </script>
 </body>
 </html>

@@ -230,15 +230,6 @@
             left: 100%;
         }
 
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -248,11 +239,6 @@
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
     <!-- Add translation manager script -->
@@ -365,98 +351,26 @@
             // Handle verify button click
             verifyButton.addEventListener('click', () => {
                 const code = Array.from(pinInputs).map(input => input.value).join('');
+                // For demo: use a static code, e.g. "123456"
                 const expectedCode = "123456"; // Replace with actual SMS code logic in production
 
                 if (code.length !== 6) {
                     pinInputs.forEach(input => {
                         input.style.borderColor = 'var(--error-color)';
                     });
-                    alert('Please enter the complete 6-digit verification code.');
                     return;
                 }
 
                 if (code === expectedCode) {
-                    // Show loading state
-                    verifyButton.innerHTML = '<div class="spinner"></div>';
-                    verifyButton.disabled = true;
-
-                    // Get phone number from localStorage or URL
-                    const phoneNumber = localStorage.getItem('phone') || phoneNumberDisplay.textContent;
-                    
-                    // Check if user exists with this phone number
-                    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
-                    const existingUser = existingUsers.find(user => user.phone === phoneNumber);
-                    
-                    if (existingUser) {
-                        // User exists - log them in
-                        localStorage.setItem('currentUser', JSON.stringify({
-                            ...existingUser,
-                            loginMethod: 'phone',
-                            lastLogin: new Date().toISOString(),
-                            phoneVerified: true
-                        }));
-                        
-                        localStorage.setItem('userAuthenticated', 'true');
-                        localStorage.setItem('userLoggedIn', 'true');
-                        localStorage.setItem('phoneVerified', 'true');
-                        
-                        setTimeout(() => {
-                            alert(`Welcome back! Logged in to ${existingUser.first_name || existingUser.username || 'your account'}.`);
-                            window.location.href = 'mainpage.html';
-                        }, 1500);
-                    } else {
-                        // New user - create account and redirect to onboarding
-                        const newUserData = {
-                            id: Date.now().toString(),
-                            phone: phoneNumber,
-                            loginMethod: 'phone',
-                            registrationDate: new Date().toISOString(),
-                            lastLogin: new Date().toISOString(),
-                            isActive: true,
-                            isVerified: true,
-                            phoneVerified: true,
-                            profileComplete: false
-                        };
-                        
-                        // Add to users array
-                        existingUsers.push(newUserData);
-                        localStorage.setItem('users', JSON.stringify(existingUsers));
-                        localStorage.setItem('currentUser', JSON.stringify(newUserData));
-                        localStorage.setItem('userAuthenticated', 'true');
-                        localStorage.setItem('userLoggedIn', 'true');
-                        localStorage.setItem('phoneVerified', 'true');
-                        
-                        // Create onboarding data for new user
-                        const onboardingData = {
-                            phone: phoneNumber,
-                            registrationDate: new Date().toISOString(),
-                            onboardingStep: 1,
-                            onboardingCompleted: false,
-                            preferences: {
-                                notifications: true,
-                                marketingEmails: false,
-                                language: 'en',
-                                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                                currency: 'USD'
-                            },
-                            profileComplete: false,
-                            phoneVerified: true,
-                            emailVerified: false
-                        };
-                        
-                        localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
-                        localStorage.setItem('needsOnboarding', 'true');
-                        
-                        setTimeout(() => {
-                            alert('Phone verification successful! Welcome to TowerClub. Please complete your profile setup.');
-                            window.location.href = 'onboarding.html';
-                        }, 1500);
-                    }
+                    // Save phone as verified (optional)
+                    localStorage.setItem('phoneVerified', 'true');
+                    // Redirect to member account main page
+                    window.location.href = 'mainpage.html';
                 } else {
                     pinInputs.forEach(input => {
                         input.style.borderColor = 'var(--error-color)';
                     });
-                    alert('Incorrect verification code. Please check your SMS and try again.');
+                    alert('Incorrect verification code. Please try again.');
                 }
             });
 
