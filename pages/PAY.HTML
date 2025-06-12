@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD&components=buttons,marks,funding-eligibility"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&currency=USD"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
     <style>
         :root {
             --primary-color: #00968A;
@@ -1185,29 +1185,23 @@
                 alert('Please select a plan before making payment.');
                 return;
             }
-
-            // Store current state so you can restore after PayPal login
+            // Save state for after login
             sessionStorage.setItem('returnToPayPage', 'true');
             sessionStorage.setItem('selectedPlan', selectedPlan);
             sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
 
-            // Redirect to PayPal login with return URL to pay.html
-            // Replace YOUR_PAYPAL_CLIENT_ID with your real client ID
-            // This is the PayPal Checkout flow (not demo)
+            // Simulate PayPal login (replace with real OAuth if needed)
             const baseUrl = window.location.origin + window.location.pathname;
             const returnUrl = encodeURIComponent(baseUrl + '?paypal_return=true');
-            // Example PayPal OAuth URL (replace with your real PayPal app's URL if needed)
-            const paypalLoginUrl = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
-            window.location.href = paypalLoginUrl;
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
         });
 
-        // On page load, check if returning from PayPal
+        // On page load, check if returning from PayPal login
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
             const paypalReturn = urlParams.get('paypal_return') === 'true';
 
             if (paypalReturn || sessionStorage.getItem('returnToPayPage') === 'true') {
-                // Mark as logged in with PayPal
                 sessionStorage.setItem('paypalLoggedIn', 'true');
                 sessionStorage.removeItem('returnToPayPage');
 
@@ -1219,11 +1213,13 @@
                     paypalButton.style.color = '#ffffff';
                 }
 
-                // Show PayPal payment button
+                // Show Pay Now with PayPal button
                 const makePaypalPayment = document.getElementById('makePaypalPayment');
                 if (makePaypalPayment) {
                     makePaypalPayment.style.display = 'block';
-                    makePaypalPayment.textContent = `Pay $${selectedPlanAmount ? Number(selectedPlanAmount).toFixed(2) : ''} with PayPal`;
+                    // Restore selected plan amount if needed
+                    const amt = sessionStorage.getItem('selectedPlanAmount');
+                    makePaypalPayment.textContent = `Pay $${amt ? Number(amt).toFixed(2) : ''} with PayPal`;
                 }
 
                 // Clean up URL
@@ -1231,6 +1227,45 @@
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
+        });
+
+        // "Pay Now with PayPal" button logic (actual payment)
+        document.getElementById('makePaypalPayment').addEventListener('click', function () {
+            if (!selectedPlan || !selectedPlanAmount) {
+                alert('Please select a plan before making payment.');
+                return;
+            }
+            // Remove any previous PayPal button
+            document.getElementById('paypal-button-container').innerHTML = '';
+            // Render PayPal button for payment
+            paypal.Buttons({
+                createOrder: function(data, actions) {
+                    return fetch('/create-order', {
+                        method: 'post',
+                        headers: { 'content-type': 'application/json' },
+                        body: JSON.stringify({ amount: selectedPlanAmount })
+                    })
+                    .then(res => res.json())
+                    .then(order => order.id);
+                },
+                onApprove: function(data, actions) {
+                    return fetch('/capture-order', {
+                        method: 'post',
+                        headers: { 'content-type': 'application/json' },
+                        body: JSON.stringify({ orderID: data.orderID })
+                    })
+                    .then(res => res.json())
+                    .then(details => {
+                        sessionStorage.setItem('paymentComplete', 'true');
+                        alert('Payment completed!');
+                        window.location.href = 'register.html';
+                    });
+                },
+                onError: function(err) {
+                    alert('PayPal payment failed. Please try again.');
+                    console.error(err);
+                }
+            }).render('#paypal-button-container');
         });
 
         // Special handling for Get Started buttons
@@ -1538,39 +1573,52 @@ document.addEventListener('DOMContentLoaded', () => {
     </script>
 
     <!-- PayPal Button Integration -->
-    <!-- Center the PayPal Button Integration -->
-    <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px; margin-bottom: 32px;">
-        <div id="paypal-button-container"></div>
-    </div>
     <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD"></script>
     <script>
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            return fetch('/create-order', {
-                method: 'post',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    amount: selectedPlanAmount
-                })
-            }).then(res => res.json()).then(order => order.id);
-        },
-        onApprove: function(data, actions) {
-            return fetch('/capture-order', {
-                method: 'post',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    orderID: data.orderID
-                })
-            }).then(res => res.json()).then(details => {
-                alert('Payment completed!');
-                window.location.href = 'register.html';
-            });
+paypal.Buttons({
+    createOrder: function(data, actions) {
+        // Ensure a plan is selected
+        if (!window.selectedPlan || !window.selectedPlanAmount) {
+            alert('Please select a plan before making payment.');
+            throw new Error('No plan selected');
         }
-    }).render('#paypal-button-container');
+        // Call your backend to create the order with the selected amount
+        return fetch('/create-order', {
+            method: 'post',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                amount: window.selectedPlanAmount
+            })
+        })
+        .then(res => res.json())
+        .then(order => order.id);
+    },
+    onApprove: function(data, actions) {
+        // Capture the order on your backend
+        return fetch('/capture-order', {
+            method: 'post',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                orderID: data.orderID
+            })
+        })
+        .then(res => res.json())
+        .then(details => {
+            // Mark payment as complete and redirect
+            sessionStorage.setItem('paymentComplete', 'true');
+            alert('Payment completed!');
+            window.location.href = 'register.html';
+        });
+    },
+    onError: function(err) {
+        alert('PayPal payment failed. Please try again.');
+        console.error(err);
+    }
+}).render('#paypal-button-container');
     </script>
 </body>
 </html>
