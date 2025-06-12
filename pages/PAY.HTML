@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD&components=buttons,marks,funding-eligibility"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD&components=buttons,marks,funding-eligibility"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
     <style>
         :root {
             --primary-color: #00968A;
@@ -315,8 +315,8 @@
         }
 
         .btn-paypal {
-            background-color: #ffc439; /* PayPal yellow */
-            color: #111827; /* Dark text for contrast */
+            background-color: #ffc439 !important; /* PayPal yellow */
+            color: #111827 !important;            /* Dark text for contrast */
             border: none;
             padding: 10px 20px;
             font-size: 1rem;
@@ -324,13 +324,14 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
-            margin-top: 10px; /* Add spacing under the heading */
+            margin-top: 10px;
             display: inline-block;
         }
 
         .btn-paypal:hover {
-            background-color: #e0a800; /* Darker yellow on hover */
-            transform: scale(1.05); /* Slightly enlarge on hover */
+            background-color: #e0a800 !important; /* Darker yellow on hover */
+            color: #111827 !important;
+            transform: scale(1.05);
         }
 
         /* Pricing Section */
@@ -1004,8 +1005,16 @@
                 </div>
 
                 <div class="payment-form" id="paypalPaymentFormContainer">
-                    <button class="btn-paypal" id="paypalButton" type="button" data-i18n="payment-paypal-login">Log in with PayPal</button>
-                    <button class="btn-primary" id="makePaypalPayment" type="button" data-i18n="payment-paypal-make-payment">Pay Now with PayPal</button>
+                    <!-- Centered PayPal Button Integration first -->
+                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px; margin-bottom: 16px;">
+                        <div id="paypal-button-container"></div>
+                    </div>
+                    <!-- Powered by PayPal text (optional, can use PayPal branding if you wish) -->
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="Powered by PayPal" style="height:32px;">
+                    </div>
+                    <!-- Pay Now with PayPal button in yellow -->
+                    <button class="btn-paypal" id="makePaypalPayment" type="button" data-i18n="payment-paypal-make-payment">Pay Now with PayPal</button>
                 </div>
             </div>
         </div>
@@ -1025,7 +1034,7 @@
         </section>
     </main>
 
-    <!-- Footer -->
+    <!-- Footer (added at the bottom of the page) -->
     <footer class="main-footer">
         <div class="footer-content">
             <div class="footer-top">
@@ -1526,6 +1535,42 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="/scripts/lang.js"></script>
     <script>
       applyTranslations(); // Call this on page load
+    </script>
+
+    <!-- PayPal Button Integration -->
+    <!-- Center the PayPal Button Integration -->
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px; margin-bottom: 32px;">
+        <div id="paypal-button-container"></div>
+    </div>
+    <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD"></script>
+    <script>
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            return fetch('/create-order', {
+                method: 'post',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    amount: selectedPlanAmount
+                })
+            }).then(res => res.json()).then(order => order.id);
+        },
+        onApprove: function(data, actions) {
+            return fetch('/capture-order', {
+                method: 'post',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderID: data.orderID
+                })
+            }).then(res => res.json()).then(details => {
+                alert('Payment completed!');
+                window.location.href = 'register.html';
+            });
+        }
+    }).render('#paypal-button-container');
     </script>
 </body>
 </html>
