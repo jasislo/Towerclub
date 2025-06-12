@@ -430,21 +430,20 @@
             setupToggle('confirmPassword', 'confirmPasswordToggle');
         });
 
-        document.getElementById('registerForm').addEventListener('submit', async function (event) {
-            event.preventDefault(); // Prevent the default form submission
+        document.getElementById('registerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
 
             // Get form values
             const fullName = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
-            const githubUsername = document.getElementById('githubUsername').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const termsChecked = document.querySelector('input[name="terms"]').checked;
 
-            // Simple validation (you can expand as needed)
+            // Simple validation
             if (!fullName || !email || !phone || !password || !confirmPassword || !termsChecked) {
-                alert('Please fill out all fields');
+                alert('Please fill out all fields and agree to the terms.');
                 return;
             }
             if (password !== confirmPassword) {
@@ -452,56 +451,17 @@
                 return;
             }
 
-            // Show loading state
-            const submitButton = this.querySelector('button[type="submit"]');
-            const originalContent = submitButton.innerHTML;
-            submitButton.innerHTML = `
-                <div class="spinner"></div>
-                <span>Creating Account...</span>
-            `;
-            submitButton.disabled = true;
+            // Save user info to localStorage (or sessionStorage as needed)
+            const userInfo = {
+                fullName,
+                email,
+                phone,
+                password // In production, never store plain passwords!
+            };
+            localStorage.setItem('pendingRegistration', JSON.stringify(userInfo));
 
-            try {
-                // Import auth API functions
-                const { registerUser } = await import('../scripts/auth-api.js');
-                const { storeAuthData } = await import('../scripts/aut-utils.js');
-
-                // Prepare user data
-                const userData = {
-                    email,
-                    password,
-                    firstName: fullName.split(' ')[0],
-                    lastName: fullName.split(' ').slice(1).join(' '),
-                    phone,
-                    githubUsername
-                };
-
-                // Call registration API
-                const result = await registerUser(userData);
-
-                if (result.success) {
-                    // Store authentication data
-                    storeAuthData(result.token, result.user, false);
-
-                    // Store phone number for verification
-                    localStorage.setItem('phone', phone);
-
-                    // Show success message
-                    alert('Registration successful! Please verify your phone number.');
-                    
-                    // Redirect to phone verification
-                    window.location.href = 'auth_verify_phone.html?phone=' + encodeURIComponent(phone);
-                } else {
-                    throw new Error(result.error || 'Registration failed');
-                }
-            } catch (error) {
-                // Show error message
-                alert(error.message || 'Registration failed. Please try again.');
-                
-                // Reset button state
-                submitButton.innerHTML = originalContent;
-                submitButton.disabled = false;
-            }
+            // Redirect to onboarding page
+            window.location.href = 'onboarding.html';
         });
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
