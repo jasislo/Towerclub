@@ -7,11 +7,9 @@ const app = express();
 app.use(bodyParser.json());
 
 // PayPal API credentials
-const PAYPAL_CLIENT_ID = 'AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1';
-const PAYPAL_SECRET = 'EDx7bP228aExk61SSWhmmtjAfJqEeU6yWBEbfaB8fuVWSmkM8IUfRdh2bdV840Ho8ec-qqqHfDJUfV5n';
-
-// PayPal API base URL
-const PAYPAL_API = 'https://api-m.sandbox.paypal.com'; // Use 'https://api-m.paypal.com' for live
+const PAYPAL_CLIENT_ID = 'AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj';
+const PAYPAL_SECRET = 'ENxRW5htK5pPUFKM4YirHwWqmReEzfwDj9CRSPZN3RamVGVp37J3bro58jpJ90tnXmgB7RppepwkhmJE';
+const PAYPAL_API = 'https://api-m.paypal.com'; // Switch to LIVE for real payments
 
 // Payment verification middleware
 function verifyPaymentMiddleware(req, res, next) {
@@ -39,7 +37,7 @@ app.post('/create-order', async (req, res) => {
                 {
                     amount: {
                         currency_code: 'USD',
-                        value: '10.00', // Replace with dynamic amount
+                        value: req.body.amount || '10.00', // Use dynamic amount from frontend
                     },
                 },
             ],
@@ -137,43 +135,3 @@ app.get('/pages/crypto.html', async (req, res) => {
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-<!-- Add PayPal Button -->
-<section class="paypal-login">
-    <div id="paypal-button-container"></div>
-</section>
-
-<script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD"></script>
-<script>
-    paypal.Buttons({
-        createOrder: async () => {
-            const response = await fetch('/create-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const order = await response.json();
-            return order.id; // Use the order ID from the backend
-        },
-        onApprove: async (data) => {
-            const response = await fetch('/capture-order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ orderID: data.orderID }),
-            });
-            const capture = await response.json();
-            
-            // Mark payment as complete in client-side storage
-            window.paymentSecured = true;
-            sessionStorage.setItem('paymentComplete', 'true');
-            
-            alert('Payment successful!');
-        },
-        onError: (err) => {
-            console.error(err);
-            alert('An error occurred during the transaction.');
-        },
-    }).render('#paypal-button-container');
-</script>
