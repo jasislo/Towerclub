@@ -806,13 +806,7 @@
             <div class="nav-actions">
                 <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
                 <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
-                <select id="languageSelect" class="language-select" aria-label="Select Language">
-                    <option value="en" data-i18n="lang-en">English</option>
-                    <option value="es" data-i18n="lang-es">Español</option>
-                    <option value="fr" data-i18n="lang-fr">Français</option>
-                    <option value="zh" data-i18n="lang-zh">中文</option>
-                    <option value="ar" data-i18n="lang-ar">العربية</option>
-                </select>
+                <!-- Removed language select dropdown -->
             </div>
         </div>
     </nav>
@@ -1619,6 +1613,24 @@ paypal.Buttons({
         console.error(err);
     }
 }).render('#paypal-button-container');
+    </script>
+
+    <!-- Google Translate Banner Detection Script -->
+    <script>
+        // Add this script to your page if not already present
+        (function() {
+            function checkGoogleBanner() {
+                var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+                if (bannerFrame && bannerFrame.style.display !== 'none') {
+                    document.body.classList.add('has-google-banner');
+                } else {
+                    document.body.classList.remove('has-google-banner');
+                }
+            }
+            window.addEventListener('load', function() {
+                setInterval(checkGoogleBanner, 1000);
+            });
+        })();
     </script>
 </body>
 </html>

@@ -305,7 +305,7 @@
     </script>
 </head>
 <body>
-    <div class="app-container">
+    <div class="app-container" style="padding-top:48px;">
         <nav class="main-nav">
             <div class="nav-content">
                 <!-- Brand Section -->
@@ -325,13 +325,7 @@
                 <div class="nav-actions">
                     <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Login</a>
                     <a href="pay.html" class="btn btn-primary" data-i18n="nav-get-started">Get Started</a>
-                    <select id="languageSelect" class="language-select" aria-label="Select Language">
-                        <option value="en" data-i18n="lang-en">English</option>
-                        <option value="es" data-i18n="lang-es">Español</option>
-                        <option value="fr" data-i18n="lang-fr">Français</option>
-                        <option value="zh" data-i18n="lang-zh">中文</option>
-                        <option value="ar" data-i18n="lang-ar">العربية</option>
-                    </select>
+                    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
                 </div>
             </div>
         </nav>
@@ -547,11 +541,43 @@
         </footer>
     </div>
 
+    <!-- Google Translate scripts -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
     <!-- Remove old translation script and use the new translation manager -->
-    <script type="module" src="../scripts/translation-manager.js"></script>
+    <script src="/scripts/translation-manager.js"></script>
     <script src="../scripts/main.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/login.js"></script>
+    <script>
+(function() {
+    // Helper to check if Google Translate banner iframe is present
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    // Check on load and every second (in case of language change)
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
+</script>
 </body>
 </html>
