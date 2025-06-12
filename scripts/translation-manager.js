@@ -9,9 +9,49 @@ class TranslationManager {
         this.initializeLanguageSelector();
         this.loadSavedTranslations();
         this.setupPageNavigationListener();
+        this.initGoogleTranslateWidget();
     }
 
-    // Initialize language selector
+    // Initialize Google Translate widget in the header
+    initGoogleTranslateWidget() {
+        // Only add the widget if it doesn't already exist
+        if (!document.getElementById('google_translate_element')) {
+            const navActions = document.querySelector('.nav-actions');
+            if (navActions) {
+                const gtDiv = document.createElement('div');
+                gtDiv.id = 'google_translate_element';
+                gtDiv.style.display = 'inline-block';
+                gtDiv.style.verticalAlign = 'middle';
+                gtDiv.style.marginLeft = '10px';
+                navActions.appendChild(gtDiv);
+            }
+        }
+
+        // Inject Google Translate scripts if not already present
+        if (!document.getElementById('google-translate-script')) {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.id = 'google-translate-script';
+            script.innerHTML = `
+                function googleTranslateElementInit() {
+                    new google.translate.TranslateElement({
+                        pageLanguage: 'en',
+                        includedLanguages: 'en,ar,zh-CN,es,fr',
+                        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+                    }, 'google_translate_element');
+                }
+            `;
+            document.body.appendChild(script);
+
+            const scriptSrc = document.createElement('script');
+            scriptSrc.type = 'text/javascript';
+            scriptSrc.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            scriptSrc.id = 'google-translate-src';
+            document.body.appendChild(scriptSrc);
+        }
+    }
+
+    // Initialize language selector (for custom/local translation, not Google widget)
     initializeLanguageSelector() {
         const languageSelect = document.getElementById('languageSelect');
         if (languageSelect) {
@@ -63,7 +103,7 @@ class TranslationManager {
         }
     }
 
-    // Change website language
+    // Change website language (for custom/local translation, not Google widget)
     async changeLanguage(languageCode) {
         try {
             // Show loading state
@@ -98,14 +138,14 @@ class TranslationManager {
             
         } catch (error) {
             console.error('Translation error:', error);
-            alert('Failed to change language. Please try again.');
+            // Removed alert to avoid showing message to user
         } finally {
             // Reset loading state
             document.body.style.opacity = '1';
         }
     }
 
-    // Get translations using Google Translate API
+    // Get translations using Google Translate API (for custom/local translation)
     async getTranslations(languageCode, pagePath) {
         // Check page-specific cache first
         const cacheKey = `${pagePath}-${languageCode}`;
@@ -259,7 +299,30 @@ class TranslationManager {
                 'nav-get-started': 'Comenzar',
                 // Add more fallback translations
             },
-            // Add more languages
+            'fr': {
+                'nav-features': 'Fonctionnalités',
+                'nav-pricing': 'Tarifs',
+                'nav-about': 'À propos',
+                'nav-login': 'Connexion',
+                'nav-get-started': 'Commencer',
+                // Add more fallback translations
+            },
+            'ar': {
+                'nav-features': 'الميزات',
+                'nav-pricing': 'الأسعار',
+                'nav-about': 'حول',
+                'nav-login': 'تسجيل الدخول',
+                'nav-get-started': 'ابدأ',
+                // Add more fallback translations
+            },
+            'zh-CN': {
+                'nav-features': '功能',
+                'nav-pricing': '价格',
+                'nav-about': '关于',
+                'nav-login': '登录',
+                'nav-get-started': '开始使用',
+                // Add more fallback translations
+            }
         };
 
         return fallbackTranslations[languageCode] || fallbackTranslations['en'];
@@ -320,4 +383,4 @@ document.addEventListener('DOMContentLoaded', () => {
     translationManager.applyCurrentLanguage();
 });
 
-export default translationManager; 
+export default translationManager;

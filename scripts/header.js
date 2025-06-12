@@ -277,3 +277,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Sync all profile pictures
     profilePictureManager.syncProfilePictures();
 });
+
+// Utility: Update all profile picture elements on the page
+function updateAllProfilePictures(src) {
+    // Add all possible profile picture element IDs here
+    const picIds = ['profilePicture', 'profileImage', 'profileImg'];
+    picIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.src = src;
+    });
+}
+
+// On page load, sync profile pictures from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPic = localStorage.getItem('profilePicture');
+    if (savedPic) {
+        updateAllProfilePictures(savedPic);
+    }
+});
+
+// Handle profile picture upload and sync everywhere
+const profilePictureInput = document.getElementById('profilePictureInput');
+if (profilePictureInput) {
+    profilePictureInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                // Save to localStorage
+                localStorage.setItem('profilePicture', dataUrl);
+                // Update all profile pictures immediately
+                updateAllProfilePictures(dataUrl);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
