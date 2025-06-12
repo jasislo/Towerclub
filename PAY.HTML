@@ -1234,30 +1234,30 @@
             // Render PayPal button for payment
             paypal.Buttons({
                 createOrder: function(data, actions) {
-                    return fetch('/create-order', {
-                        method: 'post',
-                        headers: { 'content-type': 'application/json' },
-                        body: JSON.stringify({ amount: selectedPlanAmount })
-                    })
-                    .then(res => res.json())
-                    .then(order => order.id);
+                    // Set up the transaction with a fixed amount or use your selected plan amount
+                    return actions.order.create({
+                        purchase_units: [{
+                            amount: {
+                                value: window.selectedPlanAmount ? window.selectedPlanAmount.toString() : '11.95' // Use selected plan or default
+                            }
+                        }]
+                    });
                 },
                 onApprove: function(data, actions) {
-                    return fetch('/capture-order', {
-                        method: 'post',
-                        headers: { 'content-type': 'application/json' },
-                        body: JSON.stringify({ orderID: data.orderID })
-                    })
-                    .then(res => res.json())
-                    .then(details => {
-                        sessionStorage.setItem('paymentComplete', 'true');
-                        alert('Payment completed!');
-                        window.location.href = 'register.html';
+                    // Capture the funds from the transaction
+                    return actions.order.capture().then(function(details) {
+                        // Payment successful, redirect back to PAY.HTML (or to register.html if you want)
+                        window.location.href = "PAY.HTML";
                     });
+                },
+                onCancel: function (data) {
+                    // Optional: handle cancel
+                    window.location.href = "PAY.HTML";
                 },
                 onError: function(err) {
                     alert('PayPal payment failed. Please try again.');
                     console.error(err);
+                    window.location.href = "PAY.HTML";
                 }
             }).render('#paypal-button-container');
         });
@@ -1571,48 +1571,32 @@ document.addEventListener('DOMContentLoaded', () => {
     <script>
 paypal.Buttons({
     createOrder: function(data, actions) {
-        // Ensure a plan is selected
-        if (!window.selectedPlan || !window.selectedPlanAmount) {
-            alert('Please select a plan before making payment.');
-            throw new Error('No plan selected');
-        }
-        // Call your backend to create the order with the selected amount
-        return fetch('/create-order', {
-            method: 'post',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                amount: window.selectedPlanAmount
-            })
-        })
-        .then(res => res.json())
-        .then(order => order.id);
+        // Set up the transaction with a fixed amount or use your selected plan amount
+        return actions.order.create({
+            purchase_units: [{
+                amount: {
+                    value: window.selectedPlanAmount ? window.selectedPlanAmount.toString() : '11.95' // Use selected plan or default
+                }
+            }]
+        });
     },
     onApprove: function(data, actions) {
-        // Capture the order on your backend
-        return fetch('/capture-order', {
-            method: 'post',
-            headers: {
-                'content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                orderID: data.orderID
-            })
-        })
-        .then(res => res.json())
-        .then(details => {
-            // Mark payment as complete and redirect
-            sessionStorage.setItem('paymentComplete', 'true');
-            alert('Payment completed!');
-            window.location.href = 'register.html';
+        // Capture the funds from the transaction
+        return actions.order.capture().then(function(details) {
+            // Payment successful, redirect back to PAY.HTML (or to register.html if you want)
+            window.location.href = "PAY.HTML";
         });
+    },
+    onCancel: function (data) {
+        // Optional: handle cancel
+        window.location.href = "PAY.HTML";
     },
     onError: function(err) {
         alert('PayPal payment failed. Please try again.');
         console.error(err);
+        window.location.href = "PAY.HTML";
     }
-}).render('#paypal-button-container');
+}).render('#paypal-button-container'); // Make sure your button container has this ID
     </script>
 
     <!-- Google Translate Banner Detection Script -->
