@@ -2,9 +2,8 @@
 :root {
     /* Light Mode (Default) */
     --primary-color: #00968A;
-    --secondary-color: #d4c9c4;
-    --background-color: #fff; /* White background for light mode */
-    --background-gradient: linear-gradient(135deg, #e6fff6 0%, #ffffff 100%); /* Light green to white */
+    --secondary-color: #ebe4e2;
+    --background-color: #F4F4F4;
     --text-color: #15161E;
     --secondary-text-color: #6B7280;
     --card-background: #FFFFFF;
@@ -29,7 +28,7 @@
 /* Dark Mode Styles */
 body.dark-mode {
     --primary-color: #00B4A6;
-    --secondary-color: #FFB088;
+    --secondary-color: #f5f1ee;
     --background-color: #15161E;
     --text-color: #F4F4F4;
     --secondary-text-color: #9CA3AF;
@@ -50,13 +49,6 @@ body.dark-mode {
     --menu-hover: rgba(0, 180, 166, 0.2);
     --menu-hover-text: #00B4A6;
     --menu-hover-border: #00B4A6;
-}
-
-/* Light mode background and transition */
-body {
-    background: var(--background-gradient);
-    color: var(--text-color);
-    transition: background 0.5s cubic-bezier(0.4,0,0.2,1), color 0.3s;
 }
 
 /* Dark Mode Specific Styles */

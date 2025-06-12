@@ -244,6 +244,35 @@
     transform: translateY(-2px) scale(1.03);
 }
 
+/* --- Add or update these styles --- */
+
+/* Make sure the Google Translate banner is at the very top */
+.goog-te-banner-frame.skiptranslate {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    width: 100vw !important;
+    height: 48px !important;
+    z-index: 2000 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Push the header down below the Google Translate banner */
+body.has-google-banner .main-nav,
+body.has-google-banner .app-container {
+    top: 64px !important;           /* Move header 64px from the top */
+    padding-top: 64px !important;   /* Add extra space for visibility */
+}
+
+/* Optional: Adjust default padding for header if banner is not present */
+body:not(.has-google-banner) .main-nav,
+body:not(.has-google-banner) .app-container {
+    top: 0 !important;
+    padding-top: 48px !important;
+}
+
 @media (max-width: 768px) {
     .pricing-grid {
         grid-template-columns: 1fr; /* Single column layout for smaller screens */

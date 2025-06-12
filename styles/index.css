@@ -4,8 +4,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background from header.css */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
     position: fixed;
     top: 0;
     left: 0;
@@ -29,14 +29,14 @@
 }
 
 .nav-brand img {
-    height: 40px;
+    height: 40px; /* Adjust logo size */
     width: auto;
 }
 
 .brand-name {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #ffffff; /* White text for branding */
+    color: #ffffff; /* White text for contrast */
 }
 
 .nav-links {
@@ -45,7 +45,7 @@
 }
 
 .nav-link {
-    color: #ffffff; /* White text for better contrast */
+    color: #ffffff; /* White text for contrast */
     font-weight: 500;
     font-size: 1rem;
     text-decoration: none;
@@ -56,9 +56,7 @@
 }
 
 .nav-link:hover {
-    background: #ffffff; /* White background on hover */
-    color: #22c55e; /* Green text on hover */
-    border-color: #ffffff; /* White border on hover */
+    background: rgba(255, 255, 255, 0.2); /* Subtle hover effect from header.css */
 }
 
 .nav-actions {
@@ -74,15 +72,12 @@
     padding: 8px 16px;
     border-radius: 5px;
     font-size: 0.9rem;
-    text-align: center;
-    display: inline-block;
-    transition: background 0.3s, color 0.3s, border-color 0.3s;
+    transition: background 0.3s, color 0.3s;
 }
 
 .btn-outline:hover {
     background: #ffffff; /* White background on hover */
     color: #22c55e; /* Green text on hover */
-    border-color: transparent; /* Transparent border on hover */
 }
 
 .btn-primary {
@@ -606,4 +601,118 @@
     height: 48px;
   }
   /* Add more mobile-specific styles as needed */
+}
+
+/* Hide Google Translate default banner */
+.goog-te-banner-frame.skiptranslate {
+    display: none !important;
+}
+body {
+    top: 0px !important;
+}
+
+/* Make sure the Google Translate dropdown does not overlap header */
+#google_translate_element {
+    z-index: 1001;
+    position: relative;
+}
+.goog-te-menu-frame.skiptranslate {
+    z-index: 2000 !important;
+}
+/* Optional: Hide the Google Translate toolbar if it appears */
+.goog-te-banner-frame {
+    display: none !important;
+}
+.goog-logo-link {
+    display: none !important;
+}
+.goog-te-gadget {
+    font-size: 0 !important;
+}
+.goog-te-gadget .goog-te-combo {
+    font-size: 1rem !important;
+    color: #222 !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background: #fff;
+    margin-left: 10px;
+    min-width: 120px;
+}
+
+/* Responsive: keep translate widget visible and aligned */
+@media (max-width: 768px) {
+    #google_translate_element {
+        margin-left: 0;
+        margin-top: 10px;
+        display: block;
+    }
+}
+
+/* When the translation banner is visible, push the header down */
+body.translation-banner-visible .main-nav {
+    top: 48px !important; /* Height of the translation banner */
+}
+
+/* Ensure the main-nav stays at the top when banner is hidden */
+body:not(.translation-banner-visible) .main-nav {
+    top: 0 !important;
+}
+
+/* Ensure Google Translate banner is always visible above the header */
+.goog-te-banner-frame.skiptranslate {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    width: 100vw !important;
+    height: 48px !important;
+    z-index: 2000 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Push the header down when the Google Translate banner is visible */
+body {
+    /* Default padding for header */
+    padding-top: 48px;
+}
+body.has-google-banner .app-container,
+body.has-google-banner .main-nav {
+    padding-top: 48px !important;
+    top: 48px !important;
+}
+
+/* Remove double scrollbars from banner */
+html {
+    margin-top: 0 !important;
+}
+
+/* --- Add or update these styles --- */
+
+/* Make sure the Google Translate banner is at the very top */
+.goog-te-banner-frame.skiptranslate {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    width: 100vw !important;
+    height: 48px !important;
+    z-index: 2000 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Push the header down below the Google Translate banner */
+body.has-google-banner .main-nav,
+body.has-google-banner .app-container {
+    top: 64px !important;           /* Move header 64px from the top */
+    padding-top: 64px !important;   /* Add extra space for visibility */
+}
+
+/* Optional: Adjust default padding for header if banner is not present */
+body:not(.has-google-banner) .main-nav,
+body:not(.has-google-banner) .app-container {
+    top: 0 !important;
+    padding-top: 48px !important;
 }
