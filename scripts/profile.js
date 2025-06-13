@@ -153,4 +153,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // On analytics page
     const analytics = loadAnalytics();
     updateAnalyticsUI(analytics);
+
+    // Example user card functionality
+    const userCards = document.querySelectorAll('.user-card');
+    userCards.forEach(card => {
+        const followButton = card.querySelector('.follow-btn');
+        followButton.addEventListener('click', () => {
+            const username = card.dataset.username;
+            // Here you would typically handle the follow/unfollow logic
+            console.log(followButton.textContent === 'Follow' ? `Followed ${username}` : `Unfollowed ${username}`);
+            followButton.textContent = followButton.textContent === 'Follow' ? 'Unfollow' : 'Follow';
+        });
+    });
 });

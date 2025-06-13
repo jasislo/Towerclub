@@ -73,8 +73,8 @@ document.getElementById('cardPaymentForm').addEventListener('submit', function(e
     alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan. Card ending in ${cardNumber.slice(-4)} under ${cardHolder}.`);
     window.paymentSecured = true;
     
-    // Show success message and enable proceed button
-    showPaymentSuccess();
+    // Show success message and redirect to register.html
+    showPaymentSuccessAndRedirect();
 });
 
 // PayPal Payment Button Logic
@@ -293,10 +293,39 @@ document.getElementById('referralCodeForm').addEventListener('submit', function(
     const message = document.getElementById('referralCodeMessage');
     const code = codeInput.value.trim();
 
+    // Reset any previous discount
+    sessionStorage.removeItem('referralDiscount');
+    sessionStorage.removeItem('referralCode');
+
     if (code.length < 3) {
         message.style.display = 'block';
         message.style.color = '#F06A6A';
         message.textContent = 'Please enter a valid referral code.';
+        return;
+    }
+
+    if (code.toLowerCase() === '#jonatthanasis') {
+        // Apply 2 months free
+        if (selectedPlan && planPrices[selectedPlan]) {
+            const discount = planPrices[selectedPlan] * 2;
+            const newAmount = Math.max(0, planPrices[selectedPlan] - discount);
+            selectedPlanAmount = newAmount;
+            sessionStorage.setItem('referralDiscount', discount);
+            sessionStorage.setItem('referralCode', code);
+            message.style.display = 'block';
+            message.style.color = '#22c55e';
+            message.textContent = 'Referral code applied! You get 2 months free.';
+
+            // Update PayPal and Stripe payment button text if visible
+            const makePaypalPayment = document.getElementById('makePaypalPayment');
+            if (makePaypalPayment && makePaypalPayment.style.display === 'block') {
+                makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
+            }
+        } else {
+            message.style.display = 'block';
+            message.style.color = '#F06A6A';
+            message.textContent = 'Please select a plan before applying the referral code.';
+        }
         return;
     }
 
@@ -341,3 +370,118 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Render PayPal button only when "Pay with PayPal" button is clicked
+document.getElementById('paypalButton').addEventListener('click', function () {
+    // Optionally show the PayPal button container if hidden
+    document.getElementById('paypal-button-container').style.display = 'block';
+
+    // Remove any previously rendered PayPal button
+    document.getElementById('paypal-button-container').innerHTML = '';
+
+    paypal.Buttons({
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: window.selectedPlanAmount ? window.selectedPlanAmount.toString() : '11.95'
+                    }
+                }]
+            });
+        },
+        onApprove: function(data, actions) {
+            // Payment successful, redirect back to pay.html
+            window.location.href = "PAY.HTML";
+        },
+        onCancel: function (data) {
+            // Payment cancelled, stay on pay.html or show a message
+            window.location.href = "PAY.HTML";
+        },
+        onError: function(err) {
+            alert('PayPal payment failed. Please try again.');
+            window.location.href = "PAY.HTML";
+        }
+    }).render('#paypal-button-container');
+});
+
+// --- STRIPE INTEGRATION START ---
+
+// Initialize Stripe
+const stripe = Stripe('pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR');
+const elements = stripe.elements();
+const cardElement = elements.create('card');
+cardElement.mount('#cardElement'); // Make sure your HTML has <div id="cardElement"></div>
+
+// Handle card form submission
+document.getElementById('cardPaymentForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    if (!selectedPlan || !selectedPlanAmount) {
+        alert('Please select a plan before making payment.');
+        return;
+    }
+
+    // Optionally, disable the button to prevent multiple clicks
+    const submitBtn = document.querySelector('#cardPaymentForm button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    // Call your backend to create a PaymentIntent and get its client_secret
+    const response = await fetch('http://localhost:4242/create-payment-intent', { // <-- Updated URL
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Math.round(selectedPlanAmount * 100) }) // amount in cents
+    });
+    const { clientSecret } = await response.json();
+
+    // Confirm the card payment
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+            card: cardElement,
+            billing_details: {
+                name: document.getElementById('cardHolder').value
+            }
+        }
+    });
+
+    if (error) {
+        alert(error.message);
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+    }
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+        window.paymentSecured = true;
+        showPaymentSuccess();
+        sessionStorage.setItem('paymentComplete', 'true');
+        sessionStorage.setItem('selectedPlan', selectedPlan);
+        sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+    }
+    if (submitBtn) submitBtn.disabled = false;
+});
+
+// --- STRIPE INTEGRATION END ---
+
+const express = require('express');
+const Stripe = require('stripe');
+const cors = require('cors');
+
+const app = express();
+const stripe = Stripe('sk_live_YOUR_SECRET_KEY'); // <-- Use your Stripe SECRET key here
+
+app.use(cors());
+app.use(express.json());
+
+app.post('/create-payment-intent', async (req, res) => {
+    const { amount } = req.body;
+    try {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount,
+            currency: 'usd',
+            automatic_payment_methods: { enabled: true },
+        });
+        res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.listen(4242, () => console.log('Server running on port 4242'));

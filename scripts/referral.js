@@ -75,14 +75,14 @@ class ReferralProfile {
         }
     }
 
-    createActivityItem(activity) {
+    createActivityItem(activity = {}) {
         return `
             <div class="activity-item">
                 <div class="activity-icon">
                     <span class="material-icons">${this.getActivityIcon(activity.type)}</span>
                 </div>
                 <div class="activity-details">
-                    <div class="activity-title">${activity.title}</div>
+                    <div class="activity-title">${activity.title || ''}</div>
                     <div class="activity-time">${this.formatTime(activity.timestamp)}</div>
                 </div>
             </div>
@@ -317,4 +317,60 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+});
+
+/**
+ * Generate a referral code for a new user.
+ * @param {string} username - The user's username.
+ * @returns {string} - The referral code (e.g., #username).
+ */
+function generateReferralCode(username) {
+    if (!username) return '';
+    return `#${username.replace(/\s+/g, '').toLowerCase()}`;
+}
+
+// Example: Call this function when a new user registers
+function onUserRegister(username) {
+    const referralCode = generateReferralCode(username);
+
+    // Save to user profile (replace with your backend logic)
+    const memberProfile = {
+        username: username,
+        referralCode: referralCode,
+        // ...other profile fields...
+    };
+    localStorage.setItem('memberProfile', JSON.stringify(memberProfile));
+
+    // Optionally, display or use the referral code in the UI
+    const referralCodeElem = document.getElementById('referralCode');
+    if (referralCodeElem) {
+        referralCodeElem.textContent = referralCode;
+    }
+}
+
+// Example usage (simulate registration)
+document.addEventListener('DOMContentLoaded', () => {
+    // Simulate a new user registration
+    const username = 'jonatthanasis'; // Replace with actual username from registration form
+    onUserRegister(username);
+});
+
+app.post('/register', async (req, res) => {
+    const { email, password, referralCode } = req.body;
+    // 1. Create the new user
+    const newUser = await createUser(email, password);
+
+    // 2. If a referral code is provided, find the referring user
+    if (referralCode) {
+        const referrer = await findUserByReferralCode(referralCode);
+        if (referrer) {
+            // 3. Link the new user to the referrer
+            await addReferral(referrer.id, newUser.id);
+
+            // 4. Apply your referral algorithm (e.g., add free months to referrer)
+            await applyReferralReward(referrer.id);
+        }
+    }
+
+    res.json({ success: true });
 });
