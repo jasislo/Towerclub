@@ -809,7 +809,6 @@
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/lang.js"></script>
     <script type="module">
         import { VirtualCardUI } from '../scripts/virtual-card-integration.js';
         
@@ -818,9 +817,6 @@
             const virtualCardUI = new VirtualCardUI();
             window.virtualCardUI = virtualCardUI; // Make globally available for debugging
         });
-    </script>
-    <script>
-        applyTranslations(); // Call this on page load
     </script>
     <script>
 // Utility: Get current balance and budget from localStorage (or your backend)

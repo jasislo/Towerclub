@@ -301,15 +301,32 @@ document.getElementById('referralCodeForm').addEventListener('submit', function(
         return;
     }
 
-    // Set translation key for the applied message
-    message.style.display = 'block';
-    message.style.color = '#22c55e';
-    message.setAttribute('data-i18n', 'referral-applied');
-    if (typeof translationManager !== 'undefined' && translationManager.t) {
-        message.textContent = translationManager.t('referral-applied');
-    } else {
-        message.textContent = 'Referral code applied!';
-    }
+    // Make sure this URL matches your backend route!
+    fetch('http://localhost:4242/api/referral/apply', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ referralCode: code })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const messageColor = data.success ? '#22c55e' : '#F06A6A';
+        message.style.display = 'block';
+        message.style.color = messageColor;
+        message.setAttribute('data-i18n', data.success ? 'referral-applied' : 'referral-error');
+        message.textContent = data.message;
+
+        if (data.success) {
+            codeInput.value = '';
+        }
+    })
+    .catch(error => {
+        console.error('Error applying referral code:', error);
+        message.style.display = 'block';
+        message.style.color = '#F06A6A';
+        message.textContent = 'Error applying referral code. Please try again.';
+    });
 });
 
 // Update payment success messages with translations
@@ -461,3 +478,19 @@ app.post('/create-payment-intent', async (req, res) => {
 });
 
 app.listen(4242, () => console.log('Server running on port 4242'));
+
+const express = require('express');
+const router = express.Router();
+
+router.post('/apply', async (req, res) => {
+  const { referralCode } = req.body;
+  // Validate referral code (pseudo-code)
+  const isValid = await validateReferralCode(referralCode);
+  if (isValid) {
+    // Apply referral logic here
+    return res.json({ success: true, message: 'Referral code applied successfully!' });
+  }
+  res.json({ success: false, message: 'Invalid or expired referral code.' });
+});
+
+module.exports = router;
