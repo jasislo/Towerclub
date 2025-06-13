@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&currency=USD"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
@@ -556,55 +555,6 @@
             background-color: #00796B;
         }
 
-        /* PayPal Button Styles */
-        .paypal-button-container {
-            margin-top: 20px;
-        }
-
-        #paypalPaymentFormContainer {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 24px; /* Increased space between buttons */
-            margin-top: 24px;
-            margin-bottom: 16px;
-        }
-
-        #paypalButton,
-        #makePaypalPayment {
-            width: 260px;
-            max-width: 100%;
-            margin-bottom: 0;
-            margin-top: 0;
-            font-size: 1.08rem;
-            padding: 14px 0;
-            letter-spacing: 0.01em;
-        }
-
-        #makePaypalPayment {
-            background-color: #22c55e;   /* Exact green as Pay Now */
-            color: #fff;                 /* White text */
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 600;
-            padding: 14px 0;
-            width: 260px;
-            max-width: 100%;
-            margin-top: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s, transform 0.2s;
-            box-shadow: 0 2px 6px rgba(168,85,247,0.08);
-            letter-spacing: 0.01em;
-            display: block;
-        }
-
-        #makePaypalPayment:hover {
-            background-color: #00796B;   /* Same hover green as .btn-credit-card:hover */
-            color: #fff;
-            transform: translateY(-2px) scale(1.03);
-        }
-
         /* Responsive Adjustments */
         @media (max-width: 768px) {
             .payment-section {
@@ -995,16 +945,12 @@
                 </div>
 
                 <div class="payment-form" id="paypalPaymentFormContainer">
-                    <!-- Centered PayPal Button Integration first -->
-                    <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px; margin-bottom: 16px;">
-                        <div id="paypal-button-container"></div>
-                    </div>
-                    <!-- Powered by PayPal text (optional, can use PayPal branding if you wish) -->
                     <div style="text-align: center; margin-bottom: 16px;">
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="Powered by PayPal" style="height:32px;">
                     </div>
-                    <!-- Pay Now with PayPal button in yellow -->
                     <button class="btn-paypal" id="makePaypalPayment" type="button">Pay Now with PayPal</button>
+                    <!-- PayPal button will render here -->
+                    <div id="paypal-button-container" style="margin-top: 20px;"></div>
                 </div>
             </div>
         </div>
@@ -1169,23 +1115,6 @@
             showPaymentSuccessAndRedirect();
         });
 
-        // PayPal Payment Button Logic
-        document.getElementById('paypalButton').addEventListener('click', function () {
-            if (!selectedPlan || !selectedPlanAmount) {
-                alert('Please select a plan before making payment.');
-                return;
-            }
-            // Save state for after login
-            sessionStorage.setItem('returnToPayPage', 'true');
-            sessionStorage.setItem('selectedPlan', selectedPlan);
-            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-
-            // Simulate PayPal login (replace with real OAuth if needed)
-            const baseUrl = window.location.origin + window.location.pathname;
-            const returnUrl = encodeURIComponent(baseUrl + '?paypal_return=true');
-            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
-        });
-
         // On page load, check if returning from PayPal login
         document.addEventListener('DOMContentLoaded', function() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -1217,43 +1146,6 @@
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             }
-        });
-
-        // "Pay Now with PayPal" button logic (actual payment)
-        document.getElementById('makePaypalPayment').addEventListener('click', function () {
-            if (!selectedPlan || !selectedPlanAmount) {
-                alert('Please select a plan before making payment.');
-                return;
-            }
-            // Remove any previous PayPal button
-            document.getElementById('paypal-button-container').innerHTML = '';
-            // Render PayPal button for payment
-            paypal.Buttons({
-                createOrder: function(data, actions) {
-                    return actions.order.create({
-                        purchase_units: [{
-                            amount: {
-                                value: window.selectedPlanAmount ? window.selectedPlanAmount.toString() : '11.95' // Use selected plan or default
-                            }
-                        }]
-                    });
-                },
-                onApprove: function(data, actions) {
-                    // Capture the funds from the transaction
-                    return actions.order.capture().then(function(details) {
-                        // Payment successful, redirect to register.html
-                        window.location.href = "register.html";
-                    });
-                },
-                onCancel: function (data) {
-                    window.location.href = "PAY.HTML";
-                },
-                onError: function(err) {
-                    alert('PayPal payment failed. Please try again.');
-                    console.error(err);
-                    window.location.href = "PAY.HTML";
-                }
-            }).render('#paypal-button-container');
         });
 
         // Special handling for Get Started buttons
@@ -1556,40 +1448,6 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="/scripts/header.js"></script>
     <script src="/scripts/login.js"></script>
 
-    <!-- PayPal Button Integration -->
-    <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD"></script>
-    <script>
-function renderPayPalButton() {
-    const container = document.getElementById('paypal-button-container');
-    if (container) container.innerHTML = '';
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: window.selectedPlanAmount ? window.selectedPlanAmount.toFixed(2) : '11.95'
-                    }
-                }]
-            });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                window.location.href = "register.html";
-            });
-        },
-        onCancel: function (data) {
-            window.location.href = "PAY.HTML";
-        },
-        onError: function(err) {
-            alert('PayPal payment failed. Please try again.');
-            console.error(err);
-            window.location.href = "PAY.HTML";
-        }
-    }).render('#paypal-button-container');
-}
-renderPayPalButton();
-    </script>
-
     <!-- --- STRIPE ELEMENTS INTEGRATION --- -->
 <script>
 const stripe = Stripe('pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR');
@@ -1655,6 +1513,89 @@ document.getElementById('cardPaymentForm').addEventListener('submit', async func
 <script 
   type="text/javascript" 
   src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+<!-- Add this PayPal SDK script in the <head> section, if not already present -->
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD&disable-funding=paylater&components=buttons,subscriptions"
+  data-sdk-integration-source="button-factory"
+  defer>
+</script>
+
+<!-- Add this script at the end of the body, after your other scripts -->
+<script>
+// --- PAYPAL INTEGRATION ---
+
+const paypalPlanPrices = {
+    "Basic": 11.95,
+    "VIP Member": 14.95,
+    "Business": 16.95
+};
+
+function getSelectedPlanAndAmount() {
+    let plan = window.selectedPlan;
+    let amount = window.selectedPlanAmount;
+    if (!plan || !amount) {
+        plan = sessionStorage.getItem('selectedPlan');
+        amount = sessionStorage.getItem('selectedPlanAmount');
+    }
+    if (!plan || !amount) {
+        plan = "Basic";
+        amount = paypalPlanPrices[plan];
+    }
+    return { plan, amount: Number(amount) };
+}
+
+function renderPayPalButton() {
+    const container = document.getElementById('paypal-button-container');
+    if (!container || typeof paypal === "undefined") return;
+    container.innerHTML = "";
+
+    const { plan, amount } = getSelectedPlanAndAmount();
+
+    paypal.Buttons({
+        style: {
+            shape: "rect",
+            layout: "vertical",
+            color: "gold",
+            label: "paypal",
+        },
+        createSubscription: function(data, actions) {
+            return actions.subscription.create({
+                plan_id: planIdMap[selectedPlan]
+            });
+        },
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                window.paymentSecured = true;
+                sessionStorage.setItem('paymentComplete', 'true');
+                sessionStorage.setItem('selectedPlan', plan);
+                sessionStorage.setItem('selectedPlanAmount', amount);
+                showPaymentSuccessAndRedirect();
+            });
+        },
+        onCancel: function (data) {
+            alert('PayPal payment was cancelled.');
+        },
+        onError: function(err) {
+            alert('PayPal subscription failed. Please try again.');
+            console.error(err);
+        }
+    }).render('#paypal-button-container');
+}
+
+// Always render PayPal button when PayPal form is shown
+document.addEventListener('DOMContentLoaded', function() {
+    // Only render if PayPal form is visible
+    if (document.getElementById('paypalPaymentFormContainer').style.display !== 'none') {
+        renderPayPalButton();
+    }
+});
+
+// Re-render PayPal button when "Pay with PayPal" option is clicked
+document.getElementById('paypalOption').addEventListener('click', function() {
+    renderPayPalButton();
+});
 </script>
 </body>
 </html>
