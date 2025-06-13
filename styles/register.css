@@ -164,6 +164,18 @@ body {
     color: var(--primary-color);
 }
 
+/* For Material Icons or any eye icon used for password visibility */
+.material-icons.password-toggle,
+.toggle-password {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.material-icons.password-toggle:hover,
+.toggle-password:hover {
+    color: #22c55e; /* Change to your preferred highlight color */
+}
+
 .form-options {
     display: flex;
     justify-content: space-between;
