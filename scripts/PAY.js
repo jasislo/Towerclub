@@ -293,47 +293,23 @@ document.getElementById('referralCodeForm').addEventListener('submit', function(
     const message = document.getElementById('referralCodeMessage');
     const code = codeInput.value.trim();
 
-    // Reset any previous discount
-    sessionStorage.removeItem('referralDiscount');
-    sessionStorage.removeItem('referralCode');
-
-    if (code.length < 3) {
+    if (!code) {
         message.style.display = 'block';
         message.style.color = '#F06A6A';
-        message.textContent = 'Please enter a valid referral code.';
+        message.removeAttribute('data-i18n');
+        message.textContent = 'Please enter a referral code.';
         return;
     }
 
-    if (code.toLowerCase() === '#jonatthanasis') {
-        // Apply 2 months free
-        if (selectedPlan && planPrices[selectedPlan]) {
-            const discount = planPrices[selectedPlan] * 2;
-            const newAmount = Math.max(0, planPrices[selectedPlan] - discount);
-            selectedPlanAmount = newAmount;
-            sessionStorage.setItem('referralDiscount', discount);
-            sessionStorage.setItem('referralCode', code);
-            message.style.display = 'block';
-            message.style.color = '#22c55e';
-            message.textContent = 'Referral code applied! You get 2 months free.';
-
-            // Update PayPal and Stripe payment button text if visible
-            const makePaypalPayment = document.getElementById('makePaypalPayment');
-            if (makePaypalPayment && makePaypalPayment.style.display === 'block') {
-                makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-            }
-        } else {
-            message.style.display = 'block';
-            message.style.color = '#F06A6A';
-            message.textContent = 'Please select a plan before applying the referral code.';
-        }
-        return;
-    }
-
-    // Simulate referral code validation (replace with real API call if needed)
+    // Set translation key for the applied message
     message.style.display = 'block';
     message.style.color = '#22c55e';
-    message.textContent = 'Referral code applied!';
-    // Optionally: Save code to localStorage/session or send to backend
+    message.setAttribute('data-i18n', 'referral-applied');
+    if (typeof translationManager !== 'undefined' && translationManager.t) {
+        message.textContent = translationManager.t('referral-applied');
+    } else {
+        message.textContent = 'Referral code applied!';
+    }
 });
 
 // Update payment success messages with translations
