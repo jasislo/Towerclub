@@ -208,6 +208,25 @@
         .auth-footer a:hover {
             text-decoration: underline;
         }
+
+        /* Navigation actions styles */
+        .nav-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+        }
+
+        .nav-actions .btn {
+            margin: 0 0.5rem;
+        }
+
+        /* Google Translate button styles */
+        #google_translate_element {
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
     </style>
     <!-- Add translation manager script -->
     <script type="module">
@@ -254,6 +273,14 @@
         </div>
     </div>
 
+    <!-- Navigation actions -->
+    <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
+        <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
+        <!-- Google Translate language selector button -->
+        <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+    </div>
+
     <!-- Scripts -->
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
@@ -263,5 +290,18 @@
         applyTranslations(); // Call this on page load
     </script>
     <script type="module" src="/scripts/firebase-init.js"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
 </body>
 </html>
