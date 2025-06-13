@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TowerClub Payment Methods" data-i18n="meta-description">
-    <title data-i18n="page-title">My Payment Methods</title>
+    <meta name="description" content="TowerClub Payment Methods">
+    <title>My Payment Methods</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
-    <script src="https://www.paypal.com/sdk/js?client-id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&currency=USD"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&currency=USD"></script>
     <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
@@ -779,10 +779,6 @@
             pointer-events: none;
         }
     </style>
-    <!-- Add translation manager script -->
-    <script type="module">
-        import translationManager from '../scripts/translation-manager.js';
-    </script>
 </head>
 <body>
     <!-- Header -->
@@ -791,22 +787,22 @@
             <!-- Brand Section -->
             <div class="nav-brand">
                 <a href="index.html" class="brand-link">
-                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
-                    <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="brand-name">TowerClub</span>
                 </a>
             </div>
 
             <!-- Navigation Links -->
             <div class="nav-links">
-                <a href="index.html#features" class="nav-link" data-i18n="nav-features">Features</a>
-                <a href="index.html#pricing" class="nav-link" data-i18n="nav-pricing">Pricing</a>
-                <a href="index.html#about" class="nav-link" data-i18n="nav-about">About</a>
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+                <a href="index.html#about" class="nav-link">About</a>
             </div>
 
             <!-- Navigation Actions -->
             <div class="nav-actions">
-                <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
-                <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
+                <a href="login.html" class="btn btn-outline">Log in</a>
+                <a href="PAY.HTML" class="btn btn-primary btn-large">Get Started</a>
                 <!-- Google Translate language selector button placed next to Get Started -->
                 <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
@@ -817,52 +813,52 @@
     <div class="app-container">
         <!-- Pricing Section -->
         <section id="pricing" class="pricing-section">
-            <h2 data-i18n="pricing-title">Simple, Transparent Pricing</h2>
+            <h2>Simple, Transparent Pricing</h2>
             <div class="pricing-grid">
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h3 data-i18n="pricing-basic-title">Basic</h3>
-                        <div class="price">$11.95<span data-i18n="pricing-per-month">/month</span></div>
+                        <h3>Basic</h3>
+                        <div class="price">$11.95<span>/month</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li data-i18n="pricing-basic-feature-1">Basic expenses tracking</li>
-                        <li data-i18n="pricing-basic-feature-2">Monthly budget planning</li>
-                        <li data-i18n="pricing-basic-feature-3">Basic analytics</li>
-                        <li data-i18n="pricing-basic-feature-4">Build Financial social Network</li>
-                        <li data-i18n="pricing-basic-feature-5">Transfers between Members</li>
-                        <li data-i18n="pricing-basic-feature-6">Profile and Chats</li>
-                        <li data-i18n="pricing-basic-feature-7">7 days Free Trial</li>
+                        <li>Basic expenses tracking</li>
+                        <li>Monthly budget planning</li>
+                        <li>Basic analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                        <li>7 days Free Trial</li>
                     </ul>
-                    <a href="register.html" class="btn btn-outline btn-block get-started-btn" data-plan="Basic" data-i18n="pricing-get-started">Get Started</a>
+                    <a href="register.html" class="btn btn-outline btn-block get-started-btn" data-plan="Basic">Get Started</a>
                 </div>
                 <div class="pricing-card featured">
                     <div class="pricing-header">
-                        <h3 data-i18n="pricing-vip-title">VIP Member</h3>
-                        <div class="price">$14.95<span data-i18n="pricing-per-month">/month</span></div>
+                        <h3>VIP Member</h3>
+                        <div class="price">$14.95<span>/month</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li data-i18n="pricing-vip-feature-1">Advanced analytics</li>
-                        <li data-i18n="pricing-vip-feature-2">Build Financial social Network</li>
-                        <li data-i18n="pricing-vip-feature-3">Unlimited budgets</li>
-                        <li data-i18n="pricing-vip-feature-4">Saving goals</li>
-                        <li data-i18n="pricing-vip-feature-5">Priority support</li>
-                        <li data-i18n="pricing-vip-feature-6">Transfers between Members</li>
-                        <li data-i18n="pricing-vip-feature-7">Profile and Chats</li>
+                        <li>Advanced analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Unlimited budgets</li>
+                        <li>Saving goals</li>
+                        <li>Priority support</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
                     </ul>
-                    <a href="register.html" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member" data-i18n="pricing-vip-get-started">Get Started</a>
+                    <a href="register.html" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member">Get Started</a>
                 </div>
                 <div class="pricing-card">
                     <div class="pricing-header">
-                        <h3 data-i18n="pricing-business-title">Business</h3>
-                        <div class="price">$16.95<span data-i18n="pricing-per-month">/month</span></div>
+                        <h3>Business</h3>
+                        <div class="price">$16.95<span>/month</span></div>
                     </div>
                     <ul class="pricing-features">
-                        <li data-i18n="pricing-business-feature-1">All Pro features</li>
-                        <li data-i18n="pricing-business-feature-2">Team management</li>
-                        <li data-i18n="pricing-business-feature-3">Dedicated support</li>
-                        <li data-i18n="pricing-business-feature-4">Custom integrations</li>
+                        <li>All Pro features</li>
+                        <li>Team management</li>
+                        <li>Dedicated support</li>
+                        <li>Custom integrations</li>
                     </ul>
-                    <a href="#contact" class="btn btn-outline btn-block get-started-btn" data-plan="Business" data-i18n="pricing-business-get-started">Get Started</a>
+                    <a href="#contact" class="btn btn-outline btn-block get-started-btn" data-plan="Business">Get Started</a>
                 </div>
             </div>
         </section>
@@ -870,10 +866,10 @@
         <!-- Referral Code Section -->
         <div class="referral-section">
             <form id="referralCodeForm" class="referral-form">
-                <label for="referralCodeInput" data-i18n="referral-label" class="referral-label">Have a referral code?</label>
+                <label for="referralCodeInput" class="referral-label">Have a referral code?</label>
                 <div class="referral-input-group">
-                    <input type="text" id="referralCodeInput" data-i18n-placeholder="referral-placeholder" placeholder="Enter referral code" class="referral-input">
-                    <button type="submit" class="referral-btn" data-i18n="referral-submit">Apply Code</button>
+                    <input type="text" id="referralCodeInput" placeholder="Enter referral code" class="referral-input">
+                    <button type="submit" class="referral-btn">Apply Code</button>
                 </div>
                 <span id="referralCodeMessage" class="referral-message" style="display:none;"></span>
             </form>
@@ -963,15 +959,15 @@
 
         <!-- Payment Section -->
         <div class="payment-section">
-            <h1 class="section-header" data-i18n="payment-title">Make Payment</h1>
+            <h1 class="section-header">Make Payment</h1>
             <div class="payment-options">
                 <div class="payment-option" id="creditCardOption">
                     <i class="material-icons">credit_card</i>
-                    <span data-i18n="payment-credit-card">Pay with Credit/Debit Card</span>
+                    <span>Pay with Credit/Debit Card</span>
                 </div>
 
                 <div class="payment-form" id="cardPaymentFormContainer">
-                    <h2 data-i18n="payment-credit-card-title">Pay with Credit/Debit Card</h2>
+                    <h2>Pay with Credit/Debit Card</h2>
                     <form id="cardPaymentForm">
                         <div class="form-group">
                             <label for="cardHolder">Cardholder Name</label>
@@ -995,7 +991,7 @@
 
                 <div class="payment-option" id="paypalOption">
                     <i class="material-icons">account_balance_wallet</i>
-                    <span data-i18n="payment-paypal">Pay with PayPal</span>
+                    <span>Pay with PayPal</span>
                 </div>
 
                 <div class="payment-form" id="paypalPaymentFormContainer">
@@ -1008,7 +1004,7 @@
                         <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg" alt="Powered by PayPal" style="height:32px;">
                     </div>
                     <!-- Pay Now with PayPal button in yellow -->
-                    <button class="btn-paypal" id="makePaypalPayment" type="button" data-i18n="payment-paypal-make-payment">Pay Now with PayPal</button>
+                    <button class="btn-paypal" id="makePaypalPayment" type="button">Pay Now with PayPal</button>
                 </div>
             </div>
         </div>
@@ -1028,31 +1024,31 @@
         </section>
     </main>
 
-    <!-- Footer (added at the bottom of the page) -->
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
             <div class="footer-top">
                 <div class="footer-brand">
                     <div class="brand-wrapper">
-                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" data-i18n="footer-logo-alt">
-                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub</span>
                     </div>
-                    <p class="brand-description" data-i18n="footer-description">
+                    <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
                     </p>
                 </div>
                 <div class="footer-links-section">
                     <div class="footer-column">
-                        <h4 data-i18n="footer-company">Company</h4>
+                        <h4>Company</h4>
                         <ul>
-                            <li><a href="#" data-i18n="footer-about">About Us</a></li>
-                            <li><a href="#" data-i18n="footer-careers">Careers</a></li>
-                            <li><a href="#" data-i18n="footer-press">Press</a></li>
-                            <li><a href="#" data-i18n="footer-blog">Blog</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4 data-i18n="footer-resources">Resources</h4>
+                        <h4>Resources</h4>
                         <ul>
                             <li><a href="#">Help Center</a></li>
                             <li><a href="#">Guides</a></li>
@@ -1061,7 +1057,7 @@
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4 data-i18n="footer-legal">Legal</h4>
+                        <h4>Legal</h4>
                         <ul>
                             <li><a href="#">Privacy</a></li>
                             <li><a href="#">Terms</a></li>
@@ -1070,7 +1066,7 @@
                         </ul>
                     </div>
                     <div class="footer-column">
-                        <h4 data-i18n="footer-social">Social</h4>
+                        <h4>Social</h4>
                         <ul>
                             <li><a href="#">X</a></li>
                             <li><a href="#">Youtube</a></li>
@@ -1081,7 +1077,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p data-i18n="footer-copyright">&copy; 2025 TowerClub LLC. All rights reserved.</p>
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -1234,7 +1230,6 @@
             // Render PayPal button for payment
             paypal.Buttons({
                 createOrder: function(data, actions) {
-                    // Set up the transaction with a fixed amount or use your selected plan amount
                     return actions.order.create({
                         purchase_units: [{
                             amount: {
@@ -1246,12 +1241,11 @@
                 onApprove: function(data, actions) {
                     // Capture the funds from the transaction
                     return actions.order.capture().then(function(details) {
-                        // Payment successful, redirect back to PAY.HTML (or to register.html if you want)
-                        window.location.href = "PAY.HTML";
+                        // Payment successful, redirect to register.html
+                        window.location.href = "register.html";
                     });
                 },
                 onCancel: function (data) {
-                    // Optional: handle cancel
                     window.location.href = "PAY.HTML";
                 },
                 onError: function(err) {
@@ -1278,12 +1272,15 @@
             if (heroGetStarted) {
                 heroGetStarted.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Check if payment is completed, if so redirect to register.html
+                    // Always redirect to register.html if payment is complete
                     if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
-                    window.location.href = 'register.html';
-                    } else {
-                        // If no payment, still allow registration
                         window.location.href = 'register.html';
+                    } else {
+                        // Optionally, you can alert or scroll to payment section
+                        document.querySelector('.payment-section').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
                     }
                 });
             }
@@ -1481,19 +1478,15 @@
             const message = document.getElementById('referralCodeMessage');
             const code = codeInput.value.trim();
 
-            if (code.length < 3) {
+            if (code === '#jonatthanasis') {
+                message.style.display = 'block';
+                message.style.color = '#22c55e';
+                message.textContent = 'Referral Code Applied Successfully';
+            } else {
                 message.style.display = 'block';
                 message.style.color = '#F06A6A';
-                message.textContent = 'Please enter a valid referral code.';
-                return;
+                message.textContent = 'Invalid referral code';
             }
-
-            // Simulate referral code validation (replace with real API call if needed)
-            message.style.display = 'block';
-            message.style.color = '#22c55e';
-            message.textContent = 'Referral code applied!';
-            message.setAttribute('data-i18n', 'referral-applied');
-            // Optionally: Save code to localStorage/session or send to backend
         });
 
         // Update payment success messages and redirect to register.html
@@ -1562,10 +1555,6 @@ document.addEventListener('DOMContentLoaded', () => {
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/login.js"></script>
-    <script src="/scripts/lang.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
-    </script>
 
     <!-- PayPal Button Integration -->
     <script src="https://www.paypal.com/sdk/js?client-id=AfxfDtMQIvo3xh0u2CGcJtlWEjJA4ZflxcCsR1tG2tz4Auhqp32Xogkb3dFYrRteOpPrHpht3SRDcuH1&currency=USD"></script>
@@ -1585,12 +1574,10 @@ function renderPayPalButton() {
         },
         onApprove: function(data, actions) {
             return actions.order.capture().then(function(details) {
-                // Payment successful, redirect back to PAY.HTML (or to register.html if you want)
-                window.location.href = "PAY.HTML";
+                window.location.href = "register.html";
             });
         },
         onCancel: function (data) {
-            // Optional: handle cancel
             window.location.href = "PAY.HTML";
         },
         onError: function(err) {
@@ -1600,38 +1587,16 @@ function renderPayPalButton() {
         }
     }).render('#paypal-button-container');
 }
-renderPayPalButton(); // Initial render
-    </script>
-
-    <!-- Google Translate Banner Detection Script -->
-    <script>
-        // Add this script to your page if not already present
-        (function() {
-            function checkGoogleBanner() {
-                var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
-                if (bannerFrame && bannerFrame.style.display !== 'none') {
-                    document.body.classList.add('has-google-banner');
-                } else {
-                    document.body.classList.remove('has-google-banner');
-                }
-            }
-            window.addEventListener('load', function() {
-                setInterval(checkGoogleBanner, 1000);
-            });
-        })();
+renderPayPalButton();
     </script>
 
     <!-- --- STRIPE ELEMENTS INTEGRATION --- -->
-
-<!-- Initialize Stripe -->
 <script>
 const stripe = Stripe('pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR');
 const elements = stripe.elements();
 const cardElement = elements.create('card');
 cardElement.mount('#cardElement');
 </script>
-
-<!-- Handle card form submission -->
 <script>
 document.getElementById('cardPaymentForm').addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -1643,15 +1608,13 @@ document.getElementById('cardPaymentForm').addEventListener('submit', async func
     const submitBtn = document.querySelector('#cardPaymentForm button[type="submit"]');
     if (submitBtn) submitBtn.disabled = true;
 
-    // Call your backend to create a PaymentIntent and get its client_secret
     const response = await fetch('http://localhost:4242/create-payment-intent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Math.round(selectedPlanAmount * 100) }) // amount in cents
+        body: JSON.stringify({ amount: Math.round(selectedPlanAmount * 100) })
     });
     const { clientSecret } = await response.json();
 
-    // Confirm the card payment
     const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
             card: cardElement,
@@ -1677,7 +1640,21 @@ document.getElementById('cardPaymentForm').addEventListener('submit', async func
     if (submitBtn) submitBtn.disabled = false;
 });
 </script>
-
 <!-- --- END STRIPE ELEMENTS INTEGRATION --- -->
+
+<!-- Google Translate Integration -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 </body>
 </html>
