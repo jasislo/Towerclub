@@ -451,6 +451,380 @@
             .pricing-grid {
                 grid-template-columns: 1fr;
             }
+
+            #make-payment-section {
+                padding: 15px;
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero-section {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-actions .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .hero-actions .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Payment Section Styles */
+        .payment-section {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-option {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .btn-credit-card {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-credit-card:hover {
+            background-color: #00796B;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .payment-section {
+                padding: 30px 15px;
+            }
+
+            .section-header {
+                font-size: 1.5rem;
+            }
+
+            .payment-option {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .payment-option i {
+                margin-bottom: 10px;
+            }
+
+            .btn-credit-card {
+                padding: 12px 24px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Add styles for the success message buttons */
+        .payment-success .btn {
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .payment-success .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-success .btn-primary {
+            background: white;
+            color: #22c55e;
+        }
+        .payment-success .btn-primary:hover {
+            background: #f8f8f8;
+        }
+        .payment-success .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .referral-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0 30px 0;
+        }
+        .referral-form {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 320px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .referral-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #22c55e;
+            letter-spacing: 0.01em;
+        }
+        .referral-input-group {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .referral-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #22c55e;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .referral-input:focus {
+            border-color: #a855f7;
+        }
+        .referral-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+        }
+        .referral-btn:hover {
+            background: linear-gradient(90deg, #a855f7, #22c55e);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .referral-message {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.98rem;
+            min-height: 20px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        @media (max-width: 600px) {
+            .referral-form {
+                padding: 16px 8px;
+                min-width: 0;
+            }
+            .referral-input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .referral-btn {
+                width: 100%;
+            }
+        }
+
+        /* Update footer styles to ensure it stays at the bottom */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .app-container {
+            flex: 1 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px;
+        }
+
+        .main-footer {
+            flex-shrink: 0;
+            width: 100%;
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+
+        .landing-content {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+
+        /* Ensure footer stays at bottom even with little content */
+        @media (min-height: 100vh) {
+            .main-footer {
+                margin-top: auto;
+            }
+        }
+
+        /* Add style for selected plan button */
+        .selected-plan {
+            background: linear-gradient(90deg, #22c55e, #a855f7) !important;
+            color: #fff !important;
+            border: none !important;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        /* Make Payment Section */
+        #make-payment-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #make-payment-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #make-payment-section .payment-option {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #make-payment-section .payment-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #make-payment-section .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        #make-payment-section .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        #make-payment-section .btn-paypal {
+            background-color: #ffc439 !important; /* PayPal yellow */
+            color: #111827 !important;            /* Dark text for contrast */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        #make-payment-section .btn-paypal:hover {
+            background-color: #e0a800 !important; /* Darker yellow on hover */
+            color: #111827 !important;
+            transform: scale(1.05);
+        }
+
+        /* Center the Make Payment header */
+        .app-header {
+            text-align: center; /* Center the text */
+            margin-bottom: 20px; /* Add spacing below the header */
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #make-payment-section {
+                padding: 15px;
+            }
         }
 
         /* Hero Section Styles */
@@ -954,6 +1328,7 @@
                 </div>
             </div>
         </div>
+             
     </div>
 
     <!-- Hero Section -->
@@ -1027,6 +1402,28 @@
             </div>
         </div>
     </footer>
+
+    <!-- Always visible PayPal button -->
+    <div id="paypal-button-container-P-17H9335690871034HNBGKHXQ"></div>
+    <script src="https://www.paypal.com/sdk/js?client-id=ASYjr6BK6SQ2hpqkN3DYUHusu_X3hbbxsb82hzf_0ns2I_KWifq8RPMb4hM4iWMNmgszLWNOgp9L2hpa&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+    <script>
+      paypal.Buttons({
+          style: {
+              shape: 'pill',
+              color: 'gold',
+              layout: 'vertical',
+              label: 'paypal'
+          },
+          createSubscription: function(data, actions) {
+            return actions.subscription.create({
+              plan_id: 'P-17H9335690871034HNBGKHXQ'
+            });
+          },
+          onApprove: function(data, actions) {
+            alert(data.subscriptionID);
+          }
+      }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ');
+    </script>
 
     <script>
         // Track selected plan and payment status
@@ -1409,193 +1806,31 @@
             sessionStorage.setItem('paymentComplete', 'true');
             sessionStorage.setItem('selectedPlan', selectedPlan);
             sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-            
-            // Redirect to register.html after 2 seconds
+
+            // Redirect to register.html after a short delay
             setTimeout(() => {
                 window.location.href = 'register.html';
             }, 2000);
         }
 
-        // Add payment verification function
-        function verifyPaymentStatus() {
-            return window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true';
-        }
-
-        // Remove payment requirement for register.html links
-        document.addEventListener('DOMContentLoaded', function() {
-            // Allow all links to register.html without payment requirement
-            document.querySelectorAll('a[href="register.html"], a[href="./register.html"], a[href="../pages/register.html"]').forEach(function(link) {
-                link.addEventListener('click', function(e) {
-                    // Allow navigation without any restrictions
-                    // No prevention of default behavior
-                });
-            });
-        });
-
-        // Sync profile picture everywhere on page load
-document.addEventListener('DOMContentLoaded', () => {
-    const savedPic = localStorage.getItem('profilePicture');
-    if (savedPic) {
-        ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.src = savedPic;
-        });
-    }
-});
-    </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
-    <script src="/scripts/login.js"></script>
-
-    <!-- --- STRIPE ELEMENTS INTEGRATION --- -->
-<script>
-const stripe = Stripe('pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR');
-const elements = stripe.elements();
-const cardElement = elements.create('card');
-cardElement.mount('#cardElement');
-</script>
-<script>
-document.getElementById('cardPaymentForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    if (!selectedPlan || !selectedPlanAmount) {
-        alert('Please select a plan before making payment.');
-        return;
-    }
-
-    const submitBtn = document.querySelector('#cardPaymentForm button[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true;
-
-    const response = await fetch('http://localhost:4242/create-payment-intent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: Math.round(selectedPlanAmount * 100) })
-    });
-    const { clientSecret } = await response.json();
-
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-            card: cardElement,
-            billing_details: {
-                name: document.getElementById('cardHolder').value
+        // PayPal Button Integration
+        paypal.Buttons({
+            style: {
+                shape: 'pill',
+                color: 'gold',
+                layout: 'vertical',
+                label: 'paypal'
+            },
+            createSubscription: function(data, actions) {
+              return actions.subscription.create({
+                /* Creates the subscription */
+                plan_id: 'P-17H9335690871034HNBGKHXQ'
+              });
+            },
+            onApprove: function(data, actions) {
+              alert(data.subscriptionID); // You can add optional success message for the subscriber here
             }
-        }
-    });
-
-    if (error) {
-        alert(error.message);
-        if (submitBtn) submitBtn.disabled = false;
-        return;
-    }
-
-    if (paymentIntent && paymentIntent.status === 'succeeded') {
-        window.paymentSecured = true;
-        showPaymentSuccessAndRedirect();
-        sessionStorage.setItem('paymentComplete', 'true');
-        sessionStorage.setItem('selectedPlan', selectedPlan);
-        sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-    }
-    if (submitBtn) submitBtn.disabled = false;
-});
-</script>
-<!-- --- END STRIPE ELEMENTS INTEGRATION --- -->
-
-<!-- Google Translate Integration -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
-
-<!-- Add this PayPal SDK script in the <head> section, if not already present -->
-<script 
-  src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD&disable-funding=paylater&components=buttons,subscriptions"
-  data-sdk-integration-source="button-factory"
-  defer>
-</script>
-
-<!-- Add this script at the end of the body, after your other scripts -->
-<script>
-// --- PAYPAL INTEGRATION ---
-
-const paypalPlanPrices = {
-    "Basic": 11.95,
-    "VIP Member": 14.95,
-    "Business": 16.95
-};
-
-function getSelectedPlanAndAmount() {
-    let plan = window.selectedPlan;
-    let amount = window.selectedPlanAmount;
-    if (!plan || !amount) {
-        plan = sessionStorage.getItem('selectedPlan');
-        amount = sessionStorage.getItem('selectedPlanAmount');
-    }
-    if (!plan || !amount) {
-        plan = "Basic";
-        amount = paypalPlanPrices[plan];
-    }
-    return { plan, amount: Number(amount) };
-}
-
-function renderPayPalButton() {
-    const container = document.getElementById('paypal-button-container');
-    if (!container || typeof paypal === "undefined") return;
-    container.innerHTML = "";
-
-    const { plan, amount } = getSelectedPlanAndAmount();
-
-    paypal.Buttons({
-        style: {
-            shape: "rect",
-            layout: "vertical",
-            color: "gold",
-            label: "paypal",
-        },
-        createSubscription: function(data, actions) {
-            return actions.subscription.create({
-                plan_id: planIdMap[selectedPlan]
-            });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                window.paymentSecured = true;
-                sessionStorage.setItem('paymentComplete', 'true');
-                sessionStorage.setItem('selectedPlan', plan);
-                sessionStorage.setItem('selectedPlanAmount', amount);
-                showPaymentSuccessAndRedirect();
-            });
-        },
-        onCancel: function (data) {
-            alert('PayPal payment was cancelled.');
-        },
-        onError: function(err) {
-            alert('PayPal subscription failed. Please try again.');
-            console.error(err);
-        }
-    }).render('#paypal-button-container');
-}
-
-// Always render PayPal button when PayPal form is shown
-document.addEventListener('DOMContentLoaded', function() {
-    // Only render if PayPal form is visible
-    if (document.getElementById('paypalPaymentFormContainer').style.display !== 'none') {
-        renderPayPalButton();
-    }
-});
-
-// Re-render PayPal button when "Pay with PayPal" option is clicked
-document.getElementById('paypalOption').addEventListener('click', function() {
-    renderPayPalButton();
-});
-</script>
+        }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ'); // Renders the PayPal button
+    </script>
 </body>
 </html>
