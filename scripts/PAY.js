@@ -377,7 +377,7 @@ document.getElementById('paypalButton').addEventListener('click', function () {
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: window.selectedPlanAmount ? window.selectedPlanAmount.toString() : '11.95'
+                        value: window.selectedPlanAmount ? window.selectedPlanAmount.toFixed(2) : '11.95'
                     }
                 }]
             });
@@ -494,3 +494,33 @@ router.post('/apply', async (req, res) => {
 });
 
 module.exports = router;
+
+// Track selected plan and payment status
+let selectedPlan = null;
+let selectedPlanAmount = null;
+window.paymentSecured = false;
+
+// Pricing for each plan (must match your pricing section)
+const planPrices = {
+    "Basic": 11.95,
+    "VIP Member": 14.95,
+    "Business": 16.95
+};
+
+// Membership selection algorithm for "Get Started" buttons
+document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        // Example: get plan name from button data attribute
+        const plan = btn.getAttribute('data-plan');
+        if (plan && planPrices[plan]) {
+            window.selectedPlan = plan;
+            window.selectedPlanAmount = planPrices[plan];
+        }
+        renderPayPalButton(); // Call after updating selectedPlanAmount
+        // Update Pay Now button text
+        const makePaypalPayment = document.getElementById('makePaypalPayment');
+        if (makePaypalPayment && window.selectedPlanAmount) {
+            makePaypalPayment.textContent = `Pay $${window.selectedPlanAmount.toFixed(2)} with PayPal`;
+        }
+    });
+});

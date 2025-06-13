@@ -3,49 +3,64 @@
 // Example: Set the amount dynamically based on the selected plan
 
 // Use a global or shared variable for selectedPlanAmount
-let selectedPlanAmount = '11.95'; // Default
+let selectedPlanAmount = ; // Default
 
-// Listen for plan selection and update the amount
+// Replace with your actual plan IDs from the /api/paypal/create-all-plans response
+const planIdMap = {
+    "Basic": "P-XXXXXXXXXX",      // Replace with your actual PayPal Plan IDs
+    "VIP Member": "P-YYYYYYYYYY",
+    "Business": "P-ZZZZZZZZZZ"
+};
+
+let selectedPlan = "Basic"; // Default
+
+// Listen for plan selection
 document.querySelectorAll('.plan-select-btn, .get-started-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-        // Try to get amount from data-amount or from PAY.js planPrices
-        if (this.getAttribute('data-amount')) {
-            selectedPlanAmount = this.getAttribute('data-amount');
-        } else if (this.getAttribute('data-plan')) {
-            // If using PAY.js, get the amount from planPrices
-            const plan = this.getAttribute('data-plan');
-            if (window.planPrices && window.planPrices[plan]) {
-                selectedPlanAmount = window.planPrices[plan].toFixed(2);
-            }
+        if (this.getAttribute('data-plan')) {
+            selectedPlan = this.getAttribute('data-plan');
         }
+        renderPayPalButton();
     });
 });
 
-// PayPal Button integration
-paypal.Buttons({
-    createOrder: function(data, actions) {
-        // Always use the latest selectedPlanAmount
-        return actions.order.create({
-            purchase_units: [{
-                amount: {
-                    value: selectedPlanAmount
-                }
-            }]
-        });
-    },
-    onApprove: function(data, actions) {
-        return actions.order.capture().then(function(details) {
+function renderPayPalButton() {
+    const container = document.getElementById('paypal-button-container');
+    if (container) container.innerHTML = '';
+    paypal.Buttons({
+        style: {
+            shape: "rect",
+            layout: "vertical",
+            color: "gold",
+            label: "paypal",
+        },
+        createSubscription: function(data, actions) {
+            return actions.subscription.create({
+                plan_id: planIdMap[selectedPlan]
+            });
+        },
+        onApprove: function(data, actions) {
+            fetch('/api/save-subscription', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subscriptionID: data.subscriptionID, plan: selectedPlan })
+            });
             window.location.href = "register.html";
-        });
-    },
-    onCancel: function (data) {
-        window.location.href = "PAY.HTML";
-    },
-    onError: function(err) {
-        alert('PayPal payment failed. Please try again.');
-        window.location.href = "PAY.HTML";
-    }
-}).render('#paypal-button-container');
+        },
+        onCancel: function (data) {
+            window.location.href = "PAY.HTML";
+        },
+        onError: function(err) {
+            alert('PayPal payment failed. Please try again.');
+            window.location.href = "PAY.HTML";
+        }
+    }).render('#paypal-button-container');
+}
+
+// Initial render
+document.addEventListener('DOMContentLoaded', function() {
+    renderPayPalButton();
+});
 
 // "Get Started Now" button integration
 document.addEventListener('DOMContentLoaded', function() {
