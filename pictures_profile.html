@@ -609,6 +609,40 @@
             background: #F9FAFB;
             color: #374151;
         }
+
+        /* User Card Styles */
+        .user-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #15161E;
+        }
+
+        .follow-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-1px);
+        }
     </style>
     <!-- Add translation manager script -->
     <script type="module">
@@ -699,7 +733,7 @@
 
             <div class="profile-actions" style="margin-top: 60px; margin-bottom: 60px;">
                 <button class="btn-primary">Follow</button>
-                <button class="btn-secondary">Message</button>
+                <button class="btn-secondary" id="messageBtn">Message</button>
             </div>
 
             <div class="profile-content" style="margin-top: 60px;">
@@ -772,6 +806,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Example user card -->
         </main>
     </div>
     <script src="/scripts/profile-picture-sync.js"></script>

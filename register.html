@@ -147,16 +147,13 @@
         }
 
         .toggle-password {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
             cursor: pointer;
-            padding: 0;
-            transition: color 0.3s ease;
+            transition: color 0.2s;
+            color: #606A85;
         }
 
         .toggle-password:hover {
-            color: var(--primary-color);
+            color: #22c55e; /* or any highlight color you prefer */
         }
 
         .verify-github-btn {
@@ -410,6 +407,7 @@
 
             <div class="auth-footer">
                 <p data-i18n="register-have-account">Already have an account? <a href="login.html" data-i18n="register-login">Sign In</a></p>
+                <div id="google_translate_element"></div>
             </div>
         </div>
     </div>
@@ -470,5 +468,14 @@
     <script>
       applyTranslations(); // Call this on page load
     </script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en'},
+        'google_translate_element'
+      );
+    }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
