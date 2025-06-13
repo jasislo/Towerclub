@@ -14,10 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (passwordInput.type === "password") {
                 passwordInput.type = "text";
-                this.textContent = "visibility";
+                this.textContent = "visibility"; // Open eye icon
             } else {
                 passwordInput.type = "password";
-                this.textContent = "visibility_off";
+                this.textContent = "visibility_off"; // Closed eye icon
             }
         });
     }

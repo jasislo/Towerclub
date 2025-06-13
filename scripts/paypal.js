@@ -72,3 +72,26 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+<div id="paypal-button-container-P-17H9335690871034HNBGKHXQ"></div>
+<script src="https://www.paypal.com/sdk/js?client-id=ASYjr6BK6SQ2hpqkN3DYUHusu_X3hbbxsb82hzf_0ns2I_KWifq8RPMb4hM4iWMNmgszLWNOgp9L2hpa&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+<script>
+  paypal.Buttons({
+      style: {
+          shape: 'pill',
+          color: 'gold',
+          layout: 'vertical',
+          label: 'paypal'
+      },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({
+          /* Creates the subscription */
+          plan_id: 'P-17H9335690871034HNBGKHXQ'
+        });
+      },
+      onApprove: function(data, actions) {
+        alert(data.subscriptionID); // You can add optional success message for the subscriber here
+      }
+  }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ'); // Renders the PayPal button
+</script>
+<button id="pay-now-paypal">Pay Now with paypal</button>
