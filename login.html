@@ -290,6 +290,22 @@
             event.preventDefault(); // Prevent form submission if inside a form
             window.location.href = 'pay.html';
         });
+
+        // Password visibility toggle for password field
+        const passwordInput = document.getElementById('password');
+        const passwordToggle = document.getElementById('passwordToggle');
+        if (passwordToggle && passwordInput) {
+            passwordToggle.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    this.textContent = "visibility"; // Open eye icon
+                } else {
+                    passwordInput.type = "password";
+                    this.textContent = "visibility_off"; // Closed eye icon
+                }
+            });
+        }
     </script>
 </body>
 </html>
