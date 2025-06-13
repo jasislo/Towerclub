@@ -414,7 +414,8 @@
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
                 <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+                    <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
         </div>
     </nav>
@@ -614,6 +615,28 @@
     <script src="/scripts/lang.js"></script>
     <script>
       applyTranslations(); // Call this on page load
+    </script>
+    <!-- Add this inside your header, next to the Get Started button (or similar location) -->
+    <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
+        <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
+        <!-- Google Translate language selector button -->
+        <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+    </div>
+
+    <!-- Add these scripts before the closing </body> tag -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 </body>
 </html>
