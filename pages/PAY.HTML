@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
     <script src="https://www.paypal.com/sdk/js?client-id=AW5Y3lm_yH0JQwcy00O1YN1O2VtRk_qEjbpWV5yVLcpKMhRNGYyIayxKZd45clIeCqF4joJ7cXWXC5Zj&currency=USD"></script> <!-- Replace YOUR_PAYPAL_CLIENT_ID -->
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary-color: #00968A;
@@ -973,25 +974,23 @@
                     <h2 data-i18n="payment-credit-card-title">Pay with Credit/Debit Card</h2>
                     <form id="cardPaymentForm">
                         <div class="form-group">
-                            <label for="cardNumber" data-i18n="payment-card-number">Card Number</label>
-                            <input type="text" id="cardNumber" data-i18n-placeholder="payment-card-number-placeholder" placeholder="1234 5678 9012 3456" required>
+                            <label for="cardHolder">Cardholder Name</label>
+                            <input type="text" id="cardHolder" placeholder="John Doe" required>
                         </div>
                         <div class="form-group">
-                            <label for="cardExpiry" data-i18n="payment-card-expiry">Expiry Date</label>
-                            <input type="text" id="cardExpiry" data-i18n-placeholder="payment-card-expiry-placeholder" placeholder="MM/YY" required>
+                            <label>Card Details</label>
+                            <div id="cardElement"></div> <!-- Stripe Elements will render here -->
                         </div>
                         <div class="form-group">
-                            <label for="cardCVC" data-i18n="payment-card-cvc">CVC/CVV</label>
-                            <input type="text" id="cardCVC" data-i18n-placeholder="payment-card-cvc-placeholder" placeholder="123" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cardHolder" data-i18n="payment-card-holder">Cardholder Name</label>
-                            <input type="text" id="cardHolder" data-i18n-placeholder="payment-card-holder-placeholder" placeholder="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn-credit-card" data-i18n="payment-submit">Pay Now</button>
+                            <button type="submit" class="btn-credit-card">Pay Now</button>
                         </div>
                     </form>
+                    <!-- OR separator -->
+                    <div style="display: flex; align-items: center; margin: 24px 0;">
+                        <hr style="flex: 1; border: none; border-top: 1.5px solid #e5e7eb;">
+                        <span style="margin: 0 16px; color: #888; font-weight: 600;">OR</span>
+                        <hr style="flex: 1; border: none; border-top: 1.5px solid #e5e7eb;">
+                    </div>
                 </div>
 
                 <div class="payment-option" id="paypalOption">
@@ -1620,5 +1619,64 @@ renderPayPalButton(); // Initial render
             });
         })();
     </script>
+
+    <!-- --- STRIPE ELEMENTS INTEGRATION --- -->
+
+<!-- Initialize Stripe -->
+<script>
+const stripe = Stripe('pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR');
+const elements = stripe.elements();
+const cardElement = elements.create('card');
+cardElement.mount('#cardElement');
+</script>
+
+<!-- Handle card form submission -->
+<script>
+document.getElementById('cardPaymentForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    if (!selectedPlan || !selectedPlanAmount) {
+        alert('Please select a plan before making payment.');
+        return;
+    }
+
+    const submitBtn = document.querySelector('#cardPaymentForm button[type="submit"]');
+    if (submitBtn) submitBtn.disabled = true;
+
+    // Call your backend to create a PaymentIntent and get its client_secret
+    const response = await fetch('http://localhost:4242/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: Math.round(selectedPlanAmount * 100) }) // amount in cents
+    });
+    const { clientSecret } = await response.json();
+
+    // Confirm the card payment
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+            card: cardElement,
+            billing_details: {
+                name: document.getElementById('cardHolder').value
+            }
+        }
+    });
+
+    if (error) {
+        alert(error.message);
+        if (submitBtn) submitBtn.disabled = false;
+        return;
+    }
+
+    if (paymentIntent && paymentIntent.status === 'succeeded') {
+        window.paymentSecured = true;
+        showPaymentSuccessAndRedirect();
+        sessionStorage.setItem('paymentComplete', 'true');
+        sessionStorage.setItem('selectedPlan', selectedPlan);
+        sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+    }
+    if (submitBtn) submitBtn.disabled = false;
+});
+</script>
+
+<!-- --- END STRIPE ELEMENTS INTEGRATION --- -->
 </body>
 </html>
