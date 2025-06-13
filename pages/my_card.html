@@ -321,11 +321,8 @@
 
             <!-- Navigation Actions -->
             <div class="nav-actions">
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <a href="logout.html" class="btn-outline">Logout</a>
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
         </div>
     </nav>
@@ -738,6 +735,19 @@
                 }
             }
         });
+    </script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 </body>
 </html>

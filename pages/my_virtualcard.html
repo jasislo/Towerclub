@@ -637,12 +637,14 @@
             <!-- Navigation Actions -->
             <div class="nav-actions">
                 <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                <div class="profile-picture-container" id="profilePictureContainer">
+                    <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60"
+                        alt="Profile Picture" id="userProfilePicture">
                 </div>
                 <!-- Log Out Button -->
-                <a href="logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;" data-i18n="action-logout">Logout</a>
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <!-- Google Translate Element -->
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
         </div>
     </nav>
