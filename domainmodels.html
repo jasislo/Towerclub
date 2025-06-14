@@ -15,10 +15,6 @@
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <link rel="icon" type="image/png" href="/assets/images/towerclub_logo.png">
-    <script src="/scripts/lang.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
-    </script>
     <style>
         /* Header Styles */
         .main-nav {
@@ -266,28 +262,7 @@
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-content">
-            <a href="/pages/mainpage.html" class="nav-brand">
-                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo" class="company-logo">
-                <span class="brand-name">TowerClub</span>
-            </a>
-            <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
-            </div>
-            <div class="nav-actions">
-                <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
-                <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
-                <!-- Google Translate language selector button -->
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </div>
-        </div>
-    </nav>
-
+    <!-- Header removed -->
     <main class="main-content">
         <div class="content-header">
             <h1>Domain Models</h1>
@@ -468,19 +443,6 @@
               });
           }
       });
-    </script>
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,ar,zh-CN,es,fr',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    <script 
-      type="text/javascript" 
-      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 </body>
 </html>

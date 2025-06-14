@@ -472,6 +472,7 @@
             <a href="mainpage.html" class="nav-brand">
                 <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
                 <span class="brand-name">TowerClub</span>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </a>
 
             <!-- Navigation Links -->
@@ -489,8 +490,6 @@
                     <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
                 </div>
                 <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-                <!-- Google Translate language selector button placed next to Log out -->
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
         </div>
     </nav>
@@ -1052,10 +1051,6 @@ document.addEventListener('DOMContentLoaded', function () {
     </script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/lang.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
-    </script>
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
     document.addEventListener('DOMContentLoaded', () => {
@@ -1078,5 +1073,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
     </script>
+    <script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+(function() {
+    // Helper to check if Google Translate banner iframe is present
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    // Check on load and every second (in case of language change)
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
+</script>
 </body>
 </html>

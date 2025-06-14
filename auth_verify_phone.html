@@ -281,6 +281,7 @@
                 </div>
                 
                 <button class="verify-button">Verify Code</button>
+                <div id="google_translate_element" style="margin-top: 18px;"></div>
             </div>
         </div>
     </div>
@@ -401,5 +402,14 @@
     </script>
     <script src="/scripts/header.js"></script>
     <script src="/scripts/sync.js"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {pageLanguage: 'en'},
+          'google_translate_element'
+        );
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

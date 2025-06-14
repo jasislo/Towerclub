@@ -589,7 +589,7 @@
                 <span class="material-icons icon">account_balance_wallet</span>
                 <div>
                     <h2 data-i18n="dashboard-balance">Total Balance</h2>
-                    <p id="totalBalance">$0.00</p> <!-- Added ID -->
+                    <p id="totalBalance">$0.00</p>
                 </div>
             </div>
 
@@ -598,7 +598,7 @@
                 <span class="material-icons icon">arrow_downward</span>
                 <div>
                     <h2 data-i18n="dashboard-income">Monthly Income</h2>
-                    <p id="moneyIn">$0.00</p> <!-- Added ID -->
+                    <p id="moneyIn">$0.00</p>
                 </div>
             </div>
 
@@ -607,16 +607,16 @@
                 <span class="material-icons icon">arrow_upward</span>
                 <div>
                     <h2 data-i18n="dashboard-expenses">Monthly Expenses</h2>
-                    <p id="moneyOut">$0.00</p> <!-- Added ID -->
+                    <p id="moneyOut">$0.00</p>
                 </div>
             </div>
 
             <!-- Savings Rate -->
-            <div class="dashboard-card">
+            <div class="dashboard-card" id="savingsRateCard">
                 <span class="material-icons icon">savings</span>
                 <div>
                     <h2 data-i18n="dashboard-savings">Savings Rate</h2>
-                    <p id="savingsRate">0%</p> <!-- Added ID -->
+                    <p id="savingsRate">0%</p>
                 </div>
             </div>
 
@@ -625,7 +625,7 @@
                 <span class="material-icons icon">pie_chart</span>
                 <div>
                     <h2 data-i18n="dashboard-portfolio">Your Portfolio</h2>
-                    <p id="portfolioValue">$0.00</p> <!-- Added ID -->
+                    <p id="portfolioValue">$0.00</p>
                 </div>
             </div>
 
@@ -636,7 +636,7 @@
                     <h2 data-i18n="dashboard-recent-transactions">Recent Transactions</h2>
                     <div id="recentTransactions">
                         <!-- Transactions will be dynamically populated -->
-                    </div> <!-- Added ID -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -782,7 +782,6 @@
 
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/lang.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Redirect to mainpage.html when clicking TowerClub in header
@@ -797,34 +796,36 @@
                 window.location.href = '/pages/activities.html';
             });
 
-            const portfolioCard = document.querySelector('.dashboard-card:nth-child(5)'); // Assuming it's the 5th card
+            const portfolioCard = document.querySelector('.dashboard-card:nth-child(5)');
             portfolioCard.addEventListener('click', () => {
                 window.location.href = '/pages/crypto.html';
             });
 
-            const cryptoItems = document.querySelectorAll('.crypto-item');
+            // Redirect to socialmedia.html when clicking Savings Rate card
+            const savingsRateCard = document.getElementById('savingsRateCard');
+            if (savingsRateCard) {
+                savingsRateCard.addEventListener('click', () => {
+                    window.location.href = '/pages/socialmedia.html';
+                });
+            }
 
+            const cryptoItems = document.querySelectorAll('.crypto-item');
             cryptoItems.forEach((cryptoItem, index) => {
                 cryptoItem.addEventListener('click', () => {
-                    // Redirect to crypto.html with a query parameter for the selected cryptocurrency
                     window.location.href = `/pages/crypto.html?crypto=${index + 1}`;
                 });
             });
 
             const activityItems = document.querySelectorAll('.activity-item');
-
             activityItems.forEach((activityItem) => {
                 activityItem.addEventListener('click', () => {
-                    // Redirect to activities.html
                     window.location.href = '/pages/activities.html';
                 });
             });
 
             const chatItems = document.querySelectorAll('.chat-item');
-
             chatItems.forEach((chatItem, index) => {
                 chatItem.addEventListener('click', () => {
-                    // Redirect to socialmedia2.html with a query parameter for the selected chat
                     window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
                 });
             });
