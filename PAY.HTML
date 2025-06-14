@@ -1603,7 +1603,7 @@ document.getElementById('referralCodeForm').addEventListener('submit', async fun
         });
         const result = await response.json();
         if (result.success) {
-            message.textContent = 'Referral code applied successfully!';
+            message.textContent = 'Referral code Applied Successfully!';
             message.style.color = 'green';
             sessionStorage.setItem('referralCode', referralCode);
         } else {
