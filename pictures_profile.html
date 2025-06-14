@@ -783,14 +783,18 @@
             <div class="collections-header">
                 <h2>Collections</h2>
                 <div class="collections-actions">
-                    <button class="edit-btn" onclick="toggleEdit('collections')">
+                    <button class="edit-btn" id="collectionsEditBtn" aria-label="Edit Collections">
                         <i class="fas fa-edit"></i>
+                    </button>
+                    <input type="file" id="addCollectionImageInput" accept="image/*" style="display:none;" multiple>
+                    <button class="add-collection-image-btn" id="addCollectionImageBtn" style="display:none;">
+                        <i class="fas fa-plus"></i> Add Photo
                     </button>
                     <a href="#" class="show-all">Show All</a>
                 </div>
             </div>
 
-            <div class="collections-grid">
+            <div class="collections-grid" id="collectionsGrid">
                 <div class="collection-item">
                     <div class="main-image">
                         <img src="https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa" alt="Main Image" class="editable-image" id="collectionMainImage1">
@@ -1010,8 +1014,9 @@
                     interestsActions.style.display = 'none';
                 }
             } else if (section === 'collections') {
-                // Collections edit functionality can be added here
-                alert('Collections edit functionality coming soon!');
+                collectionsEditMode = !collectionsEditMode;
+                document.getElementById('addCollectionImageBtn').style.display = collectionsEditMode ? 'inline-flex' : 'none';
+                // You can add more edit UI logic here if needed
             }
         }
 
@@ -1060,35 +1065,81 @@
             interestsGrid.appendChild(newInterest);
         }
 
-// Example: Replace with actual API call or backend data
-const profileData = {
-    name: "Jonatthan Asis",
-    referralCode: "jonatthanasis",
-    since: 2025,
-    followers: 420,
-    views: 15200
-};
+        document.addEventListener('DOMContentLoaded', function () {
+            const editBtn = document.getElementById('collectionsEditBtn');
+            const addBtn = document.getElementById('addCollectionImageBtn');
+            const addInput = document.getElementById('addCollectionImageInput');
+            const collectionsGrid = document.getElementById('collectionsGrid');
 
-// Format numbers (e.g., 15200 -> 15.2k)
-function formatNumber(num) {
-    if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-    return num.toString();
-}
+            // Toggle add photo button when edit is active
+            editBtn.addEventListener('click', function () {
+                if (addBtn.style.display === 'none' || addBtn.style.display === '') {
+                    addBtn.style.display = 'inline-flex';
+                } else {
+                    addBtn.style.display = 'none';
+                }
+            });
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Profile Info
-    document.querySelector('.profile-info h2').textContent = profileData.name;
-    document.querySelector('.profile-info .username').textContent = `#${profileData.referralCode}`;
+            // Show file input when "Add Photo" is clicked
+            addBtn.addEventListener('click', function () {
+                addInput.click();
+            });
 
-    // Stats
-    const statItems = document.querySelectorAll('.stat-item h3');
-    if (statItems.length >= 3) {
-        statItems[0].textContent = profileData.since; // Since
-        statItems[1].textContent = formatNumber(profileData.followers); // Followers
-        statItems[2].textContent = formatNumber(profileData.views); // Views
-    }
-});
+            // Handle file selection and preview/upload
+            addInput.addEventListener('change', function (event) {
+                const files = Array.from(event.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'collection-item';
+                        newItem.innerHTML = `
+                            <div class="main-image">
+                                <img src="${e.target.result}" alt="Collection Image" class="editable-image">
+                            </div>
+                        `;
+                        collectionsGrid.appendChild(newItem);
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Optionally, upload to backend here
+                    // let formData = new FormData();
+                    // formData.append('image', file);
+                    // fetch('/api/upload-collection-image', { method: 'POST', body: formData });
+                });
+                addInput.value = '';
+            });
+        });
+
+        // Example: Replace with actual API call or backend data
+        const profileData = {
+            name: "Jonatthan Asis",
+            referralCode: "jonatthanasis",
+            since: 2025,
+            followers: 420,
+            views: 15200
+        };
+
+        // Format numbers (e.g., 15200 -> 15.2k)
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+            return num.toString();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Profile Info
+            document.querySelector('.profile-info h2').textContent = profileData.name;
+            document.querySelector('.profile-info .username').textContent = `#${profileData.referralCode}`;
+
+            // Stats
+            const statItems = document.querySelectorAll('.stat-item h3');
+            if (statItems.length >= 3) {
+                statItems[0].textContent = profileData.since; // Since
+                statItems[1].textContent = formatNumber(profileData.followers); // Followers
+                statItems[2].textContent = formatNumber(profileData.views); // Views
+            }
+        });
     </script>
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
@@ -1124,6 +1175,17 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(checkGoogleBanner, 1000);
     });
 })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Redirect to chatssection.html when Message button is clicked
+    const messageBtn = document.getElementById('messageBtn');
+    if (messageBtn) {
+        messageBtn.addEventListener('click', function () {
+            window.location.href = '/pages/chatssection.html';
+        });
+    }
+});
 </script>
 </body>
 </html>

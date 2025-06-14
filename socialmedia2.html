@@ -749,6 +749,88 @@
                 });
             }
         });
+
+        // Fetch and display the top 10 recent messages in the chat list
+        async function fetchRecentMessages() {
+            try {
+                // Replace with your actual API endpoint for fetching recent messages
+                const response = await fetch('/api/messages/recent?limit=10', { credentials: 'include' });
+                const messages = await response.json();
+
+                const chatList = document.querySelector('.chat-list');
+                // Remove all chat-item elements except the header
+                chatList.querySelectorAll('.chat-item').forEach(item => item.remove());
+
+                messages.forEach(msg => {
+                    const chatItem = document.createElement('div');
+                    chatItem.classList.add('chat-item');
+                    chatItem.innerHTML = `
+                        <div class="chat-avatar" onclick="redirectToProfile('${msg.senderName}')">
+                            <img src="${msg.senderAvatar || 'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png'}" alt="${msg.senderName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
+                        </div>
+                        <div class="chat-info">
+                            <p class="chat-name" onclick="redirectToChat()">${msg.senderName}</p>
+                            <p class="chat-message">${msg.message}</p>
+                        </div>
+                    `;
+                    chatList.appendChild(chatItem);
+                });
+            } catch (error) {
+                console.error('Error fetching recent messages:', error);
+            }
+        }
+
+        // Call fetchRecentMessages on page load
+        document.addEventListener('DOMContentLoaded', fetchRecentMessages);
+
+        // Fetch and display conversation messages with the selected user/contact
+        async function fetchConversationMessages(contactId) {
+            try {
+                // Replace with your actual API endpoint for fetching conversation messages
+                const response = await fetch(`/api/messages/conversation/${contactId}?limit=50`, { credentials: 'include' });
+                if (!response.ok) throw new Error('Failed to fetch conversation');
+                const messages = await response.json();
+
+                const chatMessages = document.querySelector('.chat-messages');
+                chatMessages.innerHTML = ''; // Clear previous messages
+
+                messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = msg.isOwnMessage ? 'message sent' : 'message received';
+                    msgDiv.innerHTML = `<div class="message-content">${msg.message}</div>`;
+                    chatMessages.appendChild(msgDiv);
+                });
+
+                // Optionally, scroll to the bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } catch (error) {
+                console.error('Error fetching conversation messages:', error);
+            }
+        }
+
+        // Example usage: call this when a chat/contact is selected
+        // fetchConversationMessages(selectedContactId);
+
+        // To wire up chat selection:
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    // You should have a way to get the contactId for this chat
+                    const contactId = this.getAttribute('data-contact-id'); // Set this attribute when rendering chat items
+                    if (contactId) {
+                        fetchConversationMessages(contactId);
+
+                        // Optionally update chat header
+                        const userName = this.querySelector('.chat-name').textContent;
+                        const chatHeader = document.querySelector('.chat-interface-header');
+                        chatHeader.textContent = userName;
+                        chatHeader.onclick = () => redirectToProfile(userName);
+                    }
+                });
+            });
+        });
+
+        // ...existing code...
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>

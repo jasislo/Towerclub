@@ -131,6 +131,50 @@
             color: var(--accent-color);
         }
 
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 5px;
+            min-width: 18px;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .notification-indicator {
+            position: relative;
+            margin-left: 10px;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
         .main-content {
             display: flex;
             flex-direction: column;
@@ -397,6 +441,21 @@
     </style>
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
+        import accessControl from '../scripts/access-control.js';
+        import userDataManager from '../scripts/user-data-manager.js';
+        import messagingService from '../scripts/messaging-service.js';
+        import DarkMode from '/scripts/dark-mode.js';
+        import { 
+            getUserData, 
+            updateUserProfile, 
+            uploadProfileImage, 
+            getTransactions, 
+            getCryptoData, 
+            fetchFinancialNews, 
+            fetchAccountBalance, 
+            fetchRecentTransactions, 
+            fetchPortfolioData 
+        } from '../scripts/api-service.js';
     </script>
 </head>
 
@@ -406,6 +465,7 @@
             <a href="mainpage.html" class="nav-brand">
                 <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
                 <span class="brand-name">TowerClub</span>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </a>
             <div class="nav-links">
                 <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
@@ -415,23 +475,23 @@
                 <a href="settings.html" class="nav-link">Settings</a>
             </div>
             <div class="nav-actions">
-                <div class="profile-picture-container">
+                <div class="profile-picture-container" id="profilePictureContainer">
                     <img src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60"
-                        alt="Profile Picture">
+                        alt="Profile Picture" id="userProfilePicture">
                 </div>
-                <a href="logout.html" class="btn-outline">Log out</a>
+                <a href="#" class="btn-outline" id="logoutBtn">Log out</a>
             </div>
         </div>
     </nav>
 
     <div class="main-content">
         <div class="dashboard-header">
-            <h1 class="welcome-message">Welcome Back to TowerClub!</h1>
-            <p class="dashboard-subtitle">Here's an overview of your account.</p>
+            <h1 class="welcome-message" id="welcomeMessage">Welcome Back to TowerClub!</h1>
+            <p class="dashboard-subtitle" id="dashboardSubtitle">Here's an overview of your account.</p>
         </div>
 
         <div class="quick-actions">
-            <a href="payment methods.html" class="quick-action-item">
+            <a href="payment methods.html" class="quick-action-item" id="myBankBtn">
                 <span class="material-icons">account_balance_outlined</span>
                 <h3>My Bank</h3>
             </a>
@@ -443,11 +503,23 @@
                 <span class="material-icons">stacked_line_chart_rounded</span>
                 <h3>Activity</h3>
             </a>
+            <a href="Chatssection.html" class="quick-action-item">
+                <span class="material-icons">chat_bubble_outline</span>
+                <h3>Messages</h3>
+            </a>
+            <a href="complete_profile.html" class="quick-action-item">
+                <span class="material-icons">person_outline</span>
+                <h3>Profile</h3>
+            </a>
+            <a href="referral profile.html" class="quick-action-item" id="referralsQuickAction">
+                <span class="material-icons">share</span>
+                <h3>Referrals</h3>
+            </a>
         </div>
 
         <a href="dashboard2.html" class="wallet-balance">
-            <h2>Wallet Balance</h2>
-            <p class="balance">$7,302</p>
+            <h2>My Towerclub Balance</h2>
+            <p class="balance" id="walletBalance">$7,302</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -455,8 +527,8 @@
         </a>
 
         <a href="crypto.html" class="bitcoin-section">
-            <h2>Bitcoin</h2>
-            <p class="balance">$5,201.02</p>
+            <h2>Crypto</h2>
+            <p class="balance" id="bitcoinBalance">$5,201.02</p>
             <p class="portfolio">32% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -465,7 +537,7 @@
 
         <a href="referral profile.html" class="referral-reward">
             <h2>Referral Reward</h2>
-            <p class="reward">2,340</p>
+            <p class="reward" id="referralReward">$2,340</p>
             <p class="portfolio">40% of portfolio</p>
             <div class="progress-bar">
                 <div class="progress"></div>
@@ -516,8 +588,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -533,32 +605,778 @@
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/lang.js"></script>
-    <script>
-        // REMOVE login restriction for now
+    <script type="module">
+        import accessControl from '../scripts/access-control.js';
+        import userDataManager from '../scripts/user-data-manager.js';
+        import messagingService from '../scripts/messaging-service.js';
+        import { 
+            getUserData, 
+            updateUserProfile, 
+            uploadProfileImage, 
+            getTransactions, 
+            getCryptoData, 
+            fetchFinancialNews, 
+            fetchAccountBalance, 
+            fetchRecentTransactions, 
+            fetchPortfolioData 
+        } from '../scripts/api-service.js';
 
-        // Optionally, update welcome message with a generic greeting
-        document.addEventListener('DOMContentLoaded', function() {
-            const welcomeMessage = document.querySelector('.welcome-message');
-            if (welcomeMessage) {
-                welcomeMessage.textContent = `Welcome Back to TowerClub!`;
+        // Global state for real-time data
+        let realTimeDataInterval;
+        let userFinancialData = {};
+        let cryptoData = {};
+        let portfolioData = {};
+
+        // Initialize access control
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                // Check if user has full access
+                if (!accessControl.hasFullAccess()) {
+                    accessControl.redirectBasedOnAccess();
+                    return;
+                }
+
+                // Load and display user data
+                await loadUserData();
+                
+                // Initialize interactive features
+                initializeInteractiveFeatures();
+                
+                // Set up event listeners
+                setupEventListeners();
+                
+                // Load real-time data
+                await loadRealTimeData();
+                
+                // Initialize notifications
+                initializeNotifications();
+                
+                // Start real-time updates
+                startRealTimeUpdates();
+                
+                console.log('Main page initialized successfully');
+            } catch (error) {
+                console.error('Error initializing main page:', error);
+                showNotification('Failed to load page data. Please refresh.', 'error');
+            }
+        });
+
+        async function loadUserData() {
+            try {
+                // Fetch user data from API
+                const apiUserData = await getUserData();
+                
+                // Get user data from various sources
+                const currentUser = userDataManager.getCurrentUser();
+                const memberProfile = userDataManager.getMemberProfile();
+                const onboardingData = userDataManager.getOnboardingData();
+                const userPreferences = userDataManager.getUserPreferences();
+                
+                // Merge API data with local data
+                const mergedUserData = {
+                    ...currentUser,
+                    ...apiUserData,
+                    ...memberProfile,
+                    ...onboardingData
+                };
+
+                // Determine user's name
+                const userName = mergedUserData.fullName || 
+                               mergedUserData.name ||
+                               `${mergedUserData.firstName || ''} ${mergedUserData.lastName || ''}`.trim() ||
+                               'User';
+
+                // Update welcome message
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome back, ${userName.split(' ')[0]}!`;
+                }
+
+                // Update profile picture
+                const profilePicture = mergedUserData.profilePicture || 
+                                     mergedUserData.avatar ||
+                                     mergedUserData.profile?.avatar;
+                
+                if (profilePicture) {
+                    const userProfilePicture = document.getElementById('userProfilePicture');
+                    if (userProfilePicture) {
+                        userProfilePicture.src = profilePicture;
+                    }
+                }
+
+                // Update dashboard subtitle with user info
+                const dashboardSubtitle = document.getElementById('dashboardSubtitle');
+                if (dashboardSubtitle) {
+                    const memberSince = mergedUserData.memberSince || 
+                                      mergedUserData.registrationDate ||
+                                      mergedUserData.createdAt;
+                    if (memberSince) {
+                        const memberDate = new Date(memberSince);
+                        const daysSince = Math.floor((new Date() - memberDate) / (1000 * 60 * 60 * 24));
+                        dashboardSubtitle.textContent = `Member since ${memberDate.toLocaleDateString()} • ${daysSince} days with us`;
+                    } else {
+                        dashboardSubtitle.textContent = 'Welcome to TowerClub!';
+                    }
+                }
+
+                // Store merged user data
+                userDataManager.updateCurrentUser(mergedUserData);
+
+                console.log('User data loaded successfully:', {
+                    userName,
+                    mergedUserData
+                });
+
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                // Fallback to local data only
+                loadLocalUserData();
+            }
+        }
+
+        function loadLocalUserData() {
+            try {
+                const currentUser = userDataManager.getCurrentUser();
+                const memberProfile = userDataManager.getMemberProfile();
+                const onboardingData = userDataManager.getOnboardingData();
+
+                const userName = currentUser.fullName || 
+                               memberProfile.fullName || 
+                               onboardingData.fullName || 
+                               `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() ||
+                               'User';
+
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome back, ${userName.split(' ')[0]}!`;
+                }
+
+                const dashboardSubtitle = document.getElementById('dashboardSubtitle');
+                if (dashboardSubtitle) {
+                    dashboardSubtitle.textContent = 'Welcome to TowerClub!';
+                }
+            } catch (error) {
+                console.error('Error loading local user data:', error);
+            }
+        }
+
+        async function loadRealTimeData() {
+            try {
+                // Load financial data
+                await loadFinancialData();
+                
+                // Load crypto data
+                await loadCryptoData();
+                
+                // Load portfolio data
+                await loadPortfolioData();
+                
+                // Load recent transactions
+                await loadRecentTransactions();
+                
+                // Load financial news
+                await loadFinancialNews();
+                
+            } catch (error) {
+                console.error('Error loading real-time data:', error);
+                showNotification('Some data may not be up to date', 'warning');
+            }
+        }
+
+        async function loadFinancialData() {
+            try {
+                // Fetch user balance and referral reward from your API
+                const balanceData = await fetchAccountBalance();
+                userFinancialData = balanceData;
+
+                // Fetch total amount user added/created as budget (replace with your endpoint)
+                let totalAdded = 0;
+                try {
+                    // Example: fetch from your backend API
+                    const res = await fetch('/api/budget/total-added', { credentials: 'include' });
+                    const data = await res.json();
+                    totalAdded = data.totalAdded || 0;
+                } catch (err) {
+                    // fallback to balanceData.balance if available
+                    totalAdded = balanceData.balance || 7302;
+                }
+
+                // Update wallet balance
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    walletBalance.textContent = `$${parseFloat(totalAdded).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
+                // Fetch referral reward bonus from your API (existing logic)
+                let referralRewardBonus = 0;
+                try {
+                    const res = await fetch('/api/referral/reward', { credentials: 'include' });
+                    const data = await res.json();
+                    referralRewardBonus = data.bonus || 0;
+                } catch (err) {
+                    referralRewardBonus = balanceData.referralReward || 2340;
+                }
+
+                // Update referral reward
+                const referralReward = document.getElementById('referralReward');
+                if (referralReward) {
+                    referralReward.textContent = `$${referralRewardBonus.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
+            } catch (error) {
+                console.error('Error loading financial data:', error);
+                // Use fallback data
+                updateFinancialDataWithFallback();
+            }
+        }
+
+        async function loadCryptoData() {
+            try {
+                // Fetch crypto data from your API (existing)
+                cryptoData = await getCryptoData();
+
+                // Fetch PayPal crypto sales (new)
+                // Replace this with your actual API call or backend endpoint
+                const paypalCryptoSales = await fetch('/api/paypal/crypto-sales', {
+                    credentials: 'include'
+                }).then(res => res.json());
+
+                // Calculate total PayPal crypto sales value (USD)
+                let totalPaypalCryptoUSD = 0;
+                if (paypalCryptoSales && Array.isArray(paypalCryptoSales.sales)) {
+                    totalPaypalCryptoUSD = paypalCryptoSales.sales.reduce((sum, sale) => sum + (sale.usd_value || 0), 0);
+                }
+
+                // Update Bitcoin balance with PayPal sales value
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance) {
+                    bitcoinBalance.textContent = `$${totalPaypalCryptoUSD.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
+            } catch (error) {
+                console.error('Error loading crypto data:', error);
+                // Use fallback data
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance) {
+                    bitcoinBalance.textContent = '$5,201.02';
+                }
+            }
+        }
+
+        async function loadPortfolioData() {
+            try {
+                portfolioData = await fetchPortfolioData();
+                
+                // Update portfolio percentages
+                updatePortfolioPercentages(portfolioData);
+                
+            } catch (error) {
+                console.error('Error loading portfolio data:', error);
+                // Use default percentages
+                updatePortfolioPercentages({
+                    walletPercentage: 32,
+                    cryptoPercentage: 32,
+                    referralPercentage: 40
+                });
+            }
+        }
+
+        async function loadRecentTransactions() {
+            try {
+                const transactions = await fetchRecentTransactions();
+                
+                // Store transactions for potential use
+                userFinancialData.recentTransactions = transactions;
+                
+                // Update transaction count or other indicators
+                updateTransactionIndicators(transactions);
+                
+            } catch (error) {
+                console.error('Error loading recent transactions:', error);
+            }
+        }
+
+        async function loadFinancialNews() {
+            try {
+                const news = await fetchFinancialNews();
+                
+                // Store news data for potential use
+                userFinancialData.financialNews = news;
+                
+                // Update news indicators if needed
+                updateNewsIndicators(news);
+                
+            } catch (error) {
+                console.error('Error loading financial news:', error);
+            }
+        }
+
+        function updateFinancialDataWithFallback() {
+            const walletBalance = document.getElementById('walletBalance');
+            if (walletBalance) {
+                walletBalance.textContent = '$7,302';
+            }
+            
+            const referralReward = document.getElementById('referralReward');
+            if (referralReward) {
+                referralReward.textContent = '2,340';
+            }
+        }
+
+        function updatePortfolioPercentages(data) {
+            // Update progress bars with actual percentages
+            const walletProgress = document.querySelector('.wallet-balance .progress');
+            if (walletProgress && data.walletPercentage) {
+                walletProgress.style.width = `${data.walletPercentage}%`;
+            }
+            
+            const cryptoProgress = document.querySelector('.bitcoin-section .progress');
+            if (cryptoProgress && data.cryptoPercentage) {
+                cryptoProgress.style.width = `${data.cryptoPercentage}%`;
+            }
+            
+            const referralProgress = document.querySelector('.referral-reward .progress');
+            if (referralProgress && data.referralPercentage) {
+                referralProgress.style.width = `${data.referralPercentage}%`;
+            }
+        }
+
+        function updateTransactionIndicators(transactions) {
+            // Update transaction-related UI elements
+            const pendingTransactions = transactions.filter(t => t.status === 'pending');
+            
+            if (pendingTransactions.length > 0) {
+                // Show pending transaction indicator
+                showPendingTransactionIndicator(pendingTransactions.length);
+            }
+        }
+
+        function updateNewsIndicators(news) {
+            // Update news-related UI elements if needed
+            if (news && news.length > 0) {
+                // Could show news count or latest news preview
+                console.log(`Loaded ${news.length} financial news items`);
+            }
+        }
+
+        function showPendingTransactionIndicator(count) {
+            // Create or update pending transaction indicator
+            let indicator = document.getElementById('pendingTransactionIndicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'pendingTransactionIndicator';
+                indicator.style.cssText = `
+                    position: fixed;
+                    top: 100px;
+                    right: 20px;
+                    background: #f59e0b;
+                    color: white;
+                    padding: 8px 12px;
+                    border-radius: 6px;
+                    font-size: 0.875rem;
+                    z-index: 1000;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+                `;
+                document.body.appendChild(indicator);
+            }
+            
+            indicator.textContent = `${count} pending transaction${count > 1 ? 's' : ''}`;
+            indicator.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 5000);
+        }
+
+        function initializeInteractiveFeatures() {
+            // Add hover effects and click handlers for quick actions
+            const quickActionItems = document.querySelectorAll('.quick-action-item');
+            quickActionItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Add click animation
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add click handlers for financial cards
+            const financialCards = document.querySelectorAll('.wallet-balance, .bitcoin-section, .referral-reward');
+            financialCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Add click animation
+                    this.style.transform = 'translateY(-2px) scale(1.02)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 200);
+                });
+            });
+
+            // Profile picture click handler
+            const profilePictureContainer = document.getElementById('profilePictureContainer');
+            if (profilePictureContainer) {
+                profilePictureContainer.addEventListener('click', function() {
+                    window.location.href = 'complete_profile.html';
+                });
+            }
+        }
+
+        function setupEventListeners() {
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Show confirmation dialog
+                    if (confirm('Are you sure you want to log out?')) {
+                        // Clear user session and data
+                        accessControl.logout();
+                    }
+                });
             }
 
-            // Handle logout
-            const logoutButton = document.querySelector('.btn-outline');
-            if (logoutButton) {
-                logoutButton.addEventListener('click', function(e) {
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl/Cmd + L for logout
+                if ((e.ctrlKey || e.metaKey) && e.key === 'l') {
                     e.preventDefault();
-                    // Clear any session data
-                    localStorage.removeItem('rememberedEmail');
-                    // Redirect to login
-                    window.location.href = 'login.html';
+                    logoutBtn.click();
+                }
+                
+                // Ctrl/Cmd + D for dashboard
+                if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+                    e.preventDefault();
+                    window.location.href = 'dashboard.html';
+                }
+                
+                // Ctrl/Cmd + T for transfer
+                if ((e.ctrlKey || e.metaKey) && e.key === 't') {
+                    e.preventDefault();
+                    window.location.href = 'add-transaction.html';
+                }
+                
+                // Ctrl/Cmd + M for messages
+                if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+                    e.preventDefault();
+                    window.location.href = 'Chatssection.html';
+                }
+            });
+        }
+
+        function initializeNotifications() {
+            try {
+                // Get current user ID
+                const currentUser = userDataManager.getCurrentUser();
+                const userId = currentUser.userId || currentUser.id;
+                
+                if (!userId) return;
+
+                // Update notification counts
+                updateNotificationCounts(userId);
+                
+                // Set up periodic updates
+                setInterval(() => {
+                    updateNotificationCounts(userId);
+                }, 10000); // Update every 10 seconds
+                
+            } catch (error) {
+                console.error('Error initializing notifications:', error);
+            }
+        }
+
+        function updateNotificationCounts(userId) {
+            try {
+                // Get unread message count
+                const unreadMessages = messagingService.getUnreadMessageCount(userId);
+                
+                // Get unread notification count
+                const unreadNotifications = messagingService.getUnreadNotificationCount(userId);
+                
+                // Update UI indicators if they exist
+                updateMessageIndicator(unreadMessages);
+                updateNotificationIndicator(unreadNotifications);
+                
+            } catch (error) {
+                console.error('Error updating notification counts:', error);
+            }
+        }
+
+        function updateMessageIndicator(unreadCount) {
+            // Update message indicator in navigation if it exists
+            const messagesLink = document.querySelector('a[href="Chatssection.html"]');
+            if (messagesLink && unreadCount > 0) {
+                let badge = messagesLink.querySelector('.notification-badge');
+                if (!badge) {
+                    badge = document.createElement('span');
+                    badge.className = 'notification-badge';
+                    messagesLink.appendChild(badge);
+                }
+                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = 'inline-block';
+            }
+        }
+
+        function updateNotificationIndicator(unreadCount) {
+            // Update notification indicator if it exists
+            const notificationIndicator = document.getElementById('notificationIndicator');
+            if (notificationIndicator) {
+                if (unreadCount > 0) {
+                    notificationIndicator.style.display = 'block';
+                } else {
+                    notificationIndicator.style.display = 'none';
+                }
+            }
+        }
+
+        function startRealTimeUpdates() {
+            // Update data every 30 seconds
+            realTimeDataInterval = setInterval(async () => {
+                try {
+                    // Update session activity
+                    accessControl.updateUserSession();
+                    
+                    // Update last activity
+                    const currentUser = userDataManager.getCurrentUser();
+                    if (currentUser) {
+                        currentUser.lastActivity = new Date().toISOString();
+                        userDataManager.updateCurrentUser(currentUser);
+                    }
+                    
+                    // Update crypto prices
+                    await updateCryptoPrices();
+                    
+                    // Update financial data
+                    await updateFinancialData();
+                    
+                } catch (error) {
+                    console.error('Error in real-time update:', error);
+                }
+            }, 30000);
+        }
+
+        async function updateCryptoPrices() {
+            try {
+                const newCryptoData = await getCryptoData();
+                cryptoData = newCryptoData;
+                
+                // Update Bitcoin balance with new price
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance && cryptoData.bitcoin) {
+                    const btcPrice = cryptoData.bitcoin.usd;
+                    const btcBalance = userFinancialData.bitcoinBalance || 0.15;
+                    const btcValue = btcBalance * btcPrice;
+                    bitcoinBalance.textContent = `$${btcValue.toFixed(2)}`;
+                }
+                
+            } catch (error) {
+                console.error('Error updating crypto prices:', error);
+            }
+        }
+
+        async function updateFinancialData() {
+            try {
+                const newBalanceData = await fetchAccountBalance();
+                userFinancialData = { ...userFinancialData, ...newBalanceData };
+                
+                // Update wallet balance
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance && newBalanceData.balance !== undefined) {
+                    walletBalance.textContent = `$${newBalanceData.balance.toLocaleString()}`;
+                }
+                
+            } catch (error) {
+                console.error('Error updating financial data:', error);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                max-width: 300px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+            `;
+            
+            // Set background color based on type
+            switch (type) {
+                case 'success':
+                    notification.style.backgroundColor = '#22c55e';
+                    break;
+                case 'error':
+                    notification.style.backgroundColor = '#ef4444';
+                    break;
+                case 'warning':
+                    notification.style.backgroundColor = '#f59e0b';
+                    break;
+                default:
+                    notification.style.backgroundColor = '#3b82f6';
+            }
+            
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (realTimeDataInterval) {
+                clearInterval(realTimeDataInterval);
+            }
+        });
+
+        // Export functions for use in other scripts
+        window.TowerClubMainPage = {
+            loadUserData,
+            loadRealTimeData,
+            updateCryptoPrices,
+            updateFinancialData,
+            showNotification,
+            initializeInteractiveFeatures,
+            setupEventListeners,
+            updateNotificationCounts,
+            initializeNotifications
+        };
+
+        applyTranslations(); // Call this on page load
+    </script>
+    <script type="module">
+        import profilePictureManager from '/scripts/profile-picture-manager.js';
+        // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+    </script>
+    <script>
+        // Ensure My Bank button always redirects to payment methods.html
+        document.addEventListener('DOMContentLoaded', function() {
+            const myBankBtn = document.getElementById('myBankBtn');
+            if (myBankBtn) {
+                myBankBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'payment methods.html';
                 });
             }
         });
 
-        applyTranslations(); // Call this on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Social sharing for Referrals quick action
+            const referralsBtn = document.getElementById('referralsQuickAction');
+            if (referralsBtn) {
+                referralsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Example referral link (replace with user's real referral link if available)
+                    const referralLink = window.currentUserReferralLink || window.location.origin + '/pages/register.html?ref=YOURCODE';
+
+                    const shareText = `Join me on TowerClub and earn rewards! Sign up with my referral link: ${referralLink}`;
+
+                    if (navigator.share) {
+                        // Use native share dialog if available (mobile, some browsers)
+                        navigator.share({
+                            title: 'TowerClub Referral',
+                            text: shareText,
+                            url: referralLink
+                        }).catch(() => {
+                            // If user cancels or share fails, fallback to Twitter
+                            window.open(
+                                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+                                '_blank'
+                            );
+                        });
+                    } else {
+                        // Fallback: Show share options for Twitter, Facebook, WhatsApp
+                        const shareUrl = encodeURIComponent(referralLink);
+                        const text = encodeURIComponent('Join me on TowerClub and earn rewards!');
+                        const modal = document.createElement('div');
+                        modal.style.cssText = `
+                            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                            background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;
+                        `;
+                        modal.innerHTML = `
+                            <div style="background: #fff; padding: 24px 32px; border-radius: 12px; text-align: center; min-width: 280px;">
+                                <h3 style="margin-bottom: 16px;">Share your referral link</h3>
+                                <input type="text" value="${referralLink}" readonly style="width: 100%; margin-bottom: 12px; padding: 6px 8px; border-radius: 4px; border: 1px solid #ccc;">
+                                <div style="margin-bottom: 16px;">
+                                    <a href="https://twitter.com/intent/tweet?text=${text}%20${shareUrl}" target="_blank" style="margin:0 8px;">Twitter</a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" style="margin:0 8px;">Facebook</a>
+                                    <a href="https://wa.me/?text=${text}%20${shareUrl}" target="_blank" style="margin:0 8px;">WhatsApp</a>
+                                </div>
+                                <button id="closeShareModal" style="padding: 6px 18px; border-radius: 4px; border: none; background: #39D2C0; color: #fff; font-weight: 500;">Close</button>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                        modal.querySelector('#closeShareModal').onclick = function() {
+                            document.body.removeChild(modal);
+                        };
+                    }
+                });
+            }
+
+    // Make Referral Reward card redirect to referral_profile.html
+    const referralRewardCard = document.querySelector('.referral-reward');
+    if (referralRewardCard) {
+        referralRewardCard.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'referral_profile.html';
+        });
+    }
+        });
     </script>
+    <!-- Add these scripts before </body> -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+    <script>
+  (function() {
+      // Helper to check if Google Translate banner iframe is present
+      function checkGoogleBanner() {
+          var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+          if (bannerFrame && bannerFrame.style.display !== 'none') {
+              document.body.classList.add('has-google-banner');
+          } else {
+              document.body.classList.remove('has-google-banner');
+          }
+      }
+      // Check on load and every second (in case of language change)
+      window.addEventListener('load', function() {
+          setInterval(checkGoogleBanner, 1000);
+      });
+  })();
+</script>
 </body>
 
 </html>
