@@ -208,39 +208,11 @@
         .auth-footer a:hover {
             text-decoration: underline;
         }
-
-        /* Navigation actions styles */
-        .nav-actions {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 1rem;
-        }
-
-        .nav-actions .btn {
-            margin: 0 0.5rem;
-        }
-
-        /* Google Translate button styles */
-        #google_translate_element {
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
     </style>
     <!-- Add translation manager script -->
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
-    <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement(
-        {pageLanguage: 'en'},
-        'google_translate_element'
-      );
-    }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
     <div class="auth-container">
@@ -277,35 +249,29 @@
             <button type="button" id="loginWithPhoneBtn" data-i18n="login-phone">Log in with Phone Number</button>
         </form>
         <div class="auth-footer">
-            <p>
-                Don't have an account?<br>
-                <a href="#" id="signUpLink">Sign up</a>
-            </p>
-            <div id="google_translate_element"></div>
+            <p data-i18n="login-no-account">Don't have an account?</p>
+            <a href="register.html" id="signUpLink" data-i18n="login-create-account">Sign up</a>
+            <div id="google_translate_element" style="margin-top: 12px;"></div>
         </div>
     </div>
-    <script>
-        // Example JavaScript
-        document.getElementById('signUpLink').addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent form submission if inside a form
-            window.location.href = 'pay.html';
-        });
 
-        // Password visibility toggle for password field
-        const passwordInput = document.getElementById('password');
-        const passwordToggle = document.getElementById('passwordToggle');
-        if (passwordToggle && passwordInput) {
-            passwordToggle.addEventListener('click', function (e) {
-                e.preventDefault();
-                if (passwordInput.type === "password") {
-                    passwordInput.type = "text";
-                    this.textContent = "visibility"; // Open eye icon
-                } else {
-                    passwordInput.type = "password";
-                    this.textContent = "visibility_off"; // Closed eye icon
-                }
-            });
-        }
+    <!-- Scripts -->
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/login.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
     </script>
+    <script type="module" src="/scripts/firebase-init.js"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {pageLanguage: 'en'},
+          'google_translate_element'
+        );
+      }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
