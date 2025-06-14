@@ -1293,13 +1293,9 @@
 
                 <div class="payment-form" id="cardPaymentFormContainer">
                     <h2>Pay with Credit/Debit Card</h2>
-                    <form id="cardPaymentForm">
-                        <div id="card-element" style="margin-bottom: 18px;"></div>
-                        <div id="card-errors" role="alert" style="color: red; margin-bottom: 10px;"></div>
-                        <div class="form-group">
-                            <button type="submit" class="btn-credit-card" id="cardPayBtn">Pay Now</button>
-                        </div>
-                    </form>
+                    <div class="form-group">
+                        <button type="button" class="btn-credit-card" id="externalStripePayBtn">Pay Now</button>
+                    </div>
                     <!-- OR separator -->
                     <div style="display: flex; align-items: center; margin: 24px 0;">
                         <hr style="flex: 1; border: none; border-top: 1.5px solid #e5e7eb;">
@@ -1693,6 +1689,68 @@ cardForm.addEventListener('submit', async function(event) {
 <script 
   type="text/javascript" 
   src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pay Now (Stripe Checkout)
+    const stripePayBtn = document.getElementById('externalStripePayBtn');
+    if (stripePayBtn) {
+        stripePayBtn.addEventListener('click', function() {
+            // Open Stripe Checkout in a new tab
+            window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
+            // After payment, user should be redirected to register.html via Stripe's success_url
+        });
+    }
+
+    // Pay Now with Paypal
+    const paypalBtn = document.getElementById('paypalPayBtn');
+    if (paypalBtn) {
+        paypalBtn.addEventListener('click', function() {
+            // Open PayPal payment in a new tab (replace with your PayPal link)
+            window.open('https://www.paypal.com/your-paypal-link', '_blank');
+            // After payment, set PayPal's return URL to /pages/register.html
+        });
+    }
+
+    // Get Started Now
+    const getStartedBtn = document.getElementById('getStartedNowBtn');
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', function() {
+            // Open payment in a new tab or process payment
+            window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
+            // After payment, user should be redirected to register.html via Stripe's success_url
+        });
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const referralForm = document.getElementById('referralCodeForm');
+    const referralInput = document.getElementById('referralCodeInput');
+    const referralMsg = document.getElementById('referralCodeMsg');
+
+    referralForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const code = referralInput.value.trim();
+        // Replace this with your real referral code validation logic/API call
+        const isValid = await validateReferralCode(code); // returns true if valid
+
+        if (isValid) {
+            referralMsg.textContent = "Referral code Applied Successfully!";
+            referralMsg.style.color = "green";
+        } else {
+            referralMsg.textContent = "Invalid referral code. Please try again.";
+            referralMsg.style.color = "red";
+        }
+    });
+
+    // Dummy validation function, replace with real API call
+    async function validateReferralCode(code) {
+        // Example: simulate API delay and check for a sample code
+        await new Promise(res => setTimeout(res, 300));
+        return code === "YOUR_VALID_CODE"; // Replace with your logic
+    }
+});
 </script>
 </body>
 </html>
