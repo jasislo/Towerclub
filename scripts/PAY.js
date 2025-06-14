@@ -13,47 +13,75 @@ const planPrices = {
 // Membership selection algorithm for "Get Started" buttons
 document.querySelectorAll('.get-started-btn').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default link behavior and NO redirect
-        e.stopPropagation(); // Stop event bubbling
+        // ...existing code...
+        
+        // Special handling for Get Started buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header Get Started button - scroll to pricing section
+            const headerGetStarted = document.querySelector('.nav-actions .btn-primary');
+            if (headerGetStarted) {
+                headerGetStarted.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const pricingSection = document.getElementById('pricing');
+                    if (pricingSection) {
+                        pricingSection.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            }
+        
+            // Hero section Get Started Now button - allow direct navigation to register.html
+            const heroGetStarted = document.querySelector('.hero-actions .btn-primary');
+            if (heroGetStarted) {
+                heroGetStarted.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Only allow redirect if payment is complete
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        // Optionally, scroll to payment section or show a message
+                        document.querySelector('.payment-section').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            }
+        });
+        //        e.preventDefault();
+        e.stopPropagation();
 
         // Remove "Selected" from all buttons and reset text
         document.querySelectorAll('.get-started-btn').forEach(function(b) {
-            b.textContent = 'Get Started';
             b.classList.remove('selected-plan');
-            b.style.pointerEvents = 'auto'; // Make all buttons clickable again
+            b.textContent = 'Get Started';
         });
 
-        // Set this button as selected
-        btn.textContent = 'Selected';
+        // Mark this button as selected
         btn.classList.add('selected-plan');
+        btn.textContent = 'Selected';
+
+        // Set selected plan and amount (assuming data attributes)
         selectedPlan = btn.getAttribute('data-plan');
         selectedPlanAmount = planPrices[selectedPlan];
-        btn.style.pointerEvents = 'auto'; // Keep selected button clickable
-        
-        // Store the selected state
-        btn.setAttribute('data-selected', 'true');
     });
 
-    // Ensure "Selected" text persists on hover
+    // Show "Selected" on hover if this button is selected
     btn.addEventListener('mouseenter', function() {
-        if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
+        if (btn.classList.contains('selected-plan')) {
             btn.textContent = 'Selected';
-        } else {
-            btn.textContent = 'Get Started';
         }
     });
 
+    // Restore text on mouse leave
     btn.addEventListener('mouseleave', function() {
-        if (btn.classList.contains('selected-plan') || btn.getAttribute('data-selected') === 'true') {
+        if (btn.classList.contains('selected-plan')) {
             btn.textContent = 'Selected';
         } else {
             btn.textContent = 'Get Started';
         }
-    });
-
-    // Prevent any default link behavior
-    btn.addEventListener('mousedown', function(e) {
-        e.preventDefault();
     });
 });
 
@@ -75,60 +103,6 @@ document.getElementById('cardPaymentForm').addEventListener('submit', function(e
     
     // Show success message and redirect to register.html
     showPaymentSuccessAndRedirect();
-});
-
-// PayPal Payment Button Logic
-document.getElementById('paypalButton').addEventListener('click', function () {
-    if (!selectedPlan || !selectedPlanAmount) {
-        alert('Please select a plan before making payment.');
-        return;
-    }
-    
-    // Check if already logged in with PayPal
-    const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
-    
-    if (!isLoggedInWithPayPal) {
-        // First time login - simulate PayPal login process
-        alert('PayPal login simulation: You would be redirected to PayPal to sign in, then return here to complete payment.');
-        
-        // Mark as logged in with PayPal
-        sessionStorage.setItem('paypalLoggedIn', 'true');
-        
-        // Update button text to show logged in status
-        this.textContent = 'Logged with PayPal';
-        this.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
-        this.style.color = '#ffffff';
-        
-        // In a real implementation, you would redirect to PayPal like this:
-        // window.location.href = "https://www.paypal.com/signin?returnUrl=" + encodeURIComponent(window.location.origin + "/Towerclub%20LLC/Towerclub%20web%20app/pages/PAY.HTML");
-    } else {
-        // Already logged in - just show payment button
-        alert('Already logged in with PayPal. Ready to make payment.');
-    }
-    
-    // Show the Make Payment button after PayPal login
-    document.getElementById('makePaypalPayment').style.display = 'block';
-    document.getElementById('makePaypalPayment').textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
-});
-
-// Make Payment with PayPal button handler
-document.getElementById('makePaypalPayment').addEventListener('click', function() {
-    if (!selectedPlan || !selectedPlanAmount) {
-        alert('Please select a plan before making payment.');
-        return;
-    }
-    
-    // Process the payment with the selected plan
-    alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
-    window.paymentSecured = true;
-    
-    // Show success message and enable proceed button
-    showPaymentSuccess();
-    
-    // Store payment status for session
-    sessionStorage.setItem('paymentComplete', 'true');
-    sessionStorage.setItem('selectedPlan', selectedPlan);
-    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
 });
 
 // Special handling for Get Started buttons
@@ -247,16 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
             makePaypalPayment.textContent = `Pay $${selectedPlanAmount.toFixed(2)} with PayPal`;
         }
     }
-    
-    // Check PayPal login status and update button accordingly
-    const paypalButton = document.getElementById('paypalButton');
-    const isLoggedInWithPayPal = sessionStorage.getItem('paypalLoggedIn') === 'true';
-    
-    if (paypalButton && isLoggedInWithPayPal) {
-        paypalButton.textContent = 'Logged with PayPal';
-        paypalButton.style.backgroundColor = '#22c55e'; // Green background to indicate logged in
-        paypalButton.style.color = '#ffffff';
-    }
 });
 
 // Payment Option Show/Hide Logic (matches onboarding.html)
@@ -287,46 +251,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Referral Code Form Logic
-document.getElementById('referralCodeForm').addEventListener('submit', function(e) {
+document.getElementById('referralCodeForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const codeInput = document.getElementById('referralCodeInput');
     const message = document.getElementById('referralCodeMessage');
-    const code = codeInput.value.trim();
+    const referralCode = codeInput.value.trim();
 
-    if (!code) {
-        message.style.display = 'block';
-        message.style.color = '#F06A6A';
-        message.removeAttribute('data-i18n');
-        message.textContent = 'Please enter a referral code.';
-        return;
-    }
-
-    // Make sure this URL matches your backend route!
-    fetch('http://localhost:4242/api/referral/apply', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ referralCode: code })
-    })
-    .then(response => response.json())
-    .then(data => {
-        const messageColor = data.success ? '#22c55e' : '#F06A6A';
-        message.style.display = 'block';
-        message.style.color = messageColor;
-        message.setAttribute('data-i18n', data.success ? 'referral-applied' : 'referral-error');
-        message.textContent = data.message;
-
-        if (data.success) {
-            codeInput.value = '';
+    // Call backend API to validate referral code against users in the database
+    try {
+        const response = await fetch('/api/referral/apply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ referralCode })
+        });
+        const result = await response.json();
+        if (result.success) {
+            message.textContent = 'Referral code applied successfully!';
+            message.style.color = 'green';
+            sessionStorage.setItem('referralCode', referralCode);
+        } else {
+            message.textContent = 'Invalid referral code. Please try again.';
+            message.style.color = 'red';
         }
-    })
-    .catch(error => {
-        console.error('Error applying referral code:', error);
-        message.style.display = 'block';
-        message.style.color = '#F06A6A';
-        message.textContent = 'Error applying referral code. Please try again.';
-    });
+    } catch (error) {
+        message.textContent = 'Error validating referral code.';
+        message.style.color = 'red';
+    }
 });
 
 // Update payment success messages with translations
@@ -362,39 +312,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // No prevention of default behavior
         });
     });
-});
-
-// Render PayPal button only when "Pay with PayPal" button is clicked
-document.getElementById('paypalButton').addEventListener('click', function () {
-    // Optionally show the PayPal button container if hidden
-    document.getElementById('paypal-button-container').style.display = 'block';
-
-    // Remove any previously rendered PayPal button
-    document.getElementById('paypal-button-container').innerHTML = '';
-
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: window.selectedPlanAmount ? window.selectedPlanAmount.toFixed(2) : '11.95'
-                    }
-                }]
-            });
-        },
-        onApprove: function(data, actions) {
-            // Payment successful, redirect back to pay.html
-            window.location.href = "PAY.HTML";
-        },
-        onCancel: function (data) {
-            // Payment cancelled, stay on pay.html or show a message
-            window.location.href = "PAY.HTML";
-        },
-        onError: function(err) {
-            alert('PayPal payment failed. Please try again.');
-            window.location.href = "PAY.HTML";
-        }
-    }).render('#paypal-button-container');
 });
 
 // --- STRIPE INTEGRATION START ---
@@ -481,16 +398,22 @@ app.listen(4242, () => console.log('Server running on port 4242'));
 
 const express = require('express');
 const router = express.Router();
+// Assume you have a User model for your database
+const User = require('./models/User');
 
-router.post('/apply', async (req, res) => {
-  const { referralCode } = req.body;
-  // Validate referral code (pseudo-code)
-  const isValid = await validateReferralCode(referralCode);
-  if (isValid) {
-    // Apply referral logic here
-    return res.json({ success: true, message: 'Referral code applied successfully!' });
-  }
-  res.json({ success: false, message: 'Invalid or expired referral code.' });
+router.post('/api/referral/apply', async (req, res) => {
+    const { referralCode } = req.body;
+    try {
+        // Check if referralCode exists for any user in the database
+        const user = await User.findOne({ referralCode });
+        if (user) {
+            res.json({ success: true });
+        } else {
+            res.json({ success: false });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Server error' });
+    }
 });
 
 module.exports = router;
@@ -516,7 +439,6 @@ document.querySelectorAll('.get-started-btn').forEach(function(btn) {
             window.selectedPlan = plan;
             window.selectedPlanAmount = planPrices[plan];
         }
-        renderPayPalButton(); // Call after updating selectedPlanAmount
         // Update Pay Now button text
         const makePaypalPayment = document.getElementById('makePaypalPayment');
         if (makePaypalPayment && window.selectedPlanAmount) {
@@ -525,24 +447,42 @@ document.querySelectorAll('.get-started-btn').forEach(function(btn) {
     });
 });
 
-<div id="paypal-button-container-P-17H9335690871034HNBGKHXQ"></div>
-<script src="https://www.paypal.com/sdk/js?client-id=ASYjr6BK6SQ2hpqkN3DYUHusu_X3hbbxsb82hzf_0ns2I_KWifq8RPMb4hM4iWMNmgszLWNOgp9L2hpa&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-<script>
-  paypal.Buttons({
-      style: {
-          shape: 'pill',
-          color: 'gold',
-          layout: 'vertical',
-          label: 'paypal'
-      },
-      createSubscription: function(data, actions) {
-        return actions.subscription.create({
-          /* Creates the subscription */
-          plan_id: 'P-17H9335690871034HNBGKHXQ'
+// Make Payment with PayPal button handler
+document.getElementById('makePaypalPayment').addEventListener('click', function() {
+    if (!selectedPlan || !selectedPlanAmount) {
+        alert('Please select a plan before making payment.');
+        return;
+    }
+    
+    // Process the payment with the selected plan
+    alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
+    window.paymentSecured = true;
+    
+    // Show success message and enable proceed button
+    showPaymentSuccess();
+    
+    // Store payment status for session
+    sessionStorage.setItem('paymentComplete', 'true');
+    sessionStorage.setItem('selectedPlan', selectedPlan);
+    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+
+    // --- Add this block to update PayPal button behavior ---
+    const makePaypalPayment = document.getElementById('makePaypalPayment');
+    if (makePaypalPayment) {
+        // Change button text
+        makePaypalPayment.textContent = 'Get Started Now';
+        // Add hover effect
+        makePaypalPayment.addEventListener('mouseenter', function() {
+            makePaypalPayment.textContent = 'Get Started Now';
         });
-      },
-      onApprove: function(data, actions) {
-        alert(data.subscriptionID);
-      }
-  }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ');
-</script>
+        makePaypalPayment.addEventListener('mouseleave', function() {
+            makePaypalPayment.textContent = 'Get Started Now';
+        });
+        // Redirect to register.html on click
+        makePaypalPayment.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = 'register.html';
+        };
+    }
+    // --- End block ---
+});
