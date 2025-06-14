@@ -658,8 +658,8 @@
         <a href="/pages/mainpage.html" class="nav-brand">
             <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo" data-i18n="logo-alt">
             <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
         </a>
-
         <!-- Navigation Links -->
         <div class="nav-links">
             <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
@@ -668,7 +668,6 @@
             <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
             <a href="/pages/settings.html" class="nav-link">Settings</a>
         </div>
-
         <!-- Navigation Actions -->
         <div class="nav-actions">
             <!-- Profile Picture -->
@@ -678,7 +677,6 @@
             </div>
             <!-- Log Out Button -->
             <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
-            <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
         </div>
     </div>
 </nav>
@@ -813,10 +811,6 @@
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/lang.js"></script>
-    <script>
-        applyTranslations(); // Call this on page load
-    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const backButton = document.querySelector('.back-button');
@@ -1099,6 +1093,37 @@ document.addEventListener('DOMContentLoaded', function () {
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
     // DarkMode.init() is called automatically on DOMContentLoaded
+</script>
+<!-- Place these scripts before </body> if not already present -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+(function() {
+    // Helper to check if Google Translate banner iframe is present
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    // Check on load and every second (in case of language change)
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
 </script>
 </body>
 </html>
