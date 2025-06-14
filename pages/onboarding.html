@@ -600,8 +600,13 @@
                     <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
-                    <label for="username">Create Username</label>
-                    <input type="text" id="username" name="username" required>
+                    <!-- Username input with # prefix, rest editable -->
+<div style="display: flex; align-items: center;">
+    <span style="font-size: 1.2em; margin-right: 4px;">#</span>
+    <input type="text" id="username" name="username" placeholder="yourname" style="flex:1;" pattern="^[a-zA-Z0-9_]{3,}$" required>
+</div>
+<!-- Optionally, add a label -->
+<label for="username">Username (starts with #)</label>
                 </div>
                 <div class="form-group">
                     <label for="age">Your Age</label>
@@ -616,6 +621,39 @@
                     <input type="tel" id="phone" name="phone" required>
                 </div>
                 <button type="submit" id="completeProfileBtn" class="submit-btn" disabled style="opacity: 0.6; cursor: not-allowed;">Complete Profile</button>
+            </form>
+        </div>
+
+        <!-- Create Budget Section -->
+        <div class="profile-section">
+            <header>
+                <h1>Create Budget</h1>
+            </header>
+            <form id="budgetForm" class="profile-form">
+                <div class="form-group amount-input">
+                    <label for="amount">Amount</label>
+                    <div style="position:relative;">
+                        <span class="icon" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px;">$</span>
+                        <input type="number" id="amount" name="amount" placeholder="Amount" style="padding-left:36px;" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="budgetName">Budget Name</label>
+                    <input type="text" id="budgetName" name="budgetName" placeholder="Budget Name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
+                </div>
+                <div class="button-group" style="display:flex;gap:12px;">
+                    <button type="button" class="skip-btn" onclick="skipForNow()" style="background:#fff; color:#22c55e; border:2px solid #22c55e; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                        Skip for Now
+                    </button>
+                    <button type="submit" class="create-btn" style="background:linear-gradient(90deg,#22c55e,#a855f7); color:#fff; border:none; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                        Create Budget
+                    </button>
+                </div>
+                <p class="helper-text">Tap above to complete request</p>
             </form>
         </div>
 
@@ -668,43 +706,10 @@
 
                 <!-- PayPal Form -->
                 <div class="payment-form" id="paypalPaymentFormContainer" style="display: none;">
-                    <button class="btn-paypal" id="paypalButton" style="background-color: #ffc439; color: #111827;" onclick="handlePayPalLogin()">Login with PayPal</button>
+                    <button class="btn-paypal" id="paypalButton" style="background-color: #ffc439; color: #111827;" onclick="handlePayPalLogin()">Log in with PayPal</button>
                     <div class="paypal-button-container" id="paypal-button-container"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- Create Budget Section -->
-        <div class="profile-section">
-            <header>
-                <h1>Create Budget</h1>
-            </header>
-            <form id="budgetForm" class="profile-form">
-                <div class="form-group amount-input">
-                    <label for="amount">Amount</label>
-                    <div style="position:relative;">
-                        <span class="icon" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:20px;">$</span>
-                        <input type="number" id="amount" name="amount" placeholder="Amount" style="padding-left:36px;" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="budgetName">Budget Name</label>
-                    <input type="text" id="budgetName" name="budgetName" placeholder="Budget Name" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
-                </div>
-                <div class="button-group" style="display:flex;gap:12px;">
-                    <button type="button" class="skip-btn" onclick="skipForNow()" style="background:#fff; color:#22c55e; border:2px solid #22c55e; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
-                        Skip for Now
-                    </button>
-                    <button type="submit" class="create-btn" style="background:linear-gradient(90deg,#22c55e,#a855f7); color:#fff; border:none; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
-                        Create Budget
-                    </button>
-                </div>
-                <p class="helper-text">Tap above to complete request</p>
-            </form>
         </div>
     </div>
 
@@ -752,8 +757,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -1021,6 +1026,31 @@
             localStorage.setItem('paymentMethod', 'paypal');
         }
     });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // For each field, prefill from localStorage if available
+    if (document.getElementById('name')) {
+        document.getElementById('name').value = localStorage.getItem('reg_name') || '';
+    }
+    if (document.getElementById('email')) {
+        document.getElementById('email').value = localStorage.getItem('reg_email') || '';
+    }
+    if (document.getElementById('phone')) {
+        document.getElementById('phone').value = localStorage.getItem('reg_phone') || '';
+    }
+    // ...add more fields as needed
+});
+
+        // Optionally, ensure the # is always shown and not editable
+document.addEventListener('DOMContentLoaded', function() {
+    const usernameInput = document.getElementById('username');
+    usernameInput.addEventListener('input', function() {
+        // Prevent # in the input value
+        if (usernameInput.value.startsWith('#')) {
+            usernameInput.value = usernameInput.value.replace(/^#+/, '');
+        }
+    });
+});
     </script>
     <script type="text/javascript">
   function googleTranslateElementInit() {

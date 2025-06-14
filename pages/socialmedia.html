@@ -367,12 +367,12 @@
         <section class="section balance-card clickable-section" onclick="window.location.href='financial profile.html'">
             <h2>Your Balance</h2>
             <p>Current Account Balance</p>
-            <p class="amount">$10,000.00</p>
+            <p class="amount" id="accountBalance">$10,000.00</p>
         </section>
 
         <section class="section transaction-section clickable-section" onclick="window.location.href='activities.html'">
             <h2>Recent Transactions</h2>
-            <div class="transaction-item">
+            <div class="transaction-item" id="recentTransactions">
                 <span>Grocery Shopping</span>
                 <span class="amount">-$50.00</span>
             </div>
@@ -384,7 +384,7 @@
 
         <section class="section chat-section clickable-section" onclick="window.location.href='chatssection.html'">
             <h2>Chats</h2>
-            <div class="chat-item">
+            <div class="chat-item" id="recentChats">
                 <span>John Doe</span>
                 <span>Hello! How are you?</span>
             </div>
@@ -398,16 +398,16 @@
             <h2>Summary</h2>
             <div>
                 <span>Income</span>
-                <span>+$2,000.00</span>
+                <span id="summaryIncome">+$2,000.00</span>
             </div>
             <div>
                 <span>Expenses</span>
-                <span>-$500.00</span>
+                <span id="summaryExpenses">-$500.00</span>
             </div>
         </section>
 
         <section class="section portfolio-section clickable-section" onclick="window.location.href='crypto.html'">
-            <h2>Your Portfolio</h2>
+            <h2>Your Crypto</h2>
             <p class="portfolio-value">$50,000</p>
         </section>
 
@@ -726,6 +726,90 @@
             setInterval(checkGoogleBanner, 1000);
         });
     })();
+    </script>
+    <script>
+        // Example: Place this in a <script> tag or your main JS file for the dashboard page
+        // Fetch and render: Balance, Recent Transactions, Chats, and Summary
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE = 'https://api.yourtowerclub.com';
+            const API_KEY = 'YOUR_API_KEY'; // Use secure authentication in production
+
+            // 1. Fetch Current Account Balance
+            async function fetchBalance() {
+                try {
+                    const res = await fetch(`${API_BASE}/user/balance?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    document.getElementById('accountBalance').textContent = `$${parseFloat(data.balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } catch (e) {
+                    console.error('Error fetching balance:', e);
+                }
+            }
+
+            // 2. Fetch Recent Transactions
+            async function fetchRecentTransactions() {
+                try {
+                    const res = await fetch(`${API_BASE}/user/transactions?limit=5&apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    const txList = document.getElementById('recentTransactions');
+                    txList.innerHTML = '';
+                    data.transactions.forEach(tx => {
+                        const txDiv = document.createElement('div');
+                        txDiv.className = 'transaction-item';
+                        txDiv.innerHTML = `
+                            <span>${tx.description}</span>
+                            <span class="amount ${tx.amount >= 0 ? 'positive' : 'negative'}">
+                                ${tx.amount >= 0 ? '+' : '-'}$${Math.abs(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                            </span>
+                        `;
+                        txList.appendChild(txDiv);
+                    });
+                } catch (e) {
+                    console.error('Error fetching transactions:', e);
+                }
+            }
+
+            // 3. Fetch Recent Chats (top 2)
+            async function fetchRecentChats() {
+                try {
+                    const res = await fetch(`${API_BASE}/messages/recent?limit=2&apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    const chatList = document.getElementById('recentChats');
+                    chatList.innerHTML = '';
+                    data.forEach(chat => {
+                        const chatDiv = document.createElement('div');
+                        chatDiv.className = 'chat-item';
+                        chatDiv.innerHTML = `
+                            <span class="chat-name">${chat.senderName}</span>
+                            <span class="chat-message">${chat.message}</span>
+                        `;
+                        chatList.appendChild(chatDiv);
+                    });
+                } catch (e) {
+                    console.error('Error fetching chats:', e);
+                }
+            }
+
+            // 4. Fetch Summary (Income & Expenses)
+            async function fetchSummary() {
+                try {
+                    const incomeRes = await fetch(`${API_BASE}/user/income?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const expenseRes = await fetch(`${API_BASE}/user/expenses?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const incomeData = await incomeRes.json();
+                    const expenseData = await expenseRes.json();
+                    document.getElementById('summaryIncome').textContent = `Income +$${parseFloat(incomeData.income).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    document.getElementById('summaryExpenses').textContent = `Expenses -$${parseFloat(expenseData.expenses).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } catch (e) {
+                    console.error('Error fetching summary:', e);
+                }
+            }
+
+            // Call all fetchers
+            fetchBalance();
+            fetchRecentTransactions();
+            fetchRecentChats();
+            fetchSummary();
+        });
     </script>
 </body>
 </html>

@@ -132,6 +132,40 @@ app.get('/pages/crypto.html', async (req, res) => {
     }
 });
 
+// --- New: Get Crypto Currencies Status from PayPal ---
+app.get('/api/crypto-status', async (req, res) => {
+    try {
+        // Get OAuth2 token
+        const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
+        const { data: { access_token } } = await axios.post(
+            `${PAYPAL_API}/v1/oauth2/token`,
+            'grant_type=client_credentials',
+            {
+                headers: {
+                    Authorization: `Basic ${auth}`,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            }
+        );
+
+        // Get crypto quotes (status)
+        const quotesRes = await axios.get(
+            `${PAYPAL_API}/v1/crypto/quotes`,
+            {
+                headers: {
+                    Authorization: `Bearer ${access_token}`,
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        res.json(quotesRes.data);
+    } catch (error) {
+        console.error('Error fetching crypto status:', error?.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to fetch crypto status' });
+    }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 

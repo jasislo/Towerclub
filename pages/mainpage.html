@@ -785,21 +785,44 @@
 
         async function loadFinancialData() {
             try {
+                // Fetch user balance and referral reward from your API
                 const balanceData = await fetchAccountBalance();
                 userFinancialData = balanceData;
-                
+
+                // Fetch total amount user added/created as budget (replace with your endpoint)
+                let totalAdded = 0;
+                try {
+                    // Example: fetch from your backend API
+                    const res = await fetch('/api/budget/total-added', { credentials: 'include' });
+                    const data = await res.json();
+                    totalAdded = data.totalAdded || 0;
+                } catch (err) {
+                    // fallback to balanceData.balance if available
+                    totalAdded = balanceData.balance || 7302;
+                }
+
                 // Update wallet balance
                 const walletBalance = document.getElementById('walletBalance');
-                if (walletBalance && balanceData.balance !== undefined) {
-                    walletBalance.textContent = `$${balanceData.balance.toLocaleString()}`;
+                if (walletBalance) {
+                    walletBalance.textContent = `$${parseFloat(totalAdded).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
                 }
-                
+
+                // Fetch referral reward bonus from your API (existing logic)
+                let referralRewardBonus = 0;
+                try {
+                    const res = await fetch('/api/referral/reward', { credentials: 'include' });
+                    const data = await res.json();
+                    referralRewardBonus = data.bonus || 0;
+                } catch (err) {
+                    referralRewardBonus = balanceData.referralReward || 2340;
+                }
+
                 // Update referral reward
                 const referralReward = document.getElementById('referralReward');
-                if (referralReward && balanceData.referralReward !== undefined) {
-                    referralReward.textContent = balanceData.referralReward.toLocaleString();
+                if (referralReward) {
+                    referralReward.textContent = `$${referralRewardBonus.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
                 }
-                
+
             } catch (error) {
                 console.error('Error loading financial data:', error);
                 // Use fallback data
@@ -809,17 +832,27 @@
 
         async function loadCryptoData() {
             try {
+                // Fetch crypto data from your API (existing)
                 cryptoData = await getCryptoData();
-                
-                // Update Bitcoin balance
-                const bitcoinBalance = document.getElementById('bitcoinBalance');
-                if (bitcoinBalance && cryptoData.bitcoin) {
-                    const btcPrice = cryptoData.bitcoin.usd;
-                    const btcBalance = userFinancialData.bitcoinBalance || 0.15; // Default BTC amount
-                    const btcValue = btcBalance * btcPrice;
-                    bitcoinBalance.textContent = `$${btcValue.toFixed(2)}`;
+
+                // Fetch PayPal crypto sales (new)
+                // Replace this with your actual API call or backend endpoint
+                const paypalCryptoSales = await fetch('/api/paypal/crypto-sales', {
+                    credentials: 'include'
+                }).then(res => res.json());
+
+                // Calculate total PayPal crypto sales value (USD)
+                let totalPaypalCryptoUSD = 0;
+                if (paypalCryptoSales && Array.isArray(paypalCryptoSales.sales)) {
+                    totalPaypalCryptoUSD = paypalCryptoSales.sales.reduce((sum, sale) => sum + (sale.usd_value || 0), 0);
                 }
-                
+
+                // Update Bitcoin balance with PayPal sales value
+                const bitcoinBalance = document.getElementById('bitcoinBalance');
+                if (bitcoinBalance) {
+                    bitcoinBalance.textContent = `$${totalPaypalCryptoUSD.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
+
             } catch (error) {
                 console.error('Error loading crypto data:', error);
                 // Use fallback data
@@ -1262,11 +1295,13 @@
                     const shareText = `Join me on TowerClub and earn rewards! Sign up with my referral link: ${referralLink}`;
 
                     if (navigator.share) {
+                        // Use native share dialog if available (mobile, some browsers)
                         navigator.share({
                             title: 'TowerClub Referral',
                             text: shareText,
                             url: referralLink
                         }).catch(() => {
+                            // If user cancels or share fails, fallback to Twitter
                             window.open(
                                 `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
                                 '_blank'
@@ -1300,6 +1335,15 @@
                     }
                 });
             }
+
+    // Make Referral Reward card redirect to referral_profile.html
+    const referralRewardCard = document.querySelector('.referral-reward');
+    if (referralRewardCard) {
+        referralRewardCard.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'referral_profile.html';
+        });
+    }
         });
     </script>
     <!-- Add these scripts before </body> -->

@@ -489,6 +489,12 @@
                 </div>
             </div>
 
+            <!-- Username Display -->
+            <div style="text-align:center; margin-top:20px;">
+    <label>Username:</label>
+    <span id="displayUsername">#jonatthanasis</span>
+</div>
+
             <!-- Stats Grid -->
             <div class="stats-grid">
                 <!-- Followers Card -->
@@ -774,39 +780,6 @@
                 });
             }
         });
-
-        // Example: Calculate referral bonus and show as Referral Reward and Cash Out Reward
-    document.addEventListener('DOMContentLoaded', function () {
-        // Example values - replace with real data from your backend or user profile
-        const directReferrals = 10; // Number of direct referrals
-        const generations = [20, 15, 10, 5]; // Referrals in 1st, 2nd, 3rd, and 4th generations
-
-        // Calculate total referral bonus
-        function calculateReferralBonus(directReferrals, generations) {
-            const directReferralReward = 5; // $5 for each direct referral
-            const generationReward = 2.5; // $2.50 for each referral in subsequent generations
-
-            let totalReward = directReferrals * directReferralReward;
-            for (let i = 0; i < Math.min(generations.length, 4); i++) {
-                totalReward += generations[i] * generationReward;
-            }
-            return totalReward;
-        }
-
-        const totalReferralReward = calculateReferralBonus(directReferrals, generations);
-
-        // Show the result in the Referral Reward card
-        const rewardAmountElem = document.getElementById('rewardAmount');
-        if (rewardAmountElem) {
-            rewardAmountElem.textContent = `$${totalReferralReward.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        }
-
-        // Show the result in the Cash Out Reward card
-        const cashOutRewardElem = document.getElementById('cashOutReward');
-        if (cashOutRewardElem) {
-            cashOutRewardElem.textContent = `$${totalReferralReward.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        }
-    });
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>

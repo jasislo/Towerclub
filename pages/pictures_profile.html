@@ -783,7 +783,7 @@
             <div class="collections-header">
                 <h2>Collections</h2>
                 <div class="collections-actions">
-                    <button class="edit-btn" onclick="toggleEdit('collections')" id="collectionsEditBtn">
+                    <button class="edit-btn" id="collectionsEditBtn" aria-label="Edit Collections">
                         <i class="fas fa-edit"></i>
                     </button>
                     <input type="file" id="addCollectionImageInput" accept="image/*" style="display:none;" multiple>
@@ -1066,20 +1066,29 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
+            const editBtn = document.getElementById('collectionsEditBtn');
             const addBtn = document.getElementById('addCollectionImageBtn');
             const addInput = document.getElementById('addCollectionImageInput');
             const collectionsGrid = document.getElementById('collectionsGrid');
+
+            // Toggle add photo button when edit is active
+            editBtn.addEventListener('click', function () {
+                if (addBtn.style.display === 'none' || addBtn.style.display === '') {
+                    addBtn.style.display = 'inline-flex';
+                } else {
+                    addBtn.style.display = 'none';
+                }
+            });
 
             // Show file input when "Add Photo" is clicked
             addBtn.addEventListener('click', function () {
                 addInput.click();
             });
 
-            // Handle file selection and upload
-            addInput.addEventListener('change', async function (event) {
+            // Handle file selection and preview/upload
+            addInput.addEventListener('change', function (event) {
                 const files = Array.from(event.target.files);
-                for (const file of files) {
-                    // 1. Show preview immediately
+                files.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = function (e) {
                         const newItem = document.createElement('div');
@@ -1093,26 +1102,11 @@
                     };
                     reader.readAsDataURL(file);
 
-                    // 2. Upload to backend API
-                    const formData = new FormData();
-                    formData.append('image', file);
-
-                    try {
-                        // Replace '/api/upload-collection-image' with your actual API endpoint
-                        const response = await fetch('/api/upload-collection-image', {
-                            method: 'POST',
-                            body: formData,
-                            credentials: 'include'
-                        });
-                        const result = await response.json();
-                        if (!response.ok) {
-                            alert(result.message || 'Failed to upload image.');
-                        }
-                        // Optionally update the UI with the image URL from the server (result.url)
-                    } catch (err) {
-                        alert('Error uploading image. Please try again.');
-                    }
-                }
+                    // Optionally, upload to backend here
+                    // let formData = new FormData();
+                    // formData.append('image', file);
+                    // fetch('/api/upload-collection-image', { method: 'POST', body: formData });
+                });
                 addInput.value = '';
             });
         });
@@ -1181,6 +1175,17 @@
         setInterval(checkGoogleBanner, 1000);
     });
 })();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Redirect to chatssection.html when Message button is clicked
+    const messageBtn = document.getElementById('messageBtn');
+    if (messageBtn) {
+        messageBtn.addEventListener('click', function () {
+            window.location.href = '/pages/chatssection.html';
+        });
+    }
+});
 </script>
 </body>
 </html>

@@ -374,3 +374,44 @@ app.post('/register', async (req, res) => {
 
     res.json({ success: true });
 });
+
+// Fetch and display user account info for the profile section
+async function fetchUserProfile() {
+    try {
+        // Replace with your actual API endpoint
+        const res = await fetch('/api/user/profile', { credentials: 'include' });
+        const data = await res.json();
+
+        // Display full name
+        document.getElementById('fullName').textContent = data.fullName || '';
+
+        // Display referral code and username
+        document.getElementById('referralCode').textContent = data.referralCode || '';
+        document.getElementById('copyReferralCode').value = data.referralCode || '';
+        document.getElementById('displayUsername').textContent = data.username || '';
+    } catch (e) {
+        console.error('Error fetching user profile:', e);
+    }
+}
+
+// Call this on page load
+document.addEventListener('DOMContentLoaded', fetchUserProfile);
+
+// Example HTML:
+/*
+<div>
+    <div id="fullName">Jonatthan Asis</div>
+    <div>
+        <span>Referral code:</span>
+        <span id="referralCode">#jonatthanasis</span>
+    </div>
+    <div>
+        <input id="copyReferralCode" value="#jonatthanasis" readonly>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('copyReferralCode').value)">Copy</button>
+    </div>
+    <div>
+        <span>Username:</span>
+        <span id="displayUsername">#jonatthanasis</span>
+    </div>
+</div>
+*/

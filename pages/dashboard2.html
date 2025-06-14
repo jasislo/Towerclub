@@ -372,7 +372,7 @@
         </section>
 
         <section class="section portfolio-section" onclick="window.location.href='crypto.html'">
-            <h2>Your Portfolio</h2>
+            <h2>Your Crypto</h2>
             <p class="portfolio-value">$50,000</p>
         </section>
 
@@ -433,8 +433,8 @@
                     <div class="footer-column">
                         <h4>Social</h4>
                         <ul>
-                            <li><a href="#">Twitter</a></li>
-                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
                             <li><a href="#">Facebook</a></li>
                             <li><a href="#">Instagram</a></li>
                         </ul>
@@ -448,27 +448,23 @@
     </footer>
 
     <script>
+        // Profile Picture Sync
         const profilePicture = document.getElementById('profilePicture');
         const profilePictureInput = document.getElementById('profilePictureInput');
-
-        // Make the profile picture clickable
         profilePicture.addEventListener('click', () => {
             profilePictureInput.click();
         });
-
-        // Handle the file input change event
         profilePictureInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    profilePicture.src = e.target.result; // Update the profile picture preview
+                    profilePicture.src = e.target.result;
+                    localStorage.setItem('profilePicture', e.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         });
-
-        // Sync profile picture everywhere on page load
         document.addEventListener('DOMContentLoaded', () => {
             const savedPic = localStorage.getItem('profilePicture');
             if (savedPic) {
@@ -479,82 +475,102 @@
             }
         });
 
-        // Example API Endpoints (Replace with actual API URLs and keys)
-        const financialNewsAPI = 'https://api.example.com/financial-news?apiKey=YOUR_API_KEY';
-        const accountBalanceAPI = 'https://api.example.com/account-balance?apiKey=YOUR_API_KEY';
-        const recentTransactionsAPI = 'https://api.example.com/recent-transactions?apiKey=YOUR_API_KEY';
-        const portfolioAPI = 'https://api.example.com/portfolio?apiKey=YOUR_API_KEY';
+        // --- API Endpoints (Replace with your real endpoints and keys) ---
+        // Example endpoints for demonstration. Replace with your backend endpoints.
+        const API_BASE = 'https://api.yourtowerclub.com';
+        const API_KEY = 'YOUR_API_KEY'; // Use secure authentication in production
 
-        // Fetch Financial News
-        async function fetchFinancialNews() {
-            try {
-                const response = await fetch(financialNewsAPI);
-                const data = await response.json();
-                const newsSection = document.querySelector('.news-section');
-                newsSection.innerHTML = '<h2>Financial News</h2>'; // Clear existing content
-                data.articles.forEach(article => {
-                    const newsItem = document.createElement('div');
-                    newsItem.classList.add('news-item');
-                    newsItem.innerHTML = `
-                        <span>${article.title}</span>
-                        <span>Source: ${article.source.name}</span>
-                    `;
-                    newsSection.appendChild(newsItem);
-                });
-            } catch (error) {
-                console.error('Error fetching financial news:', error);
-            }
-        }
+        // 1. Account Balance
+        const accountBalanceAPI = `${API_BASE}/user/balance?apiKey=${API_KEY}`;
+        // 2. Recent Transactions
+        const recentTransactionsAPI = `${API_BASE}/user/transactions?limit=5&apiKey=${API_KEY}`;
+        // 3. Portfolio Value
+        const portfolioAPI = `${API_BASE}/user/portfolio/value?apiKey=${API_KEY}`;
+        // 4. Financial News (NewsAPI.org or your own backend proxy)
+        const financialNewsAPI = `https://newsapi.org/v2/top-headlines?category=business&language=en&apiKey=YOUR_NEWSAPI_KEY`;
 
-        // Fetch Account Balance
+        // --- Fetch and Render Functions ---
+
+        // 1. Fetch Account Balance
         async function fetchAccountBalance() {
             try {
-                const response = await fetch(accountBalanceAPI);
+                const response = await fetch(accountBalanceAPI, { credentials: 'include' });
                 const data = await response.json();
-                document.querySelector('.balance-card .amount').textContent = `$${data.balance}`;
+                document.querySelector('.balance-card .amount').textContent = `$${parseFloat(data.balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             } catch (error) {
                 console.error('Error fetching account balance:', error);
             }
         }
 
-        // Fetch Recent Transactions
+        // 2. Fetch Recent Transactions
         async function fetchRecentTransactions() {
             try {
-                const response = await fetch(recentTransactionsAPI);
+                const response = await fetch(recentTransactionsAPI, { credentials: 'include' });
                 const data = await response.json();
                 const transactionSection = document.querySelector('.transaction-section');
-                transactionSection.innerHTML = '<h2>Recent Transactions</h2>'; // Clear existing content
-                data.transactions.forEach(transaction => {
-                    const transactionItem = document.createElement('div');
-                    transactionItem.classList.add('transaction-item');
-                    transactionItem.innerHTML = `
-                        <span>${transaction.description}</span>
-                        <span class="amount">${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount)}</span>
-                    `;
-                    transactionSection.appendChild(transactionItem);
-                });
+                transactionSection.innerHTML = '<h2>Recent Transactions</h2>';
+                if (data.transactions && data.transactions.length > 0) {
+                    data.transactions.forEach(transaction => {
+                        const transactionItem = document.createElement('div');
+                        transactionItem.classList.add('transaction-item');
+                        transactionItem.innerHTML = `
+                            <span>${transaction.description}</span>
+                            <span class="amount">${transaction.amount < 0 ? '-' : '+'}$${Math.abs(transaction.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                        `;
+                        transactionSection.appendChild(transactionItem);
+                    });
+                } else {
+                    transactionSection.innerHTML += '<div class="transaction-item"><span>No transactions found.</span></div>';
+                }
             } catch (error) {
                 console.error('Error fetching recent transactions:', error);
             }
         }
 
-        // Fetch Portfolio Value
+        // 3. Fetch Portfolio Value
         async function fetchPortfolioValue() {
             try {
-                const response = await fetch(portfolioAPI);
+                const response = await fetch(portfolioAPI, { credentials: 'include' });
                 const data = await response.json();
-                document.querySelector('.portfolio-value').textContent = `$${data.totalValue}`;
+                document.querySelector('.portfolio-value').textContent = `$${parseFloat(data.totalValue).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             } catch (error) {
                 console.error('Error fetching portfolio value:', error);
             }
         }
 
-        // Initialize Data Fetching
+        // 4. Fetch Financial News
+        async function fetchFinancialNews() {
+            try {
+                const response = await fetch(financialNewsAPI);
+                const data = await response.json();
+                const newsSection = document.querySelector('.news-section');
+                newsSection.innerHTML = '<h2>Financial News</h2>';
+                if (data.articles && data.articles.length > 0) {
+                    data.articles.slice(0, 5).forEach(article => {
+                        const newsItem = document.createElement('div');
+                        newsItem.classList.add('news-item');
+                        newsItem.innerHTML = `
+                            <span>${article.title}</span>
+                            <span>Source: ${article.source.name}</span>
+                        `;
+                        newsSection.appendChild(newsItem);
+                    });
+                } else {
+                    newsSection.innerHTML += '<div class="news-item"><span>No news available.</span></div>';
+                }
+            } catch (error) {
+                console.error('Error fetching financial news:', error);
+                const newsSection = document.querySelector('.news-section');
+                newsSection.innerHTML += '<div class="news-item"><span>Unable to load news.</span></div>';
+            }
+        }
+
+        // --- Initialize Data Fetching ---
         document.addEventListener('DOMContentLoaded', () => {
-            fetchFinancialNews();
             fetchAccountBalance();
             fetchRecentTransactions();
             fetchPortfolioValue();
+            fetchFinancialNews();
         });
     </script>
     <script type="module">
@@ -567,8 +583,6 @@
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <!-- Google Translate language selector button -->
-    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-    <!-- Google Translate Scripts -->
     <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({

@@ -484,9 +484,18 @@
                     <input type="text" id="name" name="name" required data-i18n-placeholder="profile-fullname-placeholder">
                 </div>
 
+                <!-- Username input with # symbol rule -->
                 <div class="form-group">
-                    <label for="username" data-i18n="profile-username">Create Username</label>
-                    <input type="text" id="username" name="username" placeholder="username" required data-i18n-placeholder="profile-username-placeholder">
+                    <label for="username">Username (must start with #)</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        placeholder="#yourname" 
+                        pattern="^#[a-zA-Z0-9_]{1,}$"
+                        required
+                        oninput="this.setCustomValidity(!/^#[a-zA-Z0-9_]{1,}$/.test(this.value) ? 'Username must start with # and contain at least one character after #' : '')"
+                    >
                 </div>
 
                 <div class="form-group">
@@ -638,6 +647,19 @@
                     validateInput(input);
                 });
             });
+
+            // Username validation: must start with # and at least one character after
+            const usernameInput = document.getElementById('username');
+            if (usernameInput) {
+                usernameInput.addEventListener('input', function() {
+                    const value = usernameInput.value.trim();
+                    if (!/^#[a-zA-Z0-9_]{1,}$/.test(value)) {
+                        usernameInput.setCustomValidity('Username must start with # and contain at least one character after # (letters, numbers, or _).');
+                    } else {
+                        usernameInput.setCustomValidity('');
+                    }
+                });
+            }
         });
 
         function validateInput(input) {

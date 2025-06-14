@@ -464,6 +464,19 @@
             // Redirect to onboarding page
             window.location.href = 'onboarding.html';
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    // For each field you want to remember, save to localStorage
+                    localStorage.setItem('reg_name', document.getElementById('name').value);
+                    localStorage.setItem('reg_email', document.getElementById('email').value);
+                    localStorage.setItem('reg_phone', document.getElementById('phone').value);
+                    // ...add more fields as needed
+                });
+            }
+        });
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
