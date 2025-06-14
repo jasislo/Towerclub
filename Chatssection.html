@@ -796,136 +796,41 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-    // --- 1. Fetch and render chat list ---
-    async function loadChats() {
+    // Fetch and display the top 10 recent messages in the chat list
+    async function fetchRecentMessages() {
         try {
-            const res = await fetch('/api/chats');
-            if (!res.ok) throw new Error('Failed to load chats');
-            const chats = await res.json();
+            // Replace with your actual API endpoint for fetching recent messages
+            const response = await fetch('/api/messages/recent?limit=10', { credentials: 'include' });
+            if (!response.ok) throw new Error('Failed to fetch messages');
+            const messages = await response.json();
+
             const chatList = document.querySelector('.chat-list');
-            // Remove all .chat-item except the search bar/header
-            chatList.querySelectorAll('.chat-item').forEach(e => e.remove());
-            chats.forEach(chat => {
-                const item = document.createElement('div');
-                item.className = 'chat-item';
-                item.innerHTML = `
-                    <div class="chat-avatar" onclick="redirectToProfile('${chat.name}')">
-                        <img src="${chat.avatar || '/assets/images/default-avatar.png'}" alt="${chat.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+            // Remove all .chat-item elements except the header and search bar
+            chatList.querySelectorAll('.chat-item').forEach(item => item.remove());
+
+            messages.forEach(msg => {
+                const chatItem = document.createElement('div');
+                chatItem.classList.add('chat-item');
+                chatItem.innerHTML = `
+                    <div class="chat-avatar" onclick="redirectToProfile('${msg.senderName}')">
+                        <img src="${msg.senderAvatar || '/assets/images/default-avatar.png'}" alt="${msg.senderName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
                     </div>
                     <div class="chat-info">
-                        <p class="chat-name" onclick="redirectToChat()">${chat.name}</p>
-                        <p class="chat-message">${chat.lastMessage || ''}</p>
+                        <p class="chat-name" onclick="redirectToChat()">${msg.senderName}</p>
+                        <p class="chat-message">${msg.message}</p>
                     </div>
                 `;
-                item.addEventListener('click', () => openChat(chat));
-                chatList.appendChild(item);
+                chatList.appendChild(chatItem);
             });
-        } catch (err) {
-            console.error(err);
+        } catch (error) {
+            console.error('Error fetching recent messages:', error);
         }
     }
 
-    // --- 2. Fetch and render messages for a chat ---
-    async function loadMessages(chatId) {
-        try {
-            const res = await fetch(`/api/messages?chatId=${encodeURIComponent(chatId)}`);
-            if (!res.ok) throw new Error('Failed to load messages');
-            const messages = await res.json();
-            const chatMessages = document.querySelector('.chat-messages');
-            chatMessages.innerHTML = '';
-            messages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = 'message ' + (msg.sentByMe ? 'sent' : 'received');
-                div.innerHTML = `<div class="message-content">${msg.content}</div>`;
-                chatMessages.appendChild(div);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    // --- 3. Send a message ---
-    async function sendMessage(chatId, content) {
-        try {
-            const res = await fetch('/api/messages', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chatId, content })
-            });
-            if (!res.ok) throw new Error('Failed to send message');
-            await loadMessages(chatId);
-        } catch (err) {
-            alert('Failed to send message.');
-        }
-    }
-
-    // --- 4. Open a chat (update header, load messages, wire send) ---
-    let currentChat = null;
-    function openChat(chat) {
-        currentChat = chat;
-        const chatHeader = document.querySelector('.chat-interface-header');
-        chatHeader.textContent = chat.name;
-        chatHeader.onclick = () => redirectToProfile(chat.name);
-        loadMessages(chat.id);
-
-        // Wire send button
-        const sendBtn = document.querySelector('.send-button');
-        const input = document.querySelector('.chat-input');
-        sendBtn.onclick = async () => {
-            const text = input.value.trim();
-            if (!text) return;
-            await sendMessage(chat.id, text);
-            input.value = '';
-        };
-        input.onkeydown = function(e) {
-            if (e.key === 'Enter') sendBtn.click();
-        };
-    }
-
-    // --- 5. Group chat creation ---
-    document.getElementById('createGroupBtn').onclick = async function() {
-        const name = document.getElementById('groupNameInput').value.trim();
-        const members = document.getElementById('groupMembersInput').value.split(',').map(m => m.trim()).filter(Boolean);
-        if (!name || members.length < 2) {
-            alert('Please enter a group name and at least two members.');
-            return;
-        }
-        try {
-            const res = await fetch('/api/group-chats', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, members })
-            });
-            if (!res.ok) throw new Error('Failed to create group chat');
-            document.getElementById('groupChatModal').style.display = 'none';
-            document.getElementById('groupNameInput').value = '';
-            document.getElementById('groupMembersInput').value = '';
-            await loadChats();
-        } catch (err) {
-            alert('Failed to create group chat.');
-        }
-    };
-
-    // --- 6. Initial load ---
-    loadChats();
-
-    // Optionally, open the first chat by default after loading chats
-    // setTimeout(() => {
-    //     const firstChat = document.querySelector('.chat-item');
-    //     if (firstChat) firstChat.click();
-    // }, 500);
+    fetchRecentMessages();
 });
-    </script>
-    <script type="module">
-import messagingService, {
-    getUserContacts,
-    getConversation,
-    sendMessage,
-    searchUsers
-} from '../scripts/messaging-service.js';
 
-document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
     // Get current user
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     const userId = currentUser.userId || currentUser.id;
@@ -1102,6 +1007,40 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(checkGoogleBanner, 1000);
     });
 })();
+</script>
+<script>
+// Fetch and display the conversation messages with a specific user/contact
+// Assumes you have a variable `contactId` for the selected chat/contact
+
+async function fetchConversationMessages(contactId) {
+    try {
+        // Replace with your actual API endpoint for fetching conversation messages
+        const response = await fetch(`/api/messages/conversation/${contactId}?limit=50`, { credentials: 'include' });
+        if (!response.ok) throw new Error('Failed to fetch conversation');
+        const messages = await response.json();
+
+        const chatMessages = document.querySelector('.chat-messages');
+        chatMessages.innerHTML = ''; // Clear previous messages
+
+        messages.forEach(msg => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = msg.isOwnMessage ? 'message own' : 'message';
+            msgDiv.innerHTML = `
+                <span class="sender">${msg.senderName}</span>
+                <span class="text">${msg.message}</span>
+            `;
+            chatMessages.appendChild(msgDiv);
+        });
+
+        // Optionally, scroll to the bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    } catch (error) {
+        console.error('Error fetching conversation messages:', error);
+    }
+}
+
+// Example usage: call this when a chat/contact is selected
+// fetchConversationMessages(selectedContactId);
 </script>
 </body>
 </html>
