@@ -1585,8 +1585,8 @@ document.getElementById('referralCodeForm').addEventListener('submit', function(
     const message = document.getElementById('referralCodeMessage');
     const referralCode = codeInput.value.trim();
 
-    // Check if referral code starts with '#' and has at least one character after
-    if (/^#[a-zA-Z0-9_]+$/.test(referralCode)) {
+    // Replace 'YOUR_VALID_CODE' with your actual valid code or logic
+    if (referralCode === 'YOUR_VALID_CODE') {
         message.textContent = 'Referral code Applied Successfully!';
         message.style.color = 'green';
         message.style.display = 'block';
