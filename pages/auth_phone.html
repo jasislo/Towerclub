@@ -317,6 +317,7 @@
 
       <div class="auth-footer">
         <p>Don't have an account? <a href="register.html">Sign Up</a></p>
+        <div id="google_translate_element" style="margin-top: 12px;"></div>
       </div>
     </div>
   </div>
@@ -391,5 +392,14 @@
   <script>
     applyTranslations(); // Call this on page load
   </script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en'},
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

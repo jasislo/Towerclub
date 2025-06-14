@@ -1113,6 +1113,7 @@
                 <a href="index.html" class="brand-link">
                     <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
                     <span class="brand-name">TowerClub</span>
+                    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
                 </a>
             </div>
 
@@ -1293,16 +1294,10 @@
                 <div class="payment-form" id="cardPaymentFormContainer">
                     <h2>Pay with Credit/Debit Card</h2>
                     <form id="cardPaymentForm">
+                        <div id="card-element" style="margin-bottom: 18px;"></div>
+                        <div id="card-errors" role="alert" style="color: red; margin-bottom: 10px;"></div>
                         <div class="form-group">
-                            <label for="cardHolder">Cardholder Name</label>
-                            <input type="text" id="cardHolder" placeholder="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Card Details</label>
-                            <div id="cardElement"></div> <!-- Stripe Elements will render here -->
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn-credit-card">Pay Now</button>
+                            <button type="submit" class="btn-credit-card" id="cardPayBtn">Pay Now</button>
                         </div>
                     </form>
                     <!-- OR separator -->
@@ -1607,6 +1602,98 @@ document.getElementById('referralCodeForm').addEventListener('submit', function(
     }
 });
     </script>
+    <script src="https://js.stripe.com/v3/"></script>
+<script>
+/**
+ * Stripe integration for card payments.
+ * You must have a backend endpoint that creates a PaymentIntent and returns its client_secret.
+ * Replace STRIPE_PUBLISHABLE_KEY and /create-payment-intent endpoint with your real values.
+ */
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_XXXXXXXXXXXXXXXXXXXXXXXX'; // Replace with your Stripe publishable key
+const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+const elements = stripe.elements();
+const cardElement = elements.create('card', {hidePostalCode: true});
+cardElement.mount('#card-element');
+
+const cardForm = document.getElementById('cardPaymentForm');
+const cardErrors = document.getElementById('card-errors');
+const cardPayBtn = document.getElementById('cardPayBtn');
+
+cardForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    cardPayBtn.disabled = true;
+    cardPayBtn.textContent = 'Processing...';
+    cardErrors.textContent = '';
+
+    // You should get the selected plan and amount from your UI logic
+    let selectedPlan = window.selectedPlan || sessionStorage.getItem('selectedPlan');
+    let selectedPlanAmount = window.selectedPlanAmount || sessionStorage.getItem('selectedPlanAmount');
+    if (!selectedPlan || !selectedPlanAmount) {
+        cardErrors.textContent = 'Please select a plan before making payment.';
+        cardPayBtn.disabled = false;
+        cardPayBtn.textContent = 'Pay Now';
+        return;
+    }
+
+    // Call your backend to create a PaymentIntent and get client_secret
+    let clientSecret;
+    try {
+        const response = await fetch('/api/create-payment-intent', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                amount: Math.round(Number(selectedPlanAmount) * 100), // amount in cents
+                plan: selectedPlan
+            })
+        });
+        const data = await response.json();
+        if (!data.clientSecret) throw new Error('No client secret returned');
+        clientSecret = data.clientSecret;
+    } catch (err) {
+        cardErrors.textContent = 'Payment initialization failed. Please try again.';
+        cardPayBtn.disabled = false;
+        cardPayBtn.textContent = 'Pay Now';
+        return;
+    }
+
+    // Confirm card payment
+    const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+            card: cardElement,
+        }
+    });
+
+    if (error) {
+        cardErrors.textContent = error.message;
+        cardPayBtn.disabled = false;
+        cardPayBtn.textContent = 'Pay Now';
+    } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Payment successful
+        window.paymentSecured = true;
+        sessionStorage.setItem('paymentComplete', 'true');
+        sessionStorage.setItem('selectedPlan', selectedPlan);
+        sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+        window.location.href = 'register.html';
+    } else {
+        cardErrors.textContent = 'Payment failed. Please try again.';
+        cardPayBtn.disabled = false;
+        cardPayBtn.textContent = 'Pay Now';
+    }
+});
+</script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
 </body>
 </html>
 
