@@ -511,7 +511,7 @@
                 <span class="material-icons">person_outline</span>
                 <h3>Profile</h3>
             </a>
-            <a href="referral profile.html" class="quick-action-item">
+            <a href="referral profile.html" class="quick-action-item" id="referralsQuickAction">
                 <span class="material-icons">share</span>
                 <h3>Referrals</h3>
             </a>
@@ -1245,6 +1245,59 @@
                 myBankBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     window.location.href = 'payment methods.html';
+                });
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Social sharing for Referrals quick action
+            const referralsBtn = document.getElementById('referralsQuickAction');
+            if (referralsBtn) {
+                referralsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Example referral link (replace with user's real referral link if available)
+                    const referralLink = window.currentUserReferralLink || window.location.origin + '/pages/register.html?ref=YOURCODE';
+
+                    const shareText = `Join me on TowerClub and earn rewards! Sign up with my referral link: ${referralLink}`;
+
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'TowerClub Referral',
+                            text: shareText,
+                            url: referralLink
+                        }).catch(() => {
+                            window.open(
+                                `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`,
+                                '_blank'
+                            );
+                        });
+                    } else {
+                        // Fallback: Show share options for Twitter, Facebook, WhatsApp
+                        const shareUrl = encodeURIComponent(referralLink);
+                        const text = encodeURIComponent('Join me on TowerClub and earn rewards!');
+                        const modal = document.createElement('div');
+                        modal.style.cssText = `
+                            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+                            background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center;
+                        `;
+                        modal.innerHTML = `
+                            <div style="background: #fff; padding: 24px 32px; border-radius: 12px; text-align: center; min-width: 280px;">
+                                <h3 style="margin-bottom: 16px;">Share your referral link</h3>
+                                <input type="text" value="${referralLink}" readonly style="width: 100%; margin-bottom: 12px; padding: 6px 8px; border-radius: 4px; border: 1px solid #ccc;">
+                                <div style="margin-bottom: 16px;">
+                                    <a href="https://twitter.com/intent/tweet?text=${text}%20${shareUrl}" target="_blank" style="margin:0 8px;">Twitter</a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u=${shareUrl}" target="_blank" style="margin:0 8px;">Facebook</a>
+                                    <a href="https://wa.me/?text=${text}%20${shareUrl}" target="_blank" style="margin:0 8px;">WhatsApp</a>
+                                </div>
+                                <button id="closeShareModal" style="padding: 6px 18px; border-radius: 4px; border: none; background: #39D2C0; color: #fff; font-weight: 500;">Close</button>
+                            </div>
+                        `;
+                        document.body.appendChild(modal);
+                        modal.querySelector('#closeShareModal').onclick = function() {
+                            document.body.removeChild(modal);
+                        };
+                    }
                 });
             }
         });

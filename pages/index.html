@@ -577,6 +577,20 @@
     window.addEventListener('load', function() {
         setInterval(checkGoogleBanner, 1000);
     });
+
+    // Redirect "Open Calculator" button to external calculator in a new window
+    document.addEventListener('DOMContentLoaded', function() {
+        var calcBtn = document.querySelector('.tool-card.calculator .btn');
+        if (calcBtn) {
+            calcBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.open(
+                  'https://www.americancentury.com/plan/calculators/investment-savings-and-distributions-calculator/',
+                  '_blank'
+                );
+            });
+        }
+    });
 })();
 </script>
 </body>
