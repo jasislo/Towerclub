@@ -1,3 +1,104 @@
+import React, { useState } from 'react';
+
+function ReferralCodeComponent() {
+  const [referralCode, setReferralCode] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  const validReferralCode = 'YOUR_VALID_CODE'; // Replace with your actual code
+
+  const handleApplyCode = () => {
+    if (referralCode === validReferralCode) {
+      setSuccessMessage('Referral code Applied Successfully!');
+    } else {
+      setSuccessMessage(''); // Optionally handle invalid code
+    }
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={referralCode}
+        onChange={e => setReferralCode(e.target.value)}
+        placeholder="Enter referral code"
+      />
+      <button onClick={handleApplyCode}>Apply code</button>
+      {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
+    </div>
+  );
+}
+
+export default ReferralCodeComponent;
+
+// Track selected plan and payment status
+let selectedPlan = null;
+let selectedPlanAmount = null;
+window.paymentSecured = false;
+
+// Pricing for each plan (must match your pricing section)
+const planPrices = {
+    "Basic": 11.95,
+    "VIP Member": 14.95,
+    "Business": 16.95
+};
+
+// Membership selection algorithm for "Get Started" buttons
+document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+        // Example: get plan name from button data attribute
+        const plan = btn.getAttribute('data-plan');
+        if (plan && planPrices[plan]) {
+            window.selectedPlan = plan;
+            window.selectedPlanAmount = planPrices[plan];
+        }
+        // Update Pay Now button text
+        const makePaypalPayment = document.getElementById('makePaypalPayment');
+        if (makePaypalPayment && window.selectedPlanAmount) {
+            makePaypalPayment.textContent = `Pay $${window.selectedPlanAmount.toFixed(2)} with PayPal`;
+        }
+    });
+});
+
+// Make Payment with PayPal button handler
+document.getElementById('makePaypalPayment').addEventListener('click', function() {
+    if (!selectedPlan || !selectedPlanAmount) {
+        alert('Please select a plan before making payment.');
+        return;
+    }
+    
+    // Process the payment with the selected plan
+    alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
+    window.paymentSecured = true;
+    
+    // Show success message and enable proceed button
+    showPaymentSuccess();
+    
+    // Store payment status for session
+    sessionStorage.setItem('paymentComplete', 'true');
+    sessionStorage.setItem('selectedPlan', selectedPlan);
+    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+
+    // --- Add this block to update PayPal button behavior ---
+    const makePaypalPayment = document.getElementById('makePaypalPayment');
+    if (makePaypalPayment) {
+        // Change button text
+        makePaypalPayment.textContent = 'Get Started Now';
+        // Add hover effect
+        makePaypalPayment.addEventListener('mouseenter', function() {
+            makePaypalPayment.textContent = 'Get Started Now';
+        });
+        makePaypalPayment.addEventListener('mouseleave', function() {
+            makePaypalPayment.textContent = 'Get Started Now';
+        });
+        // Redirect to register.html on click
+        makePaypalPayment.onclick = function(e) {
+            e.preventDefault();
+            window.location.href = 'register.html';
+        };
+    }
+    // --- End block ---
+});
+
 // Track selected plan and payment status
 let selectedPlan = null;
 let selectedPlanAmount = null;
@@ -251,31 +352,37 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Referral Code Form Logic
+// Update: async API call and show success message for valid codes
+
 document.getElementById('referralCodeForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     const codeInput = document.getElementById('referralCodeInput');
     const message = document.getElementById('referralCodeMessage');
     const referralCode = codeInput.value.trim();
 
-    // Call backend API to validate referral code against users in the database
+    // Call backend API to validate and apply referral code
     try {
-        const response = await fetch('/api/referral/apply', {
+        const response = await fetch('/api/apply-referral', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ referralCode })
+            body: JSON.stringify({ code: referralCode })
         });
-        const result = await response.json();
-        if (result.success) {
-            message.textContent = 'Referral code applied successfully!';
+        const data = await response.json();
+        if (response.ok && data.success) {
+            message.textContent = 'Referral code Applied Successfully!';
             message.style.color = 'green';
+            message.style.display = 'inline';
             sessionStorage.setItem('referralCode', referralCode);
+            // Optionally: handle free months or other rewards here
         } else {
-            message.textContent = 'Invalid referral code. Please try again.';
+            message.textContent = data.message || 'Invalid referral code. Please try again.';
             message.style.color = 'red';
+            message.style.display = 'inline';
         }
-    } catch (error) {
-        message.textContent = 'Error validating referral code.';
+    } catch (err) {
+        message.textContent = 'Error validating referral code. Please try again.';
         message.style.color = 'red';
+        message.style.display = 'inline';
     }
 });
 
@@ -417,72 +524,3 @@ router.post('/api/referral/apply', async (req, res) => {
 });
 
 module.exports = router;
-
-// Track selected plan and payment status
-let selectedPlan = null;
-let selectedPlanAmount = null;
-window.paymentSecured = false;
-
-// Pricing for each plan (must match your pricing section)
-const planPrices = {
-    "Basic": 11.95,
-    "VIP Member": 14.95,
-    "Business": 16.95
-};
-
-// Membership selection algorithm for "Get Started" buttons
-document.querySelectorAll('.get-started-btn').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-        // Example: get plan name from button data attribute
-        const plan = btn.getAttribute('data-plan');
-        if (plan && planPrices[plan]) {
-            window.selectedPlan = plan;
-            window.selectedPlanAmount = planPrices[plan];
-        }
-        // Update Pay Now button text
-        const makePaypalPayment = document.getElementById('makePaypalPayment');
-        if (makePaypalPayment && window.selectedPlanAmount) {
-            makePaypalPayment.textContent = `Pay $${window.selectedPlanAmount.toFixed(2)} with PayPal`;
-        }
-    });
-});
-
-// Make Payment with PayPal button handler
-document.getElementById('makePaypalPayment').addEventListener('click', function() {
-    if (!selectedPlan || !selectedPlanAmount) {
-        alert('Please select a plan before making payment.');
-        return;
-    }
-    
-    // Process the payment with the selected plan
-    alert(`Processing PayPal payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan.`);
-    window.paymentSecured = true;
-    
-    // Show success message and enable proceed button
-    showPaymentSuccess();
-    
-    // Store payment status for session
-    sessionStorage.setItem('paymentComplete', 'true');
-    sessionStorage.setItem('selectedPlan', selectedPlan);
-    sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-
-    // --- Add this block to update PayPal button behavior ---
-    const makePaypalPayment = document.getElementById('makePaypalPayment');
-    if (makePaypalPayment) {
-        // Change button text
-        makePaypalPayment.textContent = 'Get Started Now';
-        // Add hover effect
-        makePaypalPayment.addEventListener('mouseenter', function() {
-            makePaypalPayment.textContent = 'Get Started Now';
-        });
-        makePaypalPayment.addEventListener('mouseleave', function() {
-            makePaypalPayment.textContent = 'Get Started Now';
-        });
-        // Redirect to register.html on click
-        makePaypalPayment.onclick = function(e) {
-            e.preventDefault();
-            window.location.href = 'register.html';
-        };
-    }
-    // --- End block ---
-});
