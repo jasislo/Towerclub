@@ -551,7 +551,6 @@
             <a href="/pages/mainpage.html" class="nav-brand">
                 <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
                 <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </a>
 
             <!-- Navigation Links -->
@@ -713,14 +712,7 @@
 
         function initializePage() {
             console.log('Add Transaction page initialized');
-            
-            // Check if user is authenticated
-            const isAuthenticated = localStorage.getItem('userAuthenticated') === 'true';
-            if (!isAuthenticated) {
-                // Redirect to login if not authenticated
-                window.location.href = '/pages/login.html';
-                return;
-            }
+            // Removed authentication check and redirect
         }
 
         function setupEventListeners() {
@@ -745,7 +737,7 @@
             if (cancelButton) {
                 cancelButton.addEventListener('click', function() {
                     if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
-                        history.back();
+                        window.location.href = 'activities.html';
                     }
                 });
             }
@@ -817,26 +809,6 @@
     <script type="module">
     import profilePictureManager from '/scripts/profile-picture-manager.js';
     // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
-</script>
-<!-- Add this inside your header, next to the Get Started button (or similar location) -->
-<div class="nav-actions">
-    <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
-    <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
-</div>
-
-<!-- Add these scripts before the closing </body> tag -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
 </script>
 </body>
 </html>

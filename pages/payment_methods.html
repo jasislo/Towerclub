@@ -912,42 +912,19 @@
             }
         });
 
-        // Fetch and display payment method from API
-        async function fetchPaymentMethod() {
-            try {
-                const response = await fetch('/api/payment-method');
-                if (!response.ok) throw new Error('Failed to fetch payment method');
-                const data = await response.json();
-
-                const paymentMethodContainer = document.querySelector('.card-container');
-                if (data.method === 'creditCard' && data.cardDetails) {
-                    paymentMethodContainer.innerHTML = `
-                        <div class="credit-card">
-                            <div class="card-header">
-                                <img src="assets/${data.cardDetails.type.toLowerCase()}.png" alt="${data.cardDetails.type}" class="card-logo">
-                            </div>
-                            <div class="card-details">
-                                <span class="card-number">${data.cardDetails.number}</span>
-                                <span class="card-expiry">${data.cardDetails.expiry}</span>
-                            </div>
-                        </div>
-                    `;
-                } else if (data.method === 'paypal') {
-                    paymentMethodContainer.innerHTML = `
-                        <div class="paypal-method">
-                            <h3>PayPal</h3>
-                            <p>You've selected PayPal as your payment method.</p>
-                        </div>
-                    `;
-                } else {
-                    paymentMethodContainer.innerHTML = `
-                        <p>No payment method selected. Please go to the onboarding page to select a payment method.</p>
-                    `;
-                }
-            } catch (error) {
-                console.error('Error fetching payment method:', error);
+        // Always reflect the selected card from localStorage if present
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedCard = JSON.parse(localStorage.getItem('selectedCard'));
+            if (selectedCard) {
+                document.getElementById('selectedCardLogo').src = selectedCard.logo;
+                document.getElementById('selectedCardLogo').alt = selectedCard.type;
+                document.getElementById('selectedCardNumber').textContent = selectedCard.number;
+                document.getElementById('selectedCardExpiry').textContent = selectedCard.expiry;
+            } else {
+                // Fallback: fetch from API if no card is selected
+                fetchPaymentMethod();
             }
-        }
+        });
 
         // Fetch and display transactions from API
         async function fetchTransactions() {
@@ -1025,7 +1002,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            fetchPaymentMethod();
             fetchTransactions();
             fetchStats();
             fetchUserProfile();

@@ -486,6 +486,7 @@
                             <i class="fas fa-edit"></i>
                         </span>
                     </p>
+                    <p id="referralCodeMessage" style="display:none; color:#22c55e; text-align:center; font-weight:500;"></p>
                 </div>
             </div>
 
@@ -725,36 +726,37 @@
 
         document.addEventListener('DOMContentLoaded', function () {
             const referralInput = document.getElementById('referralCodeInput');
-            const editIcon = document.getElementById('editReferralCode');
-
-            // Make input readonly by default
-            referralInput.readOnly = true;
-
-            // Click edit icon to enable editing
-            editIcon.addEventListener('click', function () {
-                referralInput.readOnly = false;
-                referralInput.focus();
-                // Move cursor to end
-                referralInput.setSelectionRange(referralInput.value.length, referralInput.value.length);
-            });
-
-            // On blur or Enter, validate and save
-            function finalizeReferralEdit() {
-                let val = referralInput.value.trim();
-                if (!val.startsWith('#')) {
-                    val = '#' + val.replace(/^#+/, '');
-                }
-                referralInput.value = val;
-                referralInput.readOnly = true;
-                // Optionally: Save to backend here
+            const referralMsg = document.getElementById('referralCodeMessage');
+            if (referralInput && referralMsg) {
+                referralInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyReferralCode();
+                    }
+                });
+                referralInput.addEventListener('blur', function() {
+                    referralMsg.style.display = 'none';
+                });
+                // Remove the apply code button if present
+                const btn = document.getElementById('applyReferralBtn');
+                if (btn) btn.remove();
             }
-
-            referralInput.addEventListener('blur', finalizeReferralEdit);
-            referralInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    referralInput.blur();
+            function applyReferralCode() {
+                const code = referralInput.value.trim().toLowerCase();
+                if (code === 'referral code' || code === '#jonatthanasis' || code === 'jonatthanasis') {
+                    referralMsg.textContent = 'Referral code applied! You get 2 months free of charge membership.';
+                    referralMsg.style.color = '#22c55e';
+                    referralMsg.style.display = 'block';
+                } else if (code.length < 3) {
+                    referralMsg.textContent = 'Please enter a valid referral code.';
+                    referralMsg.style.color = '#F06A6A';
+                    referralMsg.style.display = 'block';
+                } else {
+                    referralMsg.textContent = 'Referral code applied!';
+                    referralMsg.style.color = '#22c55e';
+                    referralMsg.style.display = 'block';
                 }
-            });
+            }
         });
 
         function showAccountLevelInfo() {
