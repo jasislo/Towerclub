@@ -259,9 +259,19 @@
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/login.js"></script>
-    <script src="/scripts/lang.js"></script>
     <script>
         applyTranslations(); // Call this on page load
+
+        // Redirect to pay.html when sign up link is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const signUpLink = document.getElementById('signUpLink');
+            if (signUpLink) {
+                signUpLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    window.location.href = 'pay.html';
+                });
+            }
+        });
     </script>
     <script type="module" src="/scripts/firebase-init.js"></script>
     <script type="text/javascript">
