@@ -481,7 +481,7 @@
 
                 <div class="form-group">
                     <label for="name" data-i18n="profile-fullname">Your Name</label>
-                    <input type="text" id="name" name="name" required data-i18n-placeholder="profile-fullname-placeholder">
+                    <input type="text" id="name" name="name" required data-i18n-placeholder="profile-fullname">
                 </div>
 
                 <!-- Username input with # symbol rule -->
@@ -577,6 +577,36 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Prefill fields from onboarding.html/localStorage
+            const memberProfile = JSON.parse(localStorage.getItem('memberProfile') || '{}');
+            if (memberProfile) {
+                if (memberProfile.fullName && document.getElementById('name')) {
+                    document.getElementById('name').value = memberProfile.fullName;
+                }
+                if (memberProfile.username && document.getElementById('username')) {
+                    document.getElementById('username').value = memberProfile.username;
+                }
+                if (memberProfile.age && document.getElementById('age')) {
+                    document.getElementById('age').value = memberProfile.age;
+                }
+                if (memberProfile.email && document.getElementById('email')) {
+                    document.getElementById('email').value = memberProfile.email;
+                }
+                if (memberProfile.phone && document.getElementById('phone')) {
+                    document.getElementById('phone').value = memberProfile.phone;
+                }
+            }
+            // Fallback: check for reg_* keys if memberProfile is not set
+            if (document.getElementById('name') && !document.getElementById('name').value) {
+                document.getElementById('name').value = localStorage.getItem('reg_name') || '';
+            }
+            if (document.getElementById('email') && !document.getElementById('email').value) {
+                document.getElementById('email').value = localStorage.getItem('reg_email') || '';
+            }
+            if (document.getElementById('phone') && !document.getElementById('phone').value) {
+                document.getElementById('phone').value = localStorage.getItem('reg_phone') || '';
+            }
+
             const profileForm = document.getElementById('profileForm');
             const profileImage = document.getElementById('profileImage');
             const profileImg = document.getElementById('profileImg');
