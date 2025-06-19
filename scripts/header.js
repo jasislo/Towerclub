@@ -71,212 +71,62 @@ darkModeToggle.addEventListener('click', () => {
     darkModeToggle.textContent = body.classList.contains('dark-mode') ? 'Light Mode' : 'Dark Mode';
 });
 
-<link rel="stylesheet" href="../styles/header style.css">
-<script src="../scripts/header.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const profileImage = document.getElementById('profileImage');
-        const profileImg = document.getElementById('profileImg');
-        const profilePictureInput = document.getElementById('profilePictureInput');
-
-        // Handle profile image click
-        profileImage.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Handle file selection
-        profilePictureInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profileImg.src = e.target.result; // Update the profile picture preview
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    });
-</script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const profilePictureHeader = document.getElementById('profilePicture'); // Header profile picture
-        const profilePictureMain = document.getElementById('profileImage'); // Main profile picture
-        const profilePictureInput = document.getElementById('profilePictureInput'); // File input for profile picture
-
-        // Make the header profile picture clickable
-        profilePictureHeader.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Make the main profile picture clickable
-        profilePictureMain.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Handle the file input change event
-        profilePictureInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    // Update both profile pictures
-                    profilePictureHeader.src = e.target.result;
-                    profilePictureMain.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    });
-</script>
-
-<script>
-    // Sync profile picture everywhere on page load
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedPic = localStorage.getItem('profilePicture');
-        if (savedPic) {
-            const headerPic = document.getElementById('profilePicture');
-            if (headerPic) headerPic.src = savedPic;
-            const mainPic = document.getElementById('profileImage');
-            if (mainPic) mainPic.src = savedPic;
-            const mainPic2 = document.getElementById('profileImg');
-            if (mainPic2) mainPic2.src = savedPic;
-        }
-    });
-</script>
-
-<script>
-    // Log Out Button Functionality
-    const logoutBtn = document.querySelector('.nav-actions a[href="/pages/logout.html"]');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async (e) => {
-            e.preventDefault(); // Prevent default link navigation
-
-            try {
-                // Clear all session and local storage data
-                const keysToRemove = [
-                    'memberProfile',
-                    'profilePicture',
-                    'paymentMethod',
-                    'cardDetails',
-                    'selectedPlan',
-                    'selectedLanguage',
-                    'authToken',
-                    'userSession',
-                    'lastLogin',
-                    'preferences'
-                ];
-
-                // Remove specific keys
-                keysToRemove.forEach(key => {
-                    localStorage.removeItem(key);
-                    sessionStorage.removeItem(key);
-                });
-
-                // Clear any cookies that might be set
-                document.cookie.split(';').forEach(cookie => {
-                    const [name] = cookie.split('=');
-                    document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                });
-
-                // Optional: Call logout API endpoint if you have one
-                // try {
-                //     await fetch('/api/logout', {
-                //         method: 'POST',
-                //         credentials: 'include'
-                //     });
-                // } catch (error) {
-                //     console.error('Logout API call failed:', error);
-                // }
-
-                // Clear any remaining localStorage data (optional, uncomment if needed)
-                // localStorage.clear();
-                // sessionStorage.clear();
-
-                // Redirect to index page
-                window.location.href = '/index.html';
-            } catch (error) {
-                console.error('Error during logout:', error);
-                // Still redirect even if there's an error
-                window.location.href = '/index.html';
-            }
-        });
-    }
-</script>
-
-// Add Language Selector to the header (add to .nav-actions)
-const navActions = document.querySelector('.nav-actions');
-if (navActions && !document.getElementById('languageSelect')) {
-    const languageSelect = document.createElement('select');
-    languageSelect.id = 'languageSelect';
-    languageSelect.className = 'language-select';
-    languageSelect.setAttribute('aria-label', 'Select Language');
-    languageSelect.innerHTML = `
-        <option value="es">Español</option>
-        <option value="en">English</option>
-        <option value="fr">Français</option>
-        <option value="zh">中文</option>
-        <option value="ar">العربية</option>
-    `;
-    navActions.appendChild(languageSelect);
-}
-
-// Language Selector Functionality with API integration
-const languageSelect = document.getElementById('languageSelect');
-if (languageSelect) {
-    languageSelect.addEventListener('change', async function () {
-        const selectedLang = this.value;
-        // Collect all text nodes to translate
-        const elementsToTranslate = document.querySelectorAll('[data-i18n]');
-        const texts = Array.from(elementsToTranslate).map(el => el.textContent);
+// Log Out Button Functionality
+const logoutBtn = document.querySelector('.nav-actions a[href="/pages/logout.html"]');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault(); // Prevent default link navigation
 
         try {
-            // Call your translation API (replace '/api/translate' with your actual endpoint)
-            const response = await fetch('/api/translate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    texts: texts,
-                    targetLang: selectedLang
-                })
-            });
-            if (!response.ok) throw new Error('Translation API error');
-            const translated = await response.json();
+            // Clear all session and local storage data
+            const keysToRemove = [
+                'memberProfile',
+                'profilePicture',
+                'paymentMethod',
+                'cardDetails',
+                'selectedPlan',
+                'selectedLanguage',
+                'authToken',
+                'userSession',
+                'lastLogin',
+                'preferences'
+            ];
 
-            // Update the page with translated texts
-            elementsToTranslate.forEach((el, idx) => {
-                el.textContent = translated[idx];
+            // Remove specific keys
+            keysToRemove.forEach(key => {
+                localStorage.removeItem(key);
+                sessionStorage.removeItem(key);
             });
 
-            // Optionally, save selected language to localStorage
-            localStorage.setItem('selectedLanguage', selectedLang);
+            // Clear any cookies that might be set
+            document.cookie.split(';').forEach(cookie => {
+                const [name] = cookie.split('=');
+                document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+            });
+
+            // Optional: Call logout API endpoint if you have one
+            // try {
+            //     await fetch('/api/logout', {
+            //         method: 'POST',
+            //         credentials: 'include'
+            //     });
+            // } catch (error) {
+            //     console.error('Logout API call failed:', error);
+            // }
+
+            // Clear any remaining localStorage data (optional, uncomment if needed)
+            // localStorage.clear();
+            // sessionStorage.clear();
+
+            // Redirect to index page
+            window.location.href = '/index.html';
         } catch (error) {
-            alert('Translation failed. Please try again.');
+            console.error('Error during logout:', error);
+            // Still redirect even if there's an error
+            window.location.href = '/index.html';
         }
     });
-
-    // On page load, set language if previously selected
-    const savedLang = localStorage.getItem('selectedLanguage');
-    if (savedLang) {
-        languageSelect.value = savedLang;
-        languageSelect.dispatchEvent(new Event('change'));
-    }
 }
-
-import profilePictureManager from './profile-picture-manager.js';
-
-// Initialize profile picture manager
-document.addEventListener('DOMContentLoaded', () => {
-    // Register the header profile picture
-    const profilePicture = document.getElementById('profilePicture');
-    if (profilePicture) {
-        profilePictureManager.registerProfilePicture(profilePicture);
-    }
-    
-    // Sync all profile pictures
-    profilePictureManager.syncProfilePictures();
-});
 
 // Utility: Update all profile picture elements on the page
 function updateAllProfilePictures(src) {
@@ -297,20 +147,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Handle profile picture upload and sync everywhere
-const profilePictureInput = document.getElementById('profilePictureInput');
-if (profilePictureInput) {
-    profilePictureInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const dataUrl = e.target.result;
-                // Save to localStorage
-                localStorage.setItem('profilePicture', dataUrl);
-                // Update all profile pictures immediately
-                updateAllProfilePictures(dataUrl);
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
+profilePictureInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const dataUrl = e.target.result;
+            // Save to localStorage
+            localStorage.setItem('profilePicture', dataUrl);
+            // Update all profile pictures immediately
+            updateAllProfilePictures(dataUrl);
+        };
+        reader.readAsDataURL(file);
+    }
+});

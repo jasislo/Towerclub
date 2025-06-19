@@ -674,4 +674,4 @@ export function initializeVirtualCardSystem(config = {}) {
     } : null;
 
     return new VirtualCardManager(paypalConfig, visaConfig);
-} 
+}

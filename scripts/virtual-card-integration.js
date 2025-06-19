@@ -89,6 +89,23 @@ class VirtualCardUI {
         }
     }
 
+    // Fetch and update income and spending from transactions
+    updateIncomeAndSpending() {
+        let income = 0;
+        let spending = 0;
+        if (this.currentCard && Array.isArray(this.currentCard.transactions)) {
+            this.currentCard.transactions.forEach(tx => {
+                if (tx.amount > 0) income += tx.amount;
+                if (tx.amount < 0) spending += tx.amount;
+            });
+        }
+        // Update UI
+        const incomeEls = document.querySelectorAll('.income-card .amount, .info-card .amount.positive');
+        const spendingEls = document.querySelectorAll('.spending-card .amount, .info-card .amount.negative');
+        incomeEls.forEach(el => el.textContent = `+${formatCurrency(income, this.currentCard?.currency || 'USD')}`);
+        spendingEls.forEach(el => el.textContent = `${formatCurrency(spending, this.currentCard?.currency || 'USD')}`);
+    }
+
     updateCardDisplay() {
         if (!this.currentCard) {
             this.showNoCardMessage();
@@ -103,6 +120,9 @@ class VirtualCardUI {
         
         // Update transaction history
         this.updateTransactionHistory();
+
+        // Update income and spending
+        this.updateIncomeAndSpending();
     }
 
     updateCardVisual() {
@@ -150,10 +170,6 @@ class VirtualCardUI {
             <div class="detail-item">
                 <span class="label">Card Type:</span>
                 <span class="value">${this.currentCard.cardType} ${this.currentCard.cardCategory}</span>
-            </div>
-            <div class="detail-item">
-                <span class="label">Card Limit:</span>
-                <span class="value">${formatCurrency(this.currentCard.creditLimit, this.currentCard.currency)}</span>
             </div>
             <div class="detail-item">
                 <span class="label">Current Balance:</span>
