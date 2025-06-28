@@ -469,11 +469,11 @@
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
                 registerForm.addEventListener('submit', function(e) {
-                    // For each field you want to remember, save to localStorage
-                    localStorage.setItem('reg_name', document.getElementById('name').value);
+                    // Save form data with correct field IDs
+                    localStorage.setItem('reg_name', document.getElementById('fullName').value);
                     localStorage.setItem('reg_email', document.getElementById('email').value);
                     localStorage.setItem('reg_phone', document.getElementById('phone').value);
-                    // ...add more fields as needed
+                    // You can add any other fields you want to store
                 });
             }
         });

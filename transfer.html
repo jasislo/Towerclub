@@ -540,6 +540,71 @@
         });
     </script>
 
+    <!-- Add this script before the existing script at the bottom -->
+    <script type="module">
+    import transferService from '/scripts/transfer-service.js';
+
+    document.getElementById('makeTransferBtn').addEventListener('click', async () => {
+        try {
+            // Show loading indicator
+            document.getElementById('makeTransferBtn').disabled = true;
+            document.getElementById('makeTransferBtn').innerHTML = 'Processing...';
+            
+            // Get form values
+            const recipientType = document.getElementById('recipientType').value;
+            const recipientEmail = document.getElementById('recipientEmail').value;
+            const bankName = document.getElementById('bankName')?.value || '';
+            const accountNumber = document.getElementById('accountNumber')?.value || '';
+            const routingNumber = document.getElementById('routingNumber')?.value || '';
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const transferSpeed = document.getElementById('transferSpeed').value;
+            const purpose = document.getElementById('purpose').value;
+            const notes = document.getElementById('notes').value;
+
+            // Prepare transfer data
+            const transferData = {
+                recipientType,
+                recipientEmail,
+                bankName,
+                accountNumber,
+                routingNumber,
+                amount,
+                currency,
+                transferSpeed,
+                purpose,
+                notes,
+                paymentMethod: 'virtual_card'
+            };
+
+            // Process the transfer
+            const result = await transferService.transferMoney(transferData);
+
+            if (result.success) {
+                // Show success message
+                alert(`Transfer successful! ${result.message}`);
+                
+                // Redirect to transactions page
+                window.location.href = 'activities.html';
+            } else {
+                // Show error message
+                alert(`Transfer failed: ${result.message}`);
+                
+                // Reset button
+                document.getElementById('makeTransferBtn').disabled = false;
+                document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+            }
+        } catch (error) {
+            console.error('Error during transfer:', error);
+            alert('An error occurred while processing the transfer.');
+            
+            // Reset button
+            document.getElementById('makeTransferBtn').disabled = false;
+            document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+        }
+    });
+</script>
+
     <!-- Place these scripts before </body> if not already present -->
     <script type="text/javascript">
       function googleTranslateElementInit() {

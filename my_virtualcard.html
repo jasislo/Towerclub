@@ -680,15 +680,6 @@
                     <select id="cardTypeSelect" class="form-control">
                         <option value="VISA">VISA</option>
                         <option value="MASTERCARD">Mastercard</option>
-                        <option value="PAYPAL">PayPal</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="providerSelect">Provider:</label>
-                    <select id="providerSelect" class="form-control">
-                        <option value="LOCAL">Local Generation</option>
-                        <option value="VISA">VISA API</option>
-                        <option value="PAYPAL">PayPal API</option>
                     </select>
                 </div>
             </div>
@@ -889,7 +880,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 </script>
-<!-- Add this before </body> if not already present -->
+<!-- Add this before </body> -->
 <script type="text/javascript">
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
@@ -902,6 +893,50 @@ document.addEventListener('DOMContentLoaded', () => {
 <script 
   type="text/javascript" 
   src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<!-- Add this script before the closing body tag -->
+<script type="module">
+    import transferService from '/scripts/transfer-service.js';
+
+    // Update card balance when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        // Get current balance
+        const balance = transferService._getUserBalance();
+        
+        // Update card display
+        updateCardBalance(balance);
+        
+        // Listen for transaction events
+        window.addEventListener('transaction-added', () => {
+            const updatedBalance = transferService._getUserBalance();
+            updateCardBalance(updatedBalance);
+        });
+    });
+
+    // Update the card balance display
+    function updateCardBalance(balance) {
+        // Update balance in any relevant UI elements
+        const walletBalance = document.querySelector('.amount.positive');
+        if (walletBalance) {
+            walletBalance.textContent = `+$${balance.toFixed(2)}`;
+        }
+        
+        // Update card details section
+        const cardDetails = document.getElementById('cardDetails');
+        if (cardDetails) {
+            // Check if card details are showing default message
+            if (cardDetails.textContent.includes('Generate a virtual card')) {
+                // If they are, keep showing default message
+                return;
+            }
+            
+            // Update available balance in card details
+            const balanceElement = cardDetails.querySelector('.available-balance');
+            if (balanceElement) {
+                balanceElement.textContent = `$${balance.toFixed(2)}`;
+            }
+        }
+    }
 </script>
 </body>
 </html>
