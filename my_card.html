@@ -329,20 +329,6 @@
 
     <!-- Main Content -->
     <div class="container">
-        <div class="card-container">
-            <div class="card-header">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" class="visa-logo">
-            </div>
-            <div class="card-content">
-                <h3>My Towerclub Card</h3>
-                <div class="card-number">**** **** **** 1234</div>
-                <div class="card-details">
-                    <span>Expiry: 12/26</span>
-                    <span>Cardholder: John Doe</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Add Payment Methods -->
         <div class="payment-methods">
             <div class="card-container" id="creditCardContainer" onclick="selectPaymentMethod('creditCard')">
@@ -489,7 +475,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
-                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description" data-i18n="footer-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -716,10 +702,10 @@
                 selected.setAttribute('title', 'Selected');
             }
 
-            // Store selection for use on payment_methods.html
+            // Store selection in localStorage
             localStorage.setItem('selectedPaymentMethod', method);
 
-            // Redirect to payment_methods.html after selection
+            // Redirect to payment_methods.html
             window.location.href = 'payment_methods.html';
         }
 

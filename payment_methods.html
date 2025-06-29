@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         :root {
             --primary-color: #00968A;
@@ -560,6 +562,194 @@
         .service-card .material-icons {
             font-size: 40px;
         }
+        
+        /* Stripe Elements Styling */
+        .StripeElement {
+            height: 40px;
+            padding: 10px 12px;
+            width: 100%;
+            color: #32325d;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+            border-color: #22c55e;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+
+        /* Payment Method Form Styles */
+        .payment-method-form-container {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+        }
+
+        .payment-method-form-container h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .payment-method-form button {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .payment-method-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-method-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Payment methods list styles */
+        .payment-methods-list {
+            margin: 20px 0;
+        }
+
+        .payment-methods-list h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-method-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-method-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+
+        .payment-method-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-method-name {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .payment-method-number {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .payment-method-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .payment-method-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s;
+        }
+
+        .payment-method-action-btn:hover {
+            color: #000;
+        }
+
+        .default-badge {
+            background-color: #22c55e;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #22c55e;
+            animation: spin 1s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -653,7 +843,57 @@
                         <span class="material-icons">add_card</span>
                         <span>Change Card</span>
                     </button>
+                    <button class="service-btn" onclick="showAddPaymentMethodForm()">
+                        <span class="material-icons">add_circle</span>
+                        <span>Add Payment Method</span>
+                    </button>
+                    <button class="service-btn" onclick="loadPaymentMethods()">
+                        <span class="material-icons">refresh</span>
+                        <span>Refresh</span>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Payment Methods List -->
+            <div class="payment-methods-list" id="paymentMethodsList">
+                <h2>Your Payment Methods</h2>
+                <div id="payment-methods-container">
+                    <div class="loading-container" id="loading-payment-methods" style="text-align: center; padding: 20px;">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 10px;">Loading payment methods...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Payment Method Form -->
+            <div class="payment-method-form-container" id="paymentMethodFormContainer">
+                <h2>Add New Payment Method</h2>
+                <form id="payment-method-form" class="payment-method-form">
+                    <div class="form-group">
+                        <label for="cardholder-name">Cardholder Name</label>
+                        <input type="text" id="cardholder-name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-element">Card Information</label>
+                        <div id="card-element" class="form-control">
+                            <!-- Stripe Element will be inserted here -->
+                        </div>
+                        <!-- Used to display form errors -->
+                        <div id="card-errors" role="alert" style="color: #fa755a; margin-top: 8px; font-size: 0.9em;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="billing-address">Billing Address</label>
+                        <input type="text" id="billing-address" placeholder="123 Main St, City, State, ZIP" required>
+                    </div>
+                    <div class="form-check" style="display: flex; align-items: center; margin-top: 10px;">
+                        <input type="checkbox" id="make-default" style="margin-right: 10px;">
+                        <label for="make-default">Make this my default payment method</label>
+                    </div>
+                    <div class="form-actions" style="margin-top: 20px; display: flex; justify-content: space-between;">
+                        <button type="button" onclick="hideAddPaymentMethodForm()" style="background: #f5f5f5; color: #333;">Cancel</button>
+                        <button type="submit" id="submit-payment-method">Add Payment Method</button>
+                    </div>
+                </form>
             </div>
 
             <div class="paypal-login">
@@ -673,7 +913,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -1053,10 +1293,26 @@
         console.error('Failed to fetch stats:', err);
     });
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the selected payment method
+    const selectedMethod = localStorage.getItem('selectedPaymentMethod');
+    
+    // Log to console for debugging
+    console.log('Selected payment method:', selectedMethod);
+    
+    if (selectedMethod) {
+        // Do something with the selected method
+        const methodDisplay = document.createElement('div');
+        methodDisplay.textContent = `Selected payment method: ${selectedMethod}`;
+        document.body.appendChild(methodDisplay);
+    }
+});
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
+    <script src="/scripts/payment-methods-manager.js"></script>
     <script>
       applyTranslations(); // Call this on page load
     </script>
@@ -1081,7 +1337,7 @@
         DarkMode.init();
     });
 </script>
-<!-- Place these scripts before </body> if not already present -->
+<!-- Scripts -->
 <script type="text/javascript">
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({

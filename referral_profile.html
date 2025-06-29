@@ -551,7 +551,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -620,13 +620,33 @@
 
 <!-- Add this modal at the end of your body -->
 <div id="cashOutModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center;">
-    <div style="background:#fff; padding:2rem; border-radius:12px; max-width:350px; text-align:center; position:relative;">
-        <h3>Cash Out Confirmation</h3>
-        <p>Are you sure you want to cash out to your balance?</p>
-        <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:center;">
-            <button id="cashOutYesBtn" style="padding:0.5rem 1.5rem; background:#22c55e; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer;">Yes</button>
-            <button id="cashOutNoBtn" style="padding:0.5rem 1.5rem; background:#eee; color:#333; border:none; border-radius:6px; font-weight:600; cursor:pointer;">No</button>
+    <div style="background:#fff; padding:2rem; border-radius:12px; max-width:400px; text-align:center; position:relative;">
+        <button onclick="closeCashOutModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Cash Out Reward</h3>
+        <p style="margin-bottom:1rem;">Cash out <span id="cashOutAmount" style="font-weight:600;"></span> to your preferred payment method:</p>
+        
+        <div style="margin:1rem 0; text-align:left;">
+            <div style="margin-bottom:1rem;">
+                <select id="paymentMethodSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                    <option value="">Select Payment Method</option>
+                    <option value="account">TowerClub Account Balance</option>
+                    <option value="card">Debit/Credit Card</option>
+                    <option value="bank">Bank Account</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </div>
+            
+            <!-- Payment method details (initially hidden) -->
+            <div id="paymentMethodDetails" style="display:none; border:1px solid #eee; padding:1rem; border-radius:6px; margin-bottom:1rem;">
+                <!-- This will be populated dynamically -->
+            </div>
         </div>
+        
+        <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:center;">
+            <button id="cashOutYesBtn" style="padding:0.5rem 1.5rem; background:#22c55e; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; opacity:0.7;" disabled>Cash Out</button>
+            <button id="cashOutNoBtn" style="padding:0.5rem 1.5rem; background:#eee; color:#333; border:none; border-radius:6px; font-weight:600; cursor:pointer;">Cancel</button>
+        </div>
+        <p style="font-size:0.8rem; margin-top:1rem; color:#666;">Funds will typically arrive within 1-3 business days depending on your payment method.</p>
     </div>
 </div>
 
@@ -655,6 +675,17 @@
     </div>
 </div>
 
+    <!-- Notification Toast -->
+    <div id="notificationToast" style="display:none; position:fixed; bottom:20px; right:20px; background-color:#22c55e; color:white; padding:12px 20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; max-width:350px;">
+        <div style="display:flex; align-items:center;">
+            <span class="material-icons" style="margin-right:10px;">check_circle</span>
+            <div>
+                <div id="notificationTitle" style="font-weight:500; margin-bottom:2px;">Success</div>
+                <div id="notificationMessage" style="font-size:0.9rem;"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const profilePicture = document.getElementById('profilePicture');
@@ -676,7 +707,37 @@
                     reader.readAsDataURL(file);
                 }
             });
+            
+            // Initialize payment methods if there are saved ones
+            initializePaymentMethods();
         });
+        
+        // Function to initialize payment methods
+        function initializePaymentMethods() {
+            // In a real app, you would fetch this from your API/backend
+            // For this demo, we'll set up some dummy data
+            
+            // Check if we have stored payment methods
+            if (!localStorage.getItem('paymentMethods')) {
+                // Create some example payment methods
+                const paymentMethods = {
+                    cards: [
+                        { id: 'visa_1234', label: 'Visa ending in 1234', type: 'visa' },
+                        { id: 'mastercard_5678', label: 'Mastercard ending in 5678', type: 'mastercard' }
+                    ],
+                    bankAccounts: [
+                        { id: 'chase_1234', label: 'Chase Bank (...1234)', type: 'chase' },
+                        { id: 'bofa_5678', label: 'Bank of America (...5678)', type: 'bofa' }
+                    ],
+                    paypal: {
+                        email: 'user@example.com',
+                        verified: true
+                    }
+                };
+                
+                localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
+            }
+        }
 
         function redirectToPicturesProfile() {
             window.location.href = 'pictures_profile.html'; // Redirect to pictures_profile.html
@@ -708,17 +769,328 @@
             // Hide the modal
             document.getElementById('referralRewardModal').style.display = 'none';
         }
+        
+        function showCashOutModal() {
+            // Get the cash out amount from the page
+            const cashOutAmount = document.getElementById('cashOutReward').innerText;
+            document.getElementById('cashOutAmount').innerText = cashOutAmount;
+            
+            // Reset the form
+            document.getElementById('paymentMethodSelect').value = '';
+            document.getElementById('paymentMethodDetails').style.display = 'none';
+            document.getElementById('paymentMethodDetails').innerHTML = '';
+            document.getElementById('cashOutYesBtn').disabled = true;
+            document.getElementById('cashOutYesBtn').style.opacity = '0.7';
+            
+            // Show the modal
+            document.getElementById('cashOutModal').style.display = 'flex';
+        }
 
         // Cash Out functionality
         document.getElementById('cashOutYesBtn').addEventListener('click', () => {
-            // Implement cash out logic here
-            alert('Cash out successful!');
-            closeCashOutModal();
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
+            const cashOutAmount = document.getElementById('cashOutAmount').innerText;
+            
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Show processing state
+            const cashOutBtn = document.getElementById('cashOutYesBtn');
+            const originalBtnText = cashOutBtn.innerText;
+            cashOutBtn.innerText = 'Processing...';
+            cashOutBtn.disabled = true;
+            
+            // Get the amount as a number
+            const cashOutValue = parseFloat(cashOutAmount.replace(/[^0-9.-]+/g, ''));
+            
+            // Simulate API call to process the cash out
+            setTimeout(() => {
+                // Update the user's balances
+                // In a real app, this would be an API call to your backend
+                
+                // Update the displayed cash out reward amount to zero
+                document.getElementById('cashOutReward').innerText = '$0';
+                
+                // Add transaction to history
+                const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                
+                // If transferring to TowerClub account balance, update that too
+                if (paymentMethod === 'account') {
+                    // Get current balance (in a real app, you'd fetch this)
+                    let currentBalance = parseFloat(localStorage.getItem('userBalance') || '0');
+                    
+                    // Add cash out amount to balance
+                    const newBalance = currentBalance + cashOutValue;
+                    localStorage.setItem('userBalance', newBalance.toString());
+                    localStorage.setItem('balanceLastUpdated', new Date().toISOString());
+                    
+                    // Record as an internal transfer
+                    transactions.unshift({
+                        id: Date.now().toString(),
+                        type: 'referral_reward',
+                        amount: cashOutValue,
+                        description: 'Referral Reward Cash Out to TowerClub Balance',
+                        timestamp: new Date().toISOString()
+                    });
+                } else {
+                    // Record as an external transfer
+                    let paymentDetails = '';
+                    
+                    switch(paymentMethod) {
+                        case 'card':
+                            const cardSelect = document.getElementById('cardSelect');
+                            const cardId = cardSelect ? cardSelect.value : 'unknown';
+                            paymentDetails = 'to Card';
+                            break;
+                        case 'bank':
+                            const bankSelect = document.getElementById('bankSelect');
+                            const bankId = bankSelect ? bankSelect.value : 'unknown';
+                            paymentDetails = 'to Bank Account';
+                            break;
+                        case 'paypal':
+                            paymentDetails = 'to PayPal';
+                            break;
+                    }
+                    
+                    transactions.unshift({
+                        id: Date.now().toString(),
+                        type: 'referral_reward_external',
+                        amount: cashOutValue,
+                        description: `Referral Reward Cash Out ${paymentDetails}`,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                
+                // Show success message based on payment method
+                let successMessage = '';
+                switch(paymentMethod) {
+                    case 'account':
+                        successMessage = `${cashOutAmount} has been added to your TowerClub account balance!`;
+                        break;
+                    case 'card':
+                        successMessage = `${cashOutAmount} has been sent to your card! It will arrive in 1-3 business days.`;
+                        break;
+                    case 'bank':
+                        successMessage = `${cashOutAmount} has been sent to your bank account! It will arrive in 1-3 business days.`;
+                        break;
+                    case 'paypal':
+                        successMessage = `${cashOutAmount} has been sent to your PayPal account! It should arrive within 24 hours.`;
+                        break;
+                }
+                
+                alert('Cash out successful! ' + successMessage);
+                closeCashOutModal();
+                
+                // Show notification toast
+                showNotification('Cash Out Successful', successMessage);
+                
+                // Reset button state
+                cashOutBtn.innerText = originalBtnText;
+                cashOutBtn.disabled = false;
+            }, 2000);
         });
 
         document.getElementById('cashOutNoBtn').addEventListener('click', () => {
             closeCashOutModal();
         });
+        
+        // Handle payment method selection
+        document.getElementById('paymentMethodSelect').addEventListener('change', function() {
+            const selectedMethod = this.value;
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            const cashOutBtn = document.getElementById('cashOutYesBtn');
+            
+            if (!selectedMethod) {
+                detailsContainer.style.display = 'none';
+                cashOutBtn.disabled = true;
+                cashOutBtn.style.opacity = '0.7';
+                return;
+            }
+            
+            // Enable the cash out button
+            cashOutBtn.disabled = false;
+            cashOutBtn.style.opacity = '1';
+            
+            // Show appropriate details form based on selection
+            detailsContainer.style.display = 'block';
+            
+            // Get saved payment methods
+            const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '{}');
+            
+            switch(selectedMethod) {
+                case 'account':
+                    // Get account balance
+                    const balance = parseFloat(localStorage.getItem('userBalance') || '0');
+                    const formattedBalance = '$' + balance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Your TowerClub Account Balance</p>
+                        <div style="background:#f7f7f7; padding:0.75rem; border-radius:4px;">
+                            <div>Current Balance: <strong>${formattedBalance}</strong></div>
+                            <div style="margin-top:0.5rem;">The funds will be added instantly to your TowerClub account balance.</div>
+                        </div>
+                    `;
+                    break;
+                case 'card':
+                    let cardOptions = '';
+                    if (paymentMethods.cards && paymentMethods.cards.length > 0) {
+                        paymentMethods.cards.forEach(card => {
+                            cardOptions += `<option value="${card.id}">${card.label}</option>`;
+                        });
+                    }
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Select Card</p>
+                        <select id="cardSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                            ${cardOptions}
+                            <option value="new">+ Add a new card</option>
+                        </select>
+                    `;
+                    
+                    // Handle "Add a new card" option
+                    document.getElementById('cardSelect').addEventListener('change', function() {
+                        if (this.value === 'new') {
+                            showAddCardForm();
+                        }
+                    });
+                    break;
+                case 'bank':
+                    let bankOptions = '';
+                    if (paymentMethods.bankAccounts && paymentMethods.bankAccounts.length > 0) {
+                        paymentMethods.bankAccounts.forEach(account => {
+                            bankOptions += `<option value="${account.id}">${account.label}</option>`;
+                        });
+                    }
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Select Bank Account</p>
+                        <select id="bankSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                            ${bankOptions}
+                            <option value="new">+ Add a new bank account</option>
+                        </select>
+                    `;
+                    
+                    // Handle "Add a new bank account" option
+                    document.getElementById('bankSelect').addEventListener('change', function() {
+                        if (this.value === 'new') {
+                            showAddBankForm();
+                        }
+                    });
+                    break;
+                case 'paypal':
+                    const paypalEmail = paymentMethods.paypal ? paymentMethods.paypal.email : 'No PayPal account connected';
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">PayPal Account</p>
+                        <div style="background:#f7f7f7; padding:0.75rem; border-radius:4px; margin-bottom:0.5rem;">
+                            ${paypalEmail}
+                        </div>
+                        <a href="#" onclick="showAddPaypalForm(); return false;" style="color:#4f46e5; text-decoration:none; font-size:0.9rem;">
+                            ${paymentMethods.paypal ? 'Use a different PayPal account' : 'Connect PayPal account'}
+                        </a>
+                    `;
+                    break;
+            }
+        });
+        
+        function showAddCardForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Add New Card</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Card Number</label>
+                        <input type="text" placeholder="1234 5678 9012 3456" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="display:flex; gap:1rem; margin-bottom:0.75rem;">
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">CVC</label>
+                            <input type="text" placeholder="123" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Cardholder Name</label>
+                        <input type="text" placeholder="John Smith" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="saveNewCard()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Add Card</button>
+                </div>
+            `;
+        }
+        
+        function showAddBankForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Add Bank Account</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Bank Name</label>
+                        <input type="text" placeholder="Enter bank name" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Account Number</label>
+                        <input type="text" placeholder="Enter account number" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Routing Number</label>
+                        <input type="text" placeholder="Enter routing number" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="saveNewBank()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Add Bank Account</button>
+                </div>
+            `;
+        }
+        
+        function showAddPaypalForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Connect PayPal Account</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">PayPal Email</label>
+                        <input type="email" placeholder="your@email.com" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="savePaypal()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Connect PayPal</button>
+                </div>
+            `;
+        }
+        
+        // Helper functions to save payment methods
+        function saveNewCard() {
+            // In a real app, you would validate and send to your API
+            alert('Card added successfully!');
+            
+            // Return to card selection
+            document.getElementById('paymentMethodSelect').value = 'card';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
+        
+        function saveNewBank() {
+            // In a real app, you would validate and send to your API
+            alert('Bank account added successfully!');
+            
+            // Return to bank selection
+            document.getElementById('paymentMethodSelect').value = 'bank';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
+        
+        function savePaypal() {
+            // In a real app, you would validate and send to your API
+            alert('PayPal account connected successfully!');
+            
+            // Return to PayPal selection
+            document.getElementById('paymentMethodSelect').value = 'paypal';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
 
         function closeCashOutModal() {
             document.getElementById('cashOutModal').style.display = 'none';
@@ -782,6 +1154,36 @@
                 });
             }
         });
+
+        // Function to show notification toast
+        function showNotification(title, message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const titleElem = document.getElementById('notificationTitle');
+            const messageElem = document.getElementById('notificationMessage');
+            
+            // Set content
+            titleElem.textContent = title;
+            messageElem.textContent = message;
+            
+            // Set color based on type
+            if (type === 'success') {
+                toast.style.backgroundColor = '#22c55e'; // Green
+            } else if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444'; // Red
+            } else if (type === 'warning') {
+                toast.style.backgroundColor = '#f59e0b'; // Amber
+            } else if (type === 'info') {
+                toast.style.backgroundColor = '#3b82f6'; // Blue
+            }
+            
+            // Show the toast
+            toast.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
     </script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>

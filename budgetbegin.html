@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Create Budget</title>
+    <title>Add Money to Account</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
@@ -14,6 +14,7 @@
             --text-color: #333333;
             --border-color: #E0E0E0;
             --error-color: #FF5252;
+            --success-color: #22c55e;
         }
 
         * {
@@ -242,7 +243,7 @@
         }
 
         .create-btn {
-            background-color: var(--primary-color);
+            background-color: var(--success-color);
             color: white;
             font-weight: 600;
         }
@@ -257,6 +258,37 @@
             color: rgba(0, 0, 0, 0.4);
             margin-top: 16px;
             font-size: 14px;
+        }
+
+        /* Balance display section */
+        .balance-preview {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .balance-preview h3 {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .balance-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            font-size: 13px;
+            opacity: 0.9;
         }
 
         /* Animations */
@@ -424,31 +456,41 @@
     <div class="container">
         <div class="form-container">
             <div class="header">
-                <h1>Create Budget</h1>
+                <h1>Add Money to Your Account</h1>
                 <button class="close-btn" onclick="closeForm()">×</button>
+            </div>
+            
+            <!-- Balance Preview Section -->
+            <div class="balance-preview">
+                <h3>Current Balance</h3>
+                <div class="balance-amount" id="currentBalance">$0.00</div>
+                <div class="balance-info">
+                    <span>Available for withdrawal</span>
+                    <span id="lastUpdated">Updated just now</span>
+                </div>
             </div>
             
             <form id="budgetForm">
                 <div class="input-group amount-input">
                     <i class="icon">$</i>
-                    <input type="number" id="amount" placeholder="Amount" required>
+                    <input type="number" id="amount" placeholder="Enter Amount" required>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="budgetName" placeholder="Budget Name" required>
+                    <input type="text" id="budgetName" placeholder="Purpose (e.g., Savings, Spending)" required>
                 </div>
 
                 <div class="input-group">
-                    <textarea id="description" placeholder="Description" rows="4"></textarea>
+                    <textarea id="description" placeholder="Notes (optional)" rows="4"></textarea>
                 </div>
 
                 <div class="button-group">
-                    <button type="button" class="skip-btn" onclick="skipForNow()">Skip for Now</button>
-                    <button type="submit" class="create-btn">Create Budget</button>
+                    <button type="button" class="skip-btn" onclick="skipForNow()">Cancel</button>
+                    <button type="submit" class="create-btn">Add to Account</button>
                 </div>
             </form>
 
-            <p class="helper-text">Tap above to complete request</p>
+            <p class="helper-text">Funds will be available in your account immediately</p>
         </div>
     </div>
 
@@ -459,7 +501,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -516,6 +558,42 @@
             const amountInput = document.getElementById('amount');
             const budgetNameInput = document.getElementById('budgetName');
             const descriptionInput = document.getElementById('description');
+            const currentBalanceElement = document.getElementById('currentBalance');
+            const lastUpdatedElement = document.getElementById('lastUpdated');
+
+            // Load and display current balance
+            function loadCurrentBalance() {
+                // In a real application, you would fetch this from your API
+                // For demo purposes, we'll use localStorage
+                const balance = parseFloat(localStorage.getItem('userBalance') || '0');
+                currentBalanceElement.textContent = '$' + balance.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                
+                // Set last updated time
+                const lastUpdated = localStorage.getItem('balanceLastUpdated') || new Date().toISOString();
+                const lastUpdatedDate = new Date(lastUpdated);
+                const now = new Date();
+                
+                const diffMinutes = Math.floor((now - lastUpdatedDate) / (1000 * 60));
+                
+                if (diffMinutes < 1) {
+                    lastUpdatedElement.textContent = 'Updated just now';
+                } else if (diffMinutes < 60) {
+                    lastUpdatedElement.textContent = `Updated ${diffMinutes} min ago`;
+                } else {
+                    const diffHours = Math.floor(diffMinutes / 60);
+                    if (diffHours < 24) {
+                        lastUpdatedElement.textContent = `Updated ${diffHours} hr ago`;
+                    } else {
+                        lastUpdatedElement.textContent = `Updated on ${lastUpdatedDate.toLocaleDateString()}`;
+                    }
+                }
+            }
+            
+            // Load balance on page load
+            loadCurrentBalance();
 
             // Format amount input with commas
             amountInput.addEventListener('input', (e) => {
@@ -530,36 +608,66 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
-                const budgetData = {
-                    amount: amountInput.value.replace(/,/g, ''),
-                    name: budgetNameInput.value,
-                    description: descriptionInput.value,
-                    createdAt: new Date().toISOString(),
-                    timeLeft: '45 days left'
+                // Get the amount from the input field
+                const amount = amountInput.value.replace(/,/g, '');
+                if (!amount || parseFloat(amount) <= 0) {
+                    alert('Please enter a valid amount');
+                    return;
+                }
+
+                const depositData = {
+                    amount: amount,
+                    purpose: budgetNameInput.value,
+                    notes: descriptionInput.value,
+                    timestamp: new Date().toISOString()
                 };
 
                 try {
                     // Here you would typically send this data to your backend
-                    console.log('Budget created:', budgetData);
+                    console.log('Deposit details:', depositData);
 
-                    // Simulate moving money to account balance
-                    // (If you have an account balance element, update it here)
-                    // Example: 
-                    // let balanceElem = document.getElementById('accountBalance');
-                    // let currentBalance = parseFloat(balanceElem.textContent.replace(/[^0-9.-]+/g,""));
-                    // balanceElem.textContent = '$' + (currentBalance + parseFloat(budgetData.amount)).toLocaleString();
+                    // Show loading state
+                    const submitBtn = document.querySelector('.create-btn');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.textContent = 'Processing...';
+                    submitBtn.disabled = true;
+
+                    // Simulate API call (remove this in production)
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    // Update the user's balance in local storage (just for demo)
+                    let currentBalance = parseFloat(localStorage.getItem('userBalance') || '0');
+                    const newBalance = currentBalance + parseFloat(amount);
+                    localStorage.setItem('userBalance', newBalance.toString());
+                    localStorage.setItem('balanceLastUpdated', new Date().toISOString());
+                    
+                    // Update transaction history (demo)
+                    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                    transactions.unshift({
+                        id: Date.now().toString(),
+                        type: 'deposit',
+                        amount: parseFloat(amount),
+                        purpose: budgetNameInput.value,
+                        notes: descriptionInput.value,
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('transactions', JSON.stringify(transactions));
 
                     // Show success message
-                    alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
+                    alert(`$${parseFloat(amount).toLocaleString()} has been added to your account balance!`);
 
                     // Reset form
                     form.reset();
 
-                    // Redirect to payment page (replace with your actual route)
-                    window.location.href = '/payment';
+                    // Redirect to dashboard (or relevant page)
+                    window.location.href = '/pages/dashboard.html';
                 } catch (error) {
-                    console.error('Error creating budget:', error);
-                    alert('Error creating budget. Please try again.');
+                    console.error('Error processing deposit:', error);
+                    alert('Error adding money to your account. Please try again.');
+                    
+                    // Reset button state
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
                 }
             });
 

@@ -406,9 +406,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 <img src="../assets/images/avatar.png" alt="Profile Picture" id="profileAvatarImg" data-i18n="profile-avatar-img-alt">
                 <input type="file" id="profileAvatarInput" accept="image/*" style="display: none;" data-i18n="profile-avatar-input-alt">
             </div>
-            <div class="profile-name">Andrew Smith</div>
-            <div class="profile-username">@andrewsmith</div>
-            <div class="profile-email">andrew.smith@example.com</div>
+            <div class="profile-name" id="profileName"></div>
+            <div class="profile-username" id="profileUsername"></div>
+            <div class="profile-email" id="profileEmail"></div>
         </div>
 
         <div class="menu">
@@ -432,6 +432,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Privacy Policy</span>
                 <i class="material-icons">chevron_right</i>
             </div>
+            <div class="menu-item" onclick="showEditProfileDialog()" data-i18n="edit-profile-info">
+                <span>Edit Profile Info</span>
+                <i class="material-icons">chevron_right</i>
+            </div>
         </div>
 
         <div style="text-align: center; margin-top: 30px;">
@@ -447,6 +451,31 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     </div>
 
+    <!-- Profile Edit Dialog -->
+    <div id="profileEditDialog" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000;">
+        <div style="background: var(--card-background); max-width: 500px; margin: 100px auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+            <h2 style="margin-top: 0;">Edit Profile Information</h2>
+            <form id="profileEditForm">
+                <div style="margin-bottom: 15px;">
+                    <label for="editName" style="display: block; margin-bottom: 5px;">Name</label>
+                    <input type="text" id="editName" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--text-color);">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="editUsername" style="display: block; margin-bottom: 5px;">Username</label>
+                    <input type="text" id="editUsername" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--text-color);">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label for="editEmail" style="display: block; margin-bottom: 5px;">Email</label>
+                    <input type="email" id="editEmail" style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 5px; background: var(--background-color); color: var(--text-color);">
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="closeEditProfileDialog()" style="padding: 10px 15px; border: 1px solid var(--border-color); background: transparent; border-radius: 5px; cursor: pointer; color: var(--text-color);">Cancel</button>
+                    <button type="submit" style="padding: 10px 15px; background: var(--button-color); color: white; border: none; border-radius: 5px; cursor: pointer;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
@@ -454,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
-                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description" data-i18n="footer-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -561,22 +590,38 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Example: Replace with actual API call or backend data
+        // Get user profile data from Firebase or local storage
+        // If you're using Firebase Auth, you'd get this from the current user
         const profileData = {
-            name: "Andrew Smith",
-            username: "andrewsmith",
-            email: "andrew.smith@example.com"
+            name: localStorage.getItem('userName') || "Andrew Smith",
+            username: localStorage.getItem('userUsername') || "andrewsmith",
+            email: localStorage.getItem('userEmail') || "andrew.smith@example.com"
         };
 
         document.addEventListener('DOMContentLoaded', function () {
             // Update profile info fields dynamically
-            const nameElem = document.querySelector('.profile-header .profile-name');
-            const usernameElem = document.querySelector('.profile-header .profile-username');
-            const emailElem = document.querySelector('.profile-header .profile-email');
+            const nameElem = document.getElementById('profileName');
+            const usernameElem = document.getElementById('profileUsername');
+            const emailElem = document.getElementById('profileEmail');
 
-            if (nameElem) nameElem.textContent = profileData.name;
-            if (usernameElem) usernameElem.textContent = `@${profileData.username}`;
-            if (emailElem) emailElem.textContent = profileData.email;
+            // Function to update user profile data
+            function updateUserProfileData() {
+                // Try to get data from auth service first (like Firebase)
+                // If not available, use profileData object as fallback
+                
+                // For demonstration, we're using the profileData object
+                if (nameElem) nameElem.textContent = profileData.name;
+                if (usernameElem) usernameElem.textContent = `@${profileData.username}`;
+                if (emailElem) emailElem.textContent = profileData.email;
+                
+                // Save to localStorage for persistence across pages
+                localStorage.setItem('userName', profileData.name);
+                localStorage.setItem('userUsername', profileData.username);
+                localStorage.setItem('userEmail', profileData.email);
+            }
+            
+            // Update the profile data on page load
+            updateUserProfileData();
 
             const headerProfilePicture = document.getElementById('profilePicture'); // Header profile picture
             const mainProfilePicture = document.getElementById('profileAvatarImg'); // Main content profile picture
@@ -596,6 +641,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Update both the header and main content profile pictures
                         headerProfilePicture.src = e.target.result;
                         mainProfilePicture.src = e.target.result;
+                        
+                        // Save to localStorage for persistence
+                        localStorage.setItem('profilePicture', e.target.result);
                     };
                     reader.readAsDataURL(file);
                 }
@@ -615,11 +663,66 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
-    <script>
+
+        // Profile edit dialog functions
+        function showEditProfileDialog() {
+            const dialog = document.getElementById('profileEditDialog');
+            const nameInput = document.getElementById('editName');
+            const usernameInput = document.getElementById('editUsername');
+            const emailInput = document.getElementById('editEmail');
+            
+            // Pre-fill with current values
+            nameInput.value = localStorage.getItem('userName') || '';
+            usernameInput.value = localStorage.getItem('userUsername') || '';
+            emailInput.value = localStorage.getItem('userEmail') || '';
+            
+            dialog.style.display = 'block';
+        }
+        
+        function closeEditProfileDialog() {
+            document.getElementById('profileEditDialog').style.display = 'none';
+        }
+        
+        // Handle profile edit form submission
+        document.getElementById('profileEditForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('editName').value;
+            const username = document.getElementById('editUsername').value;
+            const email = document.getElementById('editEmail').value;
+            
+            // Save to localStorage
+            localStorage.setItem('userName', name);
+            localStorage.setItem('userUsername', username);
+            localStorage.setItem('userEmail', email);
+            
+            // Update displayed values
+            document.getElementById('profileName').textContent = name;
+            document.getElementById('profileUsername').textContent = `@${username}`;
+            document.getElementById('profileEmail').textContent = email;
+            
+            // Close dialog
+            closeEditProfileDialog();
+            
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.style.position = 'fixed';
+            successMessage.style.top = '20px';
+            successMessage.style.left = '50%';
+            successMessage.style.transform = 'translateX(-50%)';
+            successMessage.style.background = '#22c55e';
+            successMessage.style.color = 'white';
+            successMessage.style.padding = '10px 20px';
+            successMessage.style.borderRadius = '5px';
+            successMessage.style.zIndex = '2000';
+            successMessage.textContent = 'Profile information updated successfully!';
+            document.body.appendChild(successMessage);
+            
+            setTimeout(() => {
+                successMessage.remove();
+            }, 3000);
+        });
+
         document.addEventListener('DOMContentLoaded', function() {
             // Handle form submissions with translations
             const forms = document.querySelectorAll('.settings-form');

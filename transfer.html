@@ -306,8 +306,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="recipientEmail" data-i18n="transfer-recipient-email">Recipient Email</label>
-                        <input type="email" id="recipientEmail" name="recipientEmail" required>
+                        <label for="recipientEmail" data-i18n="transfer-recipient-username">Recipient Username</label>
+                        <input type="text" id="recipientEmail" name="recipientEmail" placeholder="Enter username" required>
                     </div>
 
                     <div class="form-group bank-details" style="display: none;">
@@ -382,7 +382,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
-                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description" data-i18n="footer-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -462,7 +462,7 @@
         document.getElementById('makeTransferBtn').addEventListener('click', async () => {
             // Get form values
             const recipientType = document.getElementById('recipientType').value;
-            const recipientEmail = document.getElementById('recipientEmail').value;
+            const recipientUsername = document.getElementById('recipientEmail').value;
             const bankName = document.getElementById('bankName')?.value || '';
             const accountNumber = document.getElementById('accountNumber')?.value || '';
             const routingNumber = document.getElementById('routingNumber')?.value || '';
@@ -473,7 +473,7 @@
             const notes = document.getElementById('notes').value;
 
             // Basic validation
-            if (!recipientType || !recipientEmail || !amount || !currency || !transferSpeed || !purpose) {
+            if (!recipientType || !recipientUsername || !amount || !currency || !transferSpeed || !purpose) {
                 alert('Please fill in all required fields.');
                 return;
             }
@@ -485,7 +485,7 @@
             // Prepare API payload
             const payload = {
                 recipientType,
-                recipientEmail,
+                recipientUsername,
                 bankName,
                 accountNumber,
                 routingNumber,
@@ -552,7 +552,7 @@
             
             // Get form values
             const recipientType = document.getElementById('recipientType').value;
-            const recipientEmail = document.getElementById('recipientEmail').value;
+            const recipientUsername = document.getElementById('recipientEmail').value;
             const bankName = document.getElementById('bankName')?.value || '';
             const accountNumber = document.getElementById('accountNumber')?.value || '';
             const routingNumber = document.getElementById('routingNumber')?.value || '';
@@ -565,7 +565,7 @@
             // Prepare transfer data
             const transferData = {
                 recipientType,
-                recipientEmail,
+                recipientUsername,
                 bankName,
                 accountNumber,
                 routingNumber,
@@ -605,7 +605,7 @@
     });
 </script>
 
-    <!-- Place these scripts before </body> if not already present -->
+    <!-- Scripts -->
     <script type="text/javascript">
       function googleTranslateElementInit() {
         new google.translate.TranslateElement({

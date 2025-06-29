@@ -294,6 +294,11 @@
             }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 10px;
@@ -424,6 +429,31 @@
         .profile-picture-container input[type="file"] {
             display: none; /* Hide the file input */
         }
+
+        /* Notification styling */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 2000;
+            text-align: center;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .notification.success {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .notification.error {
+            background-color: #ef4444;
+            color: white;
+        }
     </style>
     <!-- Add translation manager script -->
     <script type="module">
@@ -486,16 +516,20 @@
 
                 <!-- Username input with # symbol rule -->
                 <div class="form-group">
-                    <label for="username">Username (must start with #)</label>
-                    <input 
-                        type="text" 
-                        id="username" 
-                        name="username" 
-                        placeholder="#yourname" 
-                        pattern="^#[a-zA-Z0-9_]{1,}$"
-                        required
-                        oninput="this.setCustomValidity(!/^#[a-zA-Z0-9_]{1,}$/.test(this.value) ? 'Username must start with # and contain at least one character after #' : '')"
-                    >
+                    <label for="username">Username</label>
+                    <div style="display: flex; align-items: center;">
+                        <span style="font-size: 1.2em; margin-right: 4px;">#</span>
+                        <input 
+                            type="text" 
+                            id="username" 
+                            name="username" 
+                            placeholder="yourname" 
+                            style="flex: 1;"
+                            pattern="^[a-zA-Z0-9_]{1,}$"
+                            required
+                            oninput="this.setCustomValidity(!/^[a-zA-Z0-9_]{1,}$/.test(this.value) ? 'Username must contain only letters, numbers, or _ ' : '')"
+                        >
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -524,7 +558,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
-                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub</span>
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description" data-i18n="footer-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -584,7 +618,9 @@
                     document.getElementById('name').value = memberProfile.fullName;
                 }
                 if (memberProfile.username && document.getElementById('username')) {
-                    document.getElementById('username').value = memberProfile.username;
+                    // Remove # if it exists, since we're displaying it separately
+                    const username = memberProfile.username.replace(/^#/, '');
+                    document.getElementById('username').value = username;
                 }
                 if (memberProfile.age && document.getElementById('age')) {
                     document.getElementById('age').value = memberProfile.age;
@@ -644,11 +680,17 @@
             profileForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
+                // Get the submit button and set loading state
+                const submitBtn = profileForm.querySelector('.submit-btn');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span style="display: inline-block; width: 20px; height: 20px; border: 2px solid white; border-radius: 50%; border-top-color: transparent; animation: spin 1s linear infinite; margin-right: 8px;"></span> Saving...';
+                submitBtn.disabled = true;
+
                 // Get form data
                 const formData = new FormData(profileForm);
                 const profileData = {
                     name: formData.get('name'),
-                    username: formData.get('username'),
+                    username: '#' + formData.get('username'), // Add # to username
                     age: formData.get('age'),
                     email: formData.get('email'),
                     phone: formData.get('phone'),
@@ -656,17 +698,46 @@
                 };
 
                 try {
-                    // Here you would typically send the data to your backend
-                    console.log('Profile data:', profileData);
+                    // Save data to localStorage
+                    localStorage.setItem('userName', profileData.name);
+                    localStorage.setItem('userUsername', profileData.username);
+                    localStorage.setItem('userAge', profileData.age);
+                    localStorage.setItem('userEmail', profileData.email);
+                    localStorage.setItem('userPhone', profileData.phone);
+                    localStorage.setItem('profilePicture', profileImg.src);
                     
-                    // Simulate successful submission
-                    alert(translationManager.translate('profile-success'));
+                    // Save the complete profile object
+                    localStorage.setItem('memberProfile', JSON.stringify({
+                        fullName: profileData.name,
+                        username: profileData.username,
+                        age: profileData.age,
+                        email: profileData.email,
+                        phone: profileData.phone
+                    }));
                     
-                    // Redirect to next page (replace with your actual redirect)
-                    window.location.href = '/onboarding';
+                    // Show success notification
+                    const notification = showNotification(
+                        translationManager.translate('profile-success') || 'Profile saved successfully!', 
+                        'success'
+                    );
+                    
+                    // Redirect to dashboard after delay
+                    setTimeout(() => {
+                        window.location.href = '/pages/dashboard.html';
+                    }, 3000);
+                    
                 } catch (error) {
                     console.error('Error submitting profile:', error);
-                    alert(translationManager.translate('profile-error'));
+                    
+                    // Restore button state
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    // Show error notification
+                    showNotification(
+                        translationManager.translate('profile-error') || 'Error saving profile. Please try again.', 
+                        'error'
+                    );
                 }
             });
 
@@ -678,19 +749,38 @@
                 });
             });
 
-            // Username validation: must start with # and at least one character after
+            // Username validation
             const usernameInput = document.getElementById('username');
             if (usernameInput) {
                 usernameInput.addEventListener('input', function() {
                     const value = usernameInput.value.trim();
-                    if (!/^#[a-zA-Z0-9_]{1,}$/.test(value)) {
-                        usernameInput.setCustomValidity('Username must start with # and contain at least one character after # (letters, numbers, or _).');
+                    if (!/^[a-zA-Z0-9_]{1,}$/.test(value)) {
+                        usernameInput.setCustomValidity('Username must contain only letters, numbers, or underscores.');
                     } else {
                         usernameInput.setCustomValidity('');
                     }
                 });
             }
         });
+
+        // Function to show notification
+        function showNotification(message, type = 'success') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            // Remove notification after delay
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.remove();
+                }, 500);
+            }, 3000);
+            
+            return notification;
+        }
 
         function validateInput(input) {
             const value = input.value.trim();
@@ -703,7 +793,7 @@
                     errorMessage = translationManager.translate('profile-name-error');
                     break;
                 case 'username':
-                    isValid = /^[a-zA-Z0-9_]{3,20}$/.test(value);
+                    isValid = /^[a-zA-Z0-9_]{1,20}$/.test(value);
                     errorMessage = translationManager.translate('profile-username-error');
                     break;
                 case 'age':

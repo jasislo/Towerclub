@@ -448,11 +448,16 @@
             border-radius: 8px;
             font-weight: 500;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, background 0.3s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
+        }
+        
+        .btn-primary.following {
+            background: #E5E7EB;
+            color: #374151;
         }
 
         .btn-secondary {
@@ -647,6 +652,7 @@
     <!-- Add translation manager script -->
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
+        // We'll import the follow system dynamically in the code below
     </script>
 </head>
 <body>
@@ -730,7 +736,7 @@
             </div>
 
             <div class="profile-actions" style="margin-top: 60px; margin-bottom: 60px;">
-                <button class="btn-primary">Follow</button>
+                <button class="btn-primary" id="followBtn">Follow</button>
                 <button class="btn-secondary" id="messageBtn">Message</button>
             </div>
 
@@ -1115,9 +1121,10 @@
         const profileData = {
             name: "Jonatthan Asis",
             referralCode: "jonatthanasis",
+            email: "john.doe@example.com",
             since: 2025,
             followers: 420,
-            views: 15200
+            posts: 15200
         };
 
         // Format numbers (e.g., 15200 -> 15.2k)
@@ -1127,17 +1134,36 @@
             return num.toString();
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Import follow system
+            let followSystem;
+            try {
+                const followSystemModule = await import('/scripts/followers.js');
+                followSystem = followSystemModule.default;
+            } catch (error) {
+                console.error('Failed to import follow system:', error);
+            }
+            
+            // Get profile user ID from URL or page data
+            const profileUserId = window.location.pathname.split('/').pop().replace('_profile.html', '') || 'john_doe';
+            
             // Profile Info
             document.querySelector('.profile-info h2').textContent = profileData.name;
             document.querySelector('.profile-info .username').textContent = `#${profileData.referralCode}`;
+            document.querySelector('.profile-info .email').textContent = profileData.email;
 
             // Stats
             const statItems = document.querySelectorAll('.stat-item h3');
             if (statItems.length >= 3) {
                 statItems[0].textContent = profileData.since; // Since
-                statItems[1].textContent = formatNumber(profileData.followers); // Followers
-                statItems[2].textContent = formatNumber(profileData.views); // Views
+                
+                // Use follower count from follow system if available
+                const followerCount = followSystem ? 
+                    followSystem.getFollowerCount(profileUserId) || profileData.followers : 
+                    profileData.followers;
+                    
+                statItems[1].textContent = formatNumber(followerCount); // Followers
+                statItems[2].textContent = formatNumber(profileData.posts); // Posts
             }
         });
     </script>
@@ -1145,7 +1171,7 @@
     import DarkMode from '/scripts/dark-mode.js';
     // DarkMode.init() is called automatically on DOMContentLoaded
 </script>
-<!-- Place these scripts before </body> if not already present -->
+<!-- Scripts -->
 <script type="text/javascript">
   function googleTranslateElementInit() {
     new google.translate.TranslateElement({
@@ -1185,6 +1211,63 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/pages/chatssection.html';
         });
     }
+});
+
+// Handle follow/unfollow functionality
+document.addEventListener('DOMContentLoaded', async function () {
+    // Import follow system
+    const followSystemModule = await import('/scripts/followers.js');
+    const followSystem = followSystemModule.default;
+    
+    const followBtn = document.getElementById('followBtn');
+    const followerCountEl = document.querySelector('.stat-item:nth-child(2) h3');
+    
+    // Get profile user ID from URL or page data
+    // For demo, we'll use a hardcoded ID, but in a real app, you'd extract from URL or page data
+    const profileUserId = window.location.pathname.split('/').pop().replace('_profile.html', '') || 'john_doe';
+    
+    // Update follower count display
+    function updateFollowerCount() {
+        const count = followSystem.getFollowerCount(profileUserId);
+        followerCountEl.textContent = formatNumber(count || 420); // Use default 420 if no followers yet
+    }
+    
+    // Update follow button state
+    function updateFollowButtonState() {
+        const isFollowing = followSystem.isFollowing(profileUserId);
+        
+        if (isFollowing) {
+            followBtn.textContent = 'Following';
+            followBtn.classList.add('following');
+        } else {
+            followBtn.textContent = 'Follow';
+            followBtn.classList.remove('following');
+        }
+    }
+    
+    // Initialize UI
+    updateFollowerCount();
+    updateFollowButtonState();
+    
+    // Handle follow button click
+    followBtn.addEventListener('click', function() {
+        const isFollowing = followSystem.isFollowing(profileUserId);
+        
+        if (isFollowing) {
+            // Unfollow the user
+            followSystem.unfollowUser(profileUserId);
+            followBtn.textContent = 'Follow';
+            followBtn.classList.remove('following');
+        } else {
+            // Follow the user
+            followSystem.followUser(profileUserId);
+            followBtn.textContent = 'Following';
+            followBtn.classList.add('following');
+        }
+        
+        // Update follower count
+        updateFollowerCount();
+    });
 });
 </script>
 </body>

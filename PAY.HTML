@@ -347,12 +347,11 @@
         }
 
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            margin-top: 0; /* Remove any extra top margin for the grid */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
         }
 
         .pricing-card {
@@ -367,6 +366,12 @@
         .pricing-card:hover {
             transform: translateY(-10px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .pricing-card.featured {
+            max-width: 400px;
+            margin: 0 auto;
+            transform: scale(1.05);
         }
 
         .pricing-header {
@@ -1497,7 +1502,7 @@
             <!-- Navigation Actions -->
             <div class="nav-actions">
                 <a href="login.html" class="btn btn-outline">Log in</a>
-                <a href="PAY.HTML" class="btn btn-primary btn-large">Get Started</a>
+                <a href="#" class="btn btn-primary btn-large" onclick="document.querySelector('.payment-section').scrollIntoView({behavior:'smooth',block:'start'});return false;">Get Started</a>
                 <!-- Google Translate language selector button placed next to Get Started -->
                 <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </div>
@@ -1508,24 +1513,8 @@
     <div class="app-container">
         <!-- Pricing Section -->
         <section id="pricing" class="pricing-section">
-            <h2>Simple, Transparent Pricing</h2>
+            <h2>Plan Selected</h2>
             <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Basic</h3>
-                        <div class="price">$11.95<span>/month</span></div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>Basic expenses tracking</li>
-                        <li>Monthly budget planning</li>
-                        <li>Basic analytics</li>
-                        <li>Build Financial social Network</li>
-                        <li>Transfers between Members</li>
-                        <li>Profile and Chats</li>
-                        <li>7 days Free Trial</li>
-                    </ul>
-                    <a href="register.html" class="btn btn-outline btn-block get-started-btn" data-plan="Basic">Get Started</a>
-                </div>
                 <div class="pricing-card featured">
                     <div class="pricing-header">
                         <h3>VIP Member</h3>
@@ -1534,26 +1523,13 @@
                     <ul class="pricing-features">
                         <li>Advanced analytics</li>
                         <li>Build Financial social Network</li>
-                        <li>Unlimited budgets</li>
-                        <li>Saving goals</li>
+                        <li>Financial Newsupdates</li>
+                        <li>Crypto Currencies updates</li>
                         <li>Priority support</li>
                         <li>Transfers between Members</li>
                         <li>Profile and Chats</li>
                     </ul>
-                    <a href="register.html" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member">Get Started</a>
-                </div>
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Business</h3>
-                        <div class="price">$16.95<span>/month</span></div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li>All Pro features</li>
-                        <li>Team management</li>
-                        <li>Dedicated support</li>
-                        <li>Custom integrations</li>
-                    </ul>
-                    <a href="#contact" class="btn btn-outline btn-block get-started-btn" data-plan="Business">Get Started</a>
+                    <a href="#" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member">Get Started</a>
                 </div>
             </div>
         </section>
@@ -1698,21 +1674,11 @@
                             });
                           },
                           onApprove: function(data, actions) {
-                            const plan = window.selectedPlan || sessionStorage.getItem('selectedPlan');
-                            if (!plan) {
-                                alert('Please select a plan before proceeding.');
-                                return;
-                            }
                             // Payment successful, store status and redirect
+                            window.paymentSecured = true;
                             sessionStorage.setItem('paymentComplete', 'true');
-                            sessionStorage.setItem('paymentMethod', 'paypal-subscription');
-                            sessionStorage.setItem('selectedPlan', selectedPlan || 'premium');
-                            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount || '29.99');
-                            
-                            // Show success message briefly before redirect
-                            alert('Payment successful! Redirecting to registration...');
-                            
-                            // Redirect to register.html
+                            sessionStorage.setItem('selectedPlan', selectedPlan);
+                            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
                             window.location.href = 'register.html';
                         }
                       }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ'); // Renders the PayPal button
@@ -1733,9 +1699,9 @@
         <section class="hero-section">
             <div class="hero-content">
                 <h1>Take Control of Your Financial Future</h1>
-                <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub.</p>
+                <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub LLC.</p>
                 <div class="hero-actions">
-                    <a href="register.html" class="btn btn-primary btn-large">Get Started Now</a>
+                    <a href="#" class="btn btn-primary btn-large" onclick="document.querySelector('.payment-section').scrollIntoView({behavior:'smooth',block:'start'});return false;">Get Started Now</a>
                     <a href="#demo" class="btn btn-outline btn-large">Watch Demo</a>
                 </div>
             </div>
@@ -1749,7 +1715,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -1804,12 +1770,11 @@
         // Track selected plan and payment status
         let selectedPlan = null;
         let selectedPlanAmount = null;
+        window.paymentSecured = false;
 
         // Pricing for each plan (must match your pricing section)
         const planPrices = {
-            "Basic": 11.95,
-            "VIP Member": 14.95,
-            "Business": 16.95
+            "VIP Member": 14.95
         };
 
         // Membership selection algorithm for "Get Started" buttons
@@ -1834,6 +1799,16 @@
                 
                 // Store the selected state
                 btn.setAttribute('data-selected', 'true');
+                
+                // After selecting plan, scroll to payment section
+                document.querySelector('.payment-section').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                // Show message to complete payment
+                if (!window.paymentSecured && !sessionStorage.getItem('paymentComplete')) {
+                    alert('Please complete your payment for the selected plan.');
+                }
             });
 
             // Ensure "Selected" text persists on hover
@@ -1873,18 +1848,12 @@
 
             // Simulate payment processing for the selected plan
             alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan. Card ending in ${cardNumber.slice(-4)} under ${cardHolder}.`);
-            
-            // Payment successful
+            window.paymentSecured = true;
             sessionStorage.setItem('paymentComplete', 'true');
-            sessionStorage.setItem('paymentMethod', 'card-form');
             sessionStorage.setItem('selectedPlan', selectedPlan);
             sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-            
-            // Show success message briefly before redirect
-            setTimeout(() => {
-                alert('Payment successful! Redirecting to registration...');
-                window.location.href = 'register.html';
-            }, 1000);
+            // Redirect to register.html
+            window.location.href = 'register.html';
         });
 
         // On page load, check if returning from PayPal login
@@ -1922,30 +1891,43 @@
 
         // Special handling for Get Started buttons
         document.addEventListener('DOMContentLoaded', function() {
-            // Header Get Started button - scroll to pricing section
+            // Header Get Started button - check payment status
             const headerGetStarted = document.querySelector('.nav-actions .btn-primary');
             if (headerGetStarted) {
                 headerGetStarted.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const pricingSection = document.getElementById('pricing');
-                    if (pricingSection) {
-                        pricingSection.scrollIntoView({
-                            behavior: 'smooth',
-                            block: 'start'
-                        });
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        // If no payment, scroll to payment section
+                        const paymentSection = document.querySelector('.payment-section');
+                        if (paymentSection) {
+                            paymentSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                        // Show message about payment requirement
+                        alert('Please complete your payment before proceeding to registration.');
                     }
                 });
             }
 
-            // Hero section Get Started Now button - allow direct navigation to register.html
+            // Hero section Get Started Now button - check payment status
             const heroGetStarted = document.querySelector('.hero-actions .btn-primary');
             if (heroGetStarted) {
                 heroGetStarted.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Direct registration flow - no payment required for basic access
-                    sessionStorage.setItem('registrationFlow', 'direct');
-                    sessionStorage.setItem('paymentComplete', 'true');
-                    window.location.href = 'register.html';
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        alert('Please complete your payment before proceeding to registration.');
+                        // Scroll to payment section
+                        document.querySelector('.payment-section').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
                 });
             }
         });
@@ -2037,15 +2019,10 @@ cardForm.addEventListener('submit', async function(event) {
         cardPayBtn.textContent = 'Pay Now';
     } else if (paymentIntent && paymentIntent.status === 'succeeded') {
         // Payment successful
+        window.paymentSecured = true;
         sessionStorage.setItem('paymentComplete', 'true');
-        sessionStorage.setItem('paymentMethod', 'stripe-card');
         sessionStorage.setItem('selectedPlan', selectedPlan);
         sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
-        
-        // Show success message briefly before redirect
-        alert('Payment successful! Redirecting to registration...');
-        
-        // Redirect to register.html
         window.location.href = 'register.html';
     } else {
         cardErrors.textContent = 'Payment failed. Please try again.';
@@ -2073,67 +2050,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const stripePayBtn = document.getElementById('externalStripePayBtn');
     if (stripePayBtn) {
         stripePayBtn.addEventListener('click', function() {
-            // Store payment attempt and then redirect
-            sessionStorage.setItem('paymentAttempted', 'true');
-            sessionStorage.setItem('paymentMethod', 'stripe');
-            
             // Open Stripe Checkout in a new tab
             window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
-            
-            // Set up a listener for when the user returns to this tab
-            const checkPaymentStatus = setInterval(() => {
-                // After a delay, assume payment was completed and redirect
-                // In a real implementation, you would check with your backend
-                setTimeout(() => {
-                    sessionStorage.setItem('paymentComplete', 'true');
-                    window.location.href = 'register.html';
-                    clearInterval(checkPaymentStatus);
-                }, 3000); // Wait 3 seconds then redirect
-            }, 5000);
+            // After payment, user should be redirected to register.html via Stripe's success_url
         });
     }
 
-    // Pay Now with PayPal (standalone button)
-    const makePaypalPaymentBtn = document.getElementById('makePaypalPayment');
-    if (makePaypalPaymentBtn) {
-        makePaypalPaymentBtn.addEventListener('click', function() {
-            // Store payment attempt
-            sessionStorage.setItem('paymentAttempted', 'true');
-            sessionStorage.setItem('paymentMethod', 'paypal');
-            
-            // For demonstration, simulate payment completion
-            // In real implementation, this would integrate with PayPal API
-            alert('Processing PayPal payment...');
-            setTimeout(() => {
-                sessionStorage.setItem('paymentComplete', 'true');
-                window.location.href = 'register.html';
-            }, 2000);
+    // Pay Now with Paypal
+    const paypalBtn = document.getElementById('paypalPayBtn');
+    if (paypalBtn) {
+        paypalBtn.addEventListener('click', function() {
+            // Open PayPal payment in a new tab (replace with your PayPal link)
+            window.open('https://www.paypal.com/your-paypal-link', '_blank');
+            // After payment, set PayPal's return URL to /pages/register.html
         });
     }
 
-    // Get Started Now button click handler
-    const heroGetStartedBtn = document.querySelector('.hero-actions .btn-primary');
-    if (heroGetStartedBtn) {
-        heroGetStartedBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            // Store payment attempt and redirect to register
-            sessionStorage.setItem('paymentComplete', 'true');
-            sessionStorage.setItem('paymentMethod', 'direct');
-            window.location.href = 'register.html';
+    // Get Started Now
+    const getStartedBtn = document.getElementById('getStartedNowBtn');
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', function() {
+            // Open payment in a new tab or process payment
+            window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
+            // After payment, user should be redirected to register.html via Stripe's success_url
         });
     }
-
-    // Handle window focus event to check for completed payments
-    window.addEventListener('focus', function() {
-        // Check if user is returning from a payment gateway
-        if (sessionStorage.getItem('paymentAttempted') === 'true') {
-            // Simulate checking payment status
-            setTimeout(() => {
-                sessionStorage.setItem('paymentComplete', 'true');
-                window.location.href = 'register.html';
-            }, 1000);
-        }
-    });
 });
 </script>
 <script>
@@ -2164,13 +2105,6 @@ document.addEventListener('DOMContentLoaded', function() {
         return code === "YOUR_VALID_CODE"; // Replace with your logic
     }
 });
-</script>
-<script>
-const plan = window.selectedPlan || sessionStorage.getItem('selectedPlan');
-if (!plan) {
-    alert('Please select a plan before proceeding.');
-    return;
-}
 </script>
 </body>
 </html>

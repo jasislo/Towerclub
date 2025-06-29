@@ -350,6 +350,21 @@
             background: #357ABD; /* Darker blue on hover */
         }
 
+        .chat-item.selected {
+            background-color: #f0f7ff; /* Light blue background for selected chat */
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .loading-messages, .no-messages, .error-loading {
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .error-loading {
+            color: var(--error-color);
+        }
+
         /* Footer Styling */
         .main-footer {
             background: var(--primary-color);
@@ -652,7 +667,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -704,7 +719,9 @@
     </footer>
 
     <script src="/scripts/profile-picture-sync.js"></script>
-    <script>
+    <script type="module">
+        import messagingService from '/scripts/messaging-service.js';
+        
         // Redirect to user's profile page
         function redirectToProfile(userName) {
             // Convert the user name to a URL-friendly format
@@ -716,6 +733,10 @@
         function redirectToChat() {
             window.location.href = 'Chatssection.html';
         }
+        
+        // Make these functions globally available
+        window.redirectToProfile = redirectToProfile;
+        window.redirectToChat = redirectToChat;
 
         const profilePicture = document.querySelector('.profile-picture-container img');
         const profilePictureInput = document.createElement('input');
@@ -795,164 +816,304 @@
             console.log('Chat section loaded with new click behaviors');
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-    // Fetch and display the top 10 recent messages in the chat list
-    async function fetchRecentMessages() {
-        try {
-            // Replace with your actual API endpoint for fetching recent messages
-            const response = await fetch('/api/messages/recent?limit=10', { credentials: 'include' });
-            if (!response.ok) throw new Error('Failed to fetch messages');
-            const messages = await response.json();
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Get current user from localStorage or Firebase auth
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const userId = currentUser.userId || currentUser.id || messagingService.getCurrentUserId();
+            let selectedContact = null;
 
-            const chatList = document.querySelector('.chat-list');
-            // Remove all .chat-item elements except the header and search bar
-            chatList.querySelectorAll('.chat-item').forEach(item => item.remove());
+            // --- 1. Render chat list (contacts) ---
+            async function loadChats(filter = '') {
+                try {
+                    const chatList = document.querySelector('.chat-list');
+                    // Keep the header and search bar, remove all chat items
+                    const chatItems = chatList.querySelectorAll('.chat-item');
+                    chatItems.forEach(item => item.remove());
 
-            messages.forEach(msg => {
-                const chatItem = document.createElement('div');
-                chatItem.classList.add('chat-item');
-                chatItem.innerHTML = `
-                    <div class="chat-avatar" onclick="redirectToProfile('${msg.senderName}')">
-                        <img src="${msg.senderAvatar || '/assets/images/default-avatar.png'}" alt="${msg.senderName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                    </div>
-                    <div class="chat-info">
-                        <p class="chat-name" onclick="redirectToChat()">${msg.senderName}</p>
-                        <p class="chat-message">${msg.message}</p>
-                    </div>
-                `;
-                chatList.appendChild(chatItem);
+                    // Get contacts from messaging service
+                    const contacts = await messagingService.getUserContacts();
+                    
+                    // Filter contacts if search term provided
+                    const filteredContacts = filter 
+                        ? contacts.filter(c => 
+                            (c.name || '').toLowerCase().includes(filter.toLowerCase()) ||
+                            (c.email || '').toLowerCase().includes(filter.toLowerCase()))
+                        : contacts;
+
+                    // No contacts message
+                    if (filteredContacts.length === 0) {
+                        const noContactsDiv = document.createElement('div');
+                        noContactsDiv.style.padding = '20px';
+                        noContactsDiv.style.textAlign = 'center';
+                        noContactsDiv.style.color = '#666';
+                        noContactsDiv.innerHTML = filter 
+                            ? 'No contacts found matching your search.'
+                            : 'No contacts yet. Use the "New Message" button to start a conversation.';
+                        chatList.appendChild(noContactsDiv);
+                        return;
+                    }
+
+                    // Render each contact
+                    for (const contact of filteredContacts) {
+                        const lastConv = await messagingService.getConversation(contact.contactId);
+                        const lastMsg = lastConv.length ? lastConv[lastConv.length - 1] : null;
+                        
+                        const item = document.createElement('div');
+                        item.className = 'chat-item';
+                        item.innerHTML = `
+                            <div class="chat-avatar" onclick="redirectToProfile('${contact.name}')">
+                                <img src="${contact.avatar || '/assets/images/default-avatar.png'}" alt="${contact.name}" 
+                                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+                            </div>
+                            <div class="chat-info">
+                                <p class="chat-name">${contact.name}</p>
+                                <p class="chat-message">${lastMsg ? lastMsg.message : ''}</p>
+                            </div>
+                        `;
+                        
+                        // Open chat when clicked
+                        item.addEventListener('click', () => openChat(contact));
+                        chatList.appendChild(item);
+                    }
+                } catch (error) {
+                    console.error('Error loading chats:', error);
+                    alert('Failed to load contacts. Please try again later.');
+                }
+            }
+
+            // --- 2. Render messages for a conversation ---
+            async function loadMessages(contactId) {
+                try {
+                    const chatMessages = document.querySelector('.chat-messages');
+                    chatMessages.innerHTML = '<div class="loading-messages">Loading messages...</div>';
+                    
+                    // Get conversation from messaging service
+                    const conversation = await messagingService.getConversation(contactId);
+                    
+                    chatMessages.innerHTML = ''; // Clear loading message
+                    
+                    if (conversation.length === 0) {
+                        chatMessages.innerHTML = '<div class="no-messages">No messages yet. Say hello!</div>';
+                        return;
+                    }
+                    
+                    // Render each message
+                    conversation.forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = 'message ' + (msg.senderId === userId ? 'sent' : 'received');
+                        div.innerHTML = `<div class="message-content">${msg.message}</div>`;
+                        chatMessages.appendChild(div);
+                    });
+                    
+                    // Scroll to bottom
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Mark conversation as read
+                    await messagingService.markConversationAsRead(contactId);
+                } catch (error) {
+                    console.error('Error loading messages:', error);
+                    const chatMessages = document.querySelector('.chat-messages');
+                    chatMessages.innerHTML = '<div class="error-loading">Error loading messages. Please try again.</div>';
+                }
+            }
+
+            // --- 3. Set up real-time updates for messages ---
+            function setupMessageListener(contactId) {
+                // Clean up any existing listeners
+                if (window.currentMessageListener) {
+                    window.currentMessageListener();
+                }
+                
+                // Set up new listener
+                window.currentMessageListener = messagingService.subscribeToConversation(
+                    contactId,
+                    (messages) => {
+                        const chatMessages = document.querySelector('.chat-messages');
+                        chatMessages.innerHTML = '';
+                        
+                        if (messages.length === 0) {
+                            chatMessages.innerHTML = '<div class="no-messages">No messages yet. Say hello!</div>';
+                            return;
+                        }
+                        
+                        messages.forEach(msg => {
+                            const div = document.createElement('div');
+                            div.className = 'message ' + (msg.senderId === userId ? 'sent' : 'received');
+                            div.innerHTML = `<div class="message-content">${msg.message}</div>`;
+                            chatMessages.appendChild(div);
+                        });
+                        
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }
+                );
+            }
+
+            // --- 4. Send a message ---
+            function wireSendButton(contactId) {
+                const sendBtn = document.querySelector('.send-button');
+                const input = document.querySelector('.chat-input');
+                
+                const sendMessageHandler = async () => {
+                    const text = input.value.trim();
+                    if (!text) return;
+                    
+                    try {
+                        // Clear input right away for better UX
+                        input.value = '';
+                        
+                        // Send message
+                        await messagingService.sendMessage(contactId, text);
+                        
+                        // Update UI - the subscription should handle this, but just in case
+                        await loadMessages(contactId);
+                        
+                        // Refresh contact list to show latest message
+                        await loadChats();
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                        alert('Failed to send message. Please try again.');
+                        // Restore the message text
+                        input.value = text;
+                    }
+                };
+                
+                // Remove existing event listeners
+                sendBtn.replaceWith(sendBtn.cloneNode(true));
+                sendBtn = document.querySelector('.send-button');
+                
+                // Add new event listener
+                sendBtn.addEventListener('click', sendMessageHandler);
+                
+                // Handle Enter key
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessageHandler();
+                    }
+                });
+            }
+
+            // --- 5. Open a chat (update header, load messages, wire send) ---
+            function openChat(contact) {
+                selectedContact = contact;
+                
+                // Update header with contact name
+                const chatHeader = document.querySelector('.chat-interface-header');
+                chatHeader.textContent = contact.name;
+                chatHeader.onclick = () => redirectToProfile(contact.name);
+                
+                // Set up message listener for real-time updates
+                setupMessageListener(contact.contactId);
+                
+                // Load initial messages
+                loadMessages(contact.contactId);
+                
+                // Set up send button
+                wireSendButton(contact.contactId);
+                
+                // Highlight selected chat
+                document.querySelectorAll('.chat-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                const selectedItem = Array.from(document.querySelectorAll('.chat-item')).find(
+                    item => item.querySelector('.chat-name').textContent === contact.name
+                );
+                
+                if (selectedItem) {
+                    selectedItem.classList.add('selected');
+                }
+            }
+
+            // --- 6. Contact search ---
+            document.getElementById('contactSearchInput').addEventListener('input', function () {
+                loadChats(this.value);
             });
-        } catch (error) {
-            console.error('Error fetching recent messages:', error);
-        }
-    }
 
-    fetchRecentMessages();
-});
+            // --- 7. New Message button: search users and add as contact ---
+            document.getElementById('startNewMessageBtn').onclick = async function () {
+                const query = prompt('Enter name or email to search:');
+                if (!query) return;
+                
+                try {
+                    // This would typically call an API to search users
+                    // For now, we'll use a mock implementation that creates a new contact
+                    const newContact = {
+                        userId: 'user_' + Date.now(), // Generate a random ID
+                        fullName: query,
+                        email: query.toLowerCase().replace(/\s+/g, '.') + '@example.com',
+                        profilePicture: '/assets/images/default-avatar.png'
+                    };
+                    
+                    const contact = await messagingService.addContact(newContact);
+                    
+                    // Refresh contacts
+                    await loadChats();
+                    
+                    // Open chat with new contact
+                    const contacts = await messagingService.getUserContacts();
+                    const newlyAddedContact = contacts.find(c => c.email === newContact.email);
+                    
+                    if (newlyAddedContact) {
+                        openChat(newlyAddedContact);
+                    }
+                } catch (error) {
+                    console.error('Error creating new conversation:', error);
+                    alert('Failed to start new conversation. Please try again.');
+                }
+            };
 
-        document.addEventListener('DOMContentLoaded', function () {
-    // Get current user
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const userId = currentUser.userId || currentUser.id;
+            // --- 8. Group chat creation ---
+            document.getElementById('createGroupBtn').onclick = async function () {
+                const name = document.getElementById('groupNameInput').value.trim();
+                const members = document.getElementById('groupMembersInput').value
+                    .split(',')
+                    .map(m => m.trim())
+                    .filter(Boolean);
+                
+                if (!name || members.length < 1) {
+                    alert('Please enter a group name and at least one member.');
+                    return;
+                }
+                
+                try {
+                    // Create group chat
+                    await messagingService.createGroupChat(name, members);
+                    
+                    // Close modal and reset fields
+                    document.getElementById('groupChatModal').style.display = 'none';
+                    document.getElementById('groupNameInput').value = '';
+                    document.getElementById('groupMembersInput').value = '';
+                    
+                    // Success notification
+                    alert(`Group "${name}" created successfully!`);
+                    
+                    // Refresh contacts (groups would show up here too)
+                    await loadChats();
+                } catch (error) {
+                    console.error('Error creating group chat:', error);
+                    alert('Failed to create group chat. Please try again.');
+                }
+            };
 
-    // --- 1. Render chat list (contacts) ---
-    function loadChats(filter = '') {
-        const chatList = document.querySelector('.chat-list');
-        // Remove all .chat-item except the search bar/header
-        chatList.querySelectorAll('.chat-item').forEach(e => e.remove());
+            // --- 9. Initial load ---
+            await loadChats();
 
-        let contacts = getUserContacts(userId);
-        if (filter) {
-            contacts = contacts.filter(c =>
-                (c.name || '').toLowerCase().includes(filter.toLowerCase()) ||
-                (c.email || '').toLowerCase().includes(filter.toLowerCase())
-            );
-        }
-
-        contacts.forEach(contact => {
-            const lastConv = getConversation(userId, contact.contactId);
-            const lastMsg = lastConv.length ? lastConv[lastConv.length - 1] : null;
-            const item = document.createElement('div');
-            item.className = 'chat-item';
-            item.innerHTML = `
-                <div class="chat-avatar" onclick="redirectToProfile('${contact.name}')">
-                    <img src="${contact.avatar || '/assets/images/default-avatar.png'}" alt="${contact.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
-                </div>
-                <div class="chat-info">
-                    <p class="chat-name" onclick="redirectToChat()">${contact.name}</p>
-                    <p class="chat-message">${lastMsg ? lastMsg.message : ''}</p>
-                </div>
-            `;
-            item.addEventListener('click', () => openChat(contact));
-            chatList.appendChild(item);
+            // Update unread counts periodically
+            async function updateUnreadCounts() {
+                try {
+                    const unreadMessages = await messagingService.getUnreadMessageCount();
+                    // Update UI with unread counts if needed
+                    console.log('Unread messages:', unreadMessages);
+                } catch (error) {
+                    console.error('Error updating unread counts:', error);
+                }
+            }
+            
+            // Update counts every 30 seconds
+            updateUnreadCounts();
+            setInterval(updateUnreadCounts, 30000);
         });
-    }
-
-    // --- 2. Render messages for a conversation ---
-    function loadMessages(contactId) {
-        const chatMessages = document.querySelector('.chat-messages');
-        chatMessages.innerHTML = '';
-        const conv = getConversation(userId, contactId);
-        conv.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = 'message ' + (msg.senderId === userId ? 'sent' : 'received');
-            div.innerHTML = `<div class="message-content">${msg.message}</div>`;
-            chatMessages.appendChild(div);
-        });
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // --- 3. Send a message ---
-    function wireSendButton(contactId, contactName) {
-        const sendBtn = document.querySelector('.send-button');
-        const input = document.querySelector('.chat-input');
-        sendBtn.onclick = async () => {
-            const text = input.value.trim();
-            if (!text) return;
-            sendMessage(contactId, text, 'text');
-            loadMessages(contactId);
-            loadChats(); // Update last message preview
-            input.value = '';
-        };
-        input.onkeydown = function(e) {
-            if (e.key === 'Enter') sendBtn.click();
-        };
-    }
-
-    // --- 4. Open a chat (update header, load messages, wire send) ---
-    function openChat(contact) {
-        const chatHeader = document.querySelector('.chat-interface-header');
-        chatHeader.textContent = contact.name;
-        chatHeader.onclick = () => redirectToProfile(contact.name);
-        loadMessages(contact.contactId);
-        wireSendButton(contact.contactId, contact.name);
-    }
-
-    // --- 5. Contact search ---
-    document.getElementById('contactSearchInput').addEventListener('input', function () {
-        loadChats(this.value);
-    });
-
-    // --- 6. New Message button: search users and add as contact ---
-    document.getElementById('startNewMessageBtn').onclick = function () {
-        const query = prompt('Enter name or email to search:');
-        if (!query) return;
-        const results = searchUsers(query);
-        if (results.length === 0) {
-            alert('No users found.');
-            return;
-        }
-        // Pick the first result for demo; in real app, show a selection UI
-        const user = results[0];
-        messagingService.addContact({
-            userId: user.id,
-            fullName: user.name,
-            email: user.email,
-            profilePicture: user.avatar
-        });
-        loadChats();
-        // Optionally, open chat with this user
-        const contact = getUserContacts(userId).find(c => c.contactId === user.id);
-        if (contact) openChat(contact);
-    };
-
-    // --- 7. Group chat creation (not implemented in messaging-service.js) ---
-    document.getElementById('createGroupBtn').onclick = function () {
-        alert('Group chat creation is not supported in localStorage demo.');
-        document.getElementById('groupChatModal').style.display = 'none';
-        document.getElementById('groupNameInput').value = '';
-        document.getElementById('groupMembersInput').value = '';
-    };
-
-    // --- 8. Initial load ---
-    loadChats();
-
-    // Optionally, open the first chat by default
-    setTimeout(() => {
-        const firstContact = getUserContacts(userId)[0];
-        if (firstContact) openChat(firstContact);
-    }, 500);
-});
     </script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>

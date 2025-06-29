@@ -8,6 +8,10 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
     <link rel="stylesheet" href="../styles/onboarding.css">
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         /* Header Styles */
         .main-nav {
@@ -482,10 +486,91 @@
     animation: fadeIn 0.6s ease-out, slideUp 0.6s ease-out;
 }
 
+/* Stripe Elements Styling */
+.StripeElement {
+    height: 40px;
+    padding: 10px 12px;
+    width: 100%;
+    color: #32325d;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+    border-color: #22c55e;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
 .profile-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* Payment Method Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.payment-method-item {
+    transition: all 0.2s ease;
+}
+
+.payment-method-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.payment-method-item.selected {
+    border-color: #22c55e !important;
+    background-color: rgba(34, 197, 94, 0.05) !important;
 }
 
 .upload-overlay {
@@ -542,6 +627,62 @@
 .submit-btn:not(:disabled):hover {
     transform: scale(1.05);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #22c55e;
+    animation: spin 1s ease-in-out infinite;
 }
     </style>
 </head>
@@ -645,22 +786,14 @@
                     <label for="description">Description</label>
                     <textarea id="description" name="description" placeholder="Description" rows="4"></textarea>
                 </div>
-                <div class="button-group" style="display:flex;gap:12px;">
-                    <button type="button" class="skip-btn" onclick="skipForNow()" style="background:#fff; color:#22c55e; border:2px solid #22c55e; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
-                        Skip for Now
-                    </button>
-                    <button type="submit" class="create-btn" style="background:linear-gradient(90deg,#22c55e,#a855f7); color:#fff; border:none; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
-                        Create Budget
-                    </button>
-                </div>
-                <p class="helper-text">Tap above to complete request</p>
             </form>
         </div>
 
         <!-- Make Payment Section -->
         <div class="payment-section">
             <header>
-                <h1 class="section-header" id="paymentSectionHeader">Make Payment</h1>
+                <h1 class="section-header" id="paymentSectionHeader">Select Payment Method</h1>
+                <p style="color:#666;margin-top:5px;text-align:center;">Please select a payment method to fund your budget</p>
             </header>
             <div class="payment-options">
                 <!-- Pay with Credit/Debit Card -->
@@ -669,28 +802,28 @@
                     <span>Pay with Credit/Debit Card</span>
                 </div>
 
-                <!-- Credit/Debit Card Form -->
+                <!-- Credit/Debit Card Form with Stripe Elements -->
                 <div class="payment-form" id="cardPaymentFormContainer" style="display: none;">
                     <h2>Pay with Credit/Debit Card</h2>
                     <form id="cardPaymentForm">
                         <div class="form-group">
-                            <label for="cardNumber">Card Number</label>
-                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" required>
+                            <label for="cardholder-name">Cardholder Name</label>
+                            <input type="text" id="cardholder-name" placeholder="John Doe" required>
                         </div>
                         <div class="form-group">
-                            <label for="cardExpiry">Expiry Date</label>
-                            <input type="text" id="cardExpiry" placeholder="MM/YY" required>
+                            <label for="card-element">Card Information</label>
+                            <div id="card-element" class="form-control">
+                                <!-- Stripe Element will be inserted here -->
+                            </div>
+                            <!-- Used to display form errors -->
+                            <div id="card-errors" role="alert" style="color: #fa755a; margin-top: 8px; font-size: 0.9em;"></div>
                         </div>
                         <div class="form-group">
-                            <label for="cardCVC">CVC/CVV</label>
-                            <input type="text" id="cardCVC" placeholder="123" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cardHolder">Cardholder Name</label>
-                            <input type="text" id="cardHolder" placeholder="John Doe" required>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn-credit-card">Pay Now</button>
+                            <button type="submit" id="submit-payment" class="btn-credit-card">Add Now</button>
+                            <div id="payment-processing" style="display: none; text-align: center; margin-top: 10px;">
+                                <div class="spinner" style="display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.1); border-radius: 50%; border-top-color: #22c55e; animation: spin 1s ease-in-out infinite;"></div>
+                                <span style="margin-left: 10px;">Processing payment...</span>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -711,6 +844,58 @@
                 </div>
             </div>
         </div>
+
+        <!-- Budget Actions -->
+        <div class="profile-section">
+            <div class="button-group" style="display:flex;gap:12px;justify-content:center;margin-top:20px;">
+                <button type="button" class="skip-btn" onclick="skipForNow()" style="background:#fff; color:#22c55e; border:2px solid #22c55e; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                    Skip for Now
+                </button>
+                <button type="button" id="createBudgetBtn" class="create-btn" style="background:linear-gradient(90deg,#22c55e,#a855f7); color:#fff; border:none; border-radius:5px; font-weight:600; padding:10px 18px; cursor:pointer;">
+                    Create Budget
+                </button>
+            </div>
+            <p class="helper-text" style="text-align:center;margin-top:10px;">Select a payment method above and tap Create Budget to complete your request</p>
+        </div>
+
+        <!-- Payment Method Selection Modal -->
+        <div id="paymentMethodModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+            <div class="modal-content" style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 500px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <span class="close" id="closeModal" style="color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer;">&times;</span>
+                <h2 style="margin-top: 0; color: #333;">Select Payment Method</h2>
+                <p>Please select a payment method to complete your budget creation:</p>
+                
+                <div id="paymentMethodsContainer" style="margin: 20px 0;">
+                    <!-- Loading state -->
+                    <div id="paymentMethodsLoading" style="text-align: center; padding: 20px;">
+                        <div style="display: inline-block; width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.1); border-radius: 50%; border-top-color: #22c55e; animation: spin 1s ease-in-out infinite;"></div>
+                        <p>Loading payment methods...</p>
+                    </div>
+                    
+                    <!-- Empty state -->
+                    <div id="noPaymentMethods" style="display: none; text-align: center; padding: 20px;">
+                        <p>No payment methods found. Please add a payment method to continue.</p>
+                        <button id="addNewPaymentMethod" style="background: linear-gradient(90deg, #22c55e, #a855f7); color: #fff; border: none; border-radius: 5px; font-weight: 600; padding: 10px 18px; cursor: pointer; margin-top: 10px;">
+                            Add Payment Method
+                        </button>
+                    </div>
+                    
+                    <!-- Payment methods list -->
+                    <div id="paymentMethodsList" style="display: none;">
+                        <!-- Payment methods will be inserted here -->
+                    </div>
+                </div>
+                
+                <div style="text-align: right; margin-top: 20px;">
+                    <button id="cancelPaymentSelection" style="background: #fff; color: #666; border: 1px solid #ddd; border-radius: 5px; font-weight: 600; padding: 10px 18px; cursor: pointer; margin-right: 10px;">
+                        Cancel
+                    </button>
+                    <button id="confirmPaymentSelection" style="background: linear-gradient(90deg, #22c55e, #a855f7); color: #fff; border: none; border-radius: 5px; font-weight: 600; padding: 10px 18px; cursor: pointer;">
+                        Confirm & Create Budget
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer -->
@@ -720,7 +905,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -772,66 +957,329 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-    // Handle Credit/Debit Card Payment
-    document.getElementById('cardPaymentForm').addEventListener('submit', function (event) {
-        event.preventDefault();
-        localStorage.setItem('paymentMethod', 'creditCard');
-        localStorage.setItem('cardDetails', JSON.stringify({
-            type: 'Visa',
-            number: '**** 0250',
-            expiry: '06/25'
-        }));
-        alert('Payment successful!');
-        window.location.href = 'payment methods.html';
-    });
-
-    // Handle PayPal Payment
-    document.querySelector('.btn-paypal').addEventListener('click', function () {
-        localStorage.setItem('paymentMethod', 'paypal');
-        alert('PayPal payment successful!');
-        window.location.href = 'payment methods.html';
-    });
-
-    const profileImage = document.getElementById('profileImage');
-    const profileImg = document.getElementById('profileImg');
-    const profileImageInput = document.getElementById('profileImageInput');
-
-    // Handle profile image click
-    profileImage.addEventListener('click', () => {
-        profileImageInput.click();
-    });
-
-    // Handle file selection
-    profileImageInput.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                profileImg.src = e.target.result; // Update the profile picture preview
-            };
-            reader.readAsDataURL(file);
+        // Function to check and handle data from pay.html
+        function checkPaymentDataFromPay() {
+            // Check if we're coming from pay.html by looking for a special flag or payload
+            const paymentData = localStorage.getItem('paymentDataFromPay');
+            if (paymentData) {
+                try {
+                    const data = JSON.parse(paymentData);
+                    
+                    // Save the payment method
+                    if (data.method) {
+                        localStorage.setItem('paymentMethod', data.method);
+                    }
+                    
+                    // Save the payment source
+                    localStorage.setItem('paymentSource', 'pay.html');
+                    
+                    // Save card details if present
+                    if (data.cardDetails) {
+                        localStorage.setItem('cardDetails', JSON.stringify(data.cardDetails));
+                    }
+                    
+                    // If there's plan information, save it
+                    if (data.plan) {
+                        localStorage.setItem('selectedPlan', data.plan);
+                        sessionStorage.setItem('selectedPlan', data.plan);
+                        
+                        // If there's a plan amount, save it too
+                        if (data.amount) {
+                            localStorage.setItem('selectedPlanAmount', data.amount);
+                            sessionStorage.setItem('selectedPlanAmount', data.amount);
+                        }
+                        
+                        // Update the plan selection in the UI if the section exists
+                        const planSelector = document.getElementById('planSelect');
+                        if (planSelector) {
+                            // Find the option with the matching plan name
+                            for (let i = 0; i < planSelector.options.length; i++) {
+                                if (planSelector.options[i].value === data.plan) {
+                                    planSelector.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // If there's referrer information, save it
+                    if (data.referrerUsername) {
+                        localStorage.setItem('referrerUsername', data.referrerUsername);
+                        sessionStorage.setItem('referrerUsername', data.referrerUsername);
+                    }
+                    
+                    // Update memberProfile object with payment info
+                    const profileData = localStorage.getItem('memberProfile');
+                    if (profileData) {
+                        try {
+                            const profile = JSON.parse(profileData);
+                            profile.paymentMethod = data.method;
+                            profile.selectedPlan = data.plan;
+                            profile.planAmount = data.amount;
+                            profile.paymentSource = 'pay.html';
+                            localStorage.setItem('memberProfile', JSON.stringify(profile));
+                        } catch (e) {
+                            console.error('Error updating member profile with payment data:', e);
+                        }
+                    }
+                    
+                    // We've processed this data, so remove it to avoid duplication
+                    // localStorage.removeItem('paymentDataFromPay'); 
+                    // Keep this data for debugging purposes
+                    
+                    console.log('Payment data from pay.html processed successfully:', data);
+                } catch (e) {
+                    console.error('Error processing payment data from pay.html:', e);
+                }
+            }
+            
+            // Check for simpler flags from pay.html
+            if (localStorage.getItem('paymentMethodFromPay')) {
+                localStorage.setItem('paymentMethod', localStorage.getItem('paymentMethodFromPay'));
+                localStorage.setItem('paymentSource', 'pay.html');
+                localStorage.removeItem('paymentMethodFromPay');
+            }
+            
+            // Check for direct plan selection from localStorage
+            const planFromStorage = localStorage.getItem('selectedPlan');
+            if (planFromStorage) {
+                // Update the plan selection in the UI if the section exists
+                const planSelector = document.getElementById('planSelect');
+                if (planSelector) {
+                    // Find the option with the matching plan name
+                    for (let i = 0; i < planSelector.options.length; i++) {
+                        if (planSelector.options[i].value === planFromStorage) {
+                            planSelector.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
         }
-    });
+        
+        // Initialize Stripe
+        let stripe = null;
+        let elements = null;
+        let card = null;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for payment data from pay.html
+            checkPaymentDataFromPay();
+            
+            // Initialize Stripe with your publishable key
+            stripe = Stripe('pk_live_51O6cvwHdkQbwbNbSyOfZmxkqUiYlDw0GWnUX1aFqEiRmPQHNPEUmMfPMYdpJHqsBYgqVmIJCYZwnKvlpXGWwUJdc00MRo0eSvg'); // Live Stripe publishable key
+            elements = stripe.elements();
+            
+            // Create and mount the Stripe card Element
+            card = elements.create('card', {
+                style: {
+                    base: {
+                        color: '#32325d',
+                        fontFamily: '"Lexend", Helvetica, sans-serif',
+                        fontSmoothing: 'antialiased',
+                        fontSize: '16px',
+                        '::placeholder': {
+                            color: '#aab7c4'
+                        }
+                    },
+                    invalid: {
+                        color: '#fa755a',
+                        iconColor: '#fa755a'
+                    }
+                }
+            });
+            
+            // Check if user is already logged in with PayPal
+            if (localStorage.getItem('paymentMethod') === 'paypal') {
+                // Update PayPal button to show logged in state
+                const paypalBtn = document.getElementById('paypalButton');
+                if (paypalBtn) {
+                    paypalBtn.textContent = 'PayPal Connected';
+                    paypalBtn.style.backgroundColor = '#ffc439';
+                    paypalBtn.style.color = '#111827';
+                    
+                    // Add checkmark icon to indicate successful connection
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'material-icons';
+                    checkIcon.textContent = 'check_circle';
+                    checkIcon.style.marginLeft = '8px';
+                    checkIcon.style.verticalAlign = 'middle';
+                    paypalBtn.appendChild(checkIcon);
+                }
 
-    // PayPal Button: Show "Logged with PayPal" if detected from pay.html
+                // Update payment header
+                const paymentHeader = document.getElementById('paymentSectionHeader');
+                if (paymentHeader) {
+                    paymentHeader.textContent = 'Payment Method';
+                    
+                    // Update the helper text below the heading
+                    const paymentSectionDescription = paymentHeader.nextElementSibling;
+                    if (paymentSectionDescription) {
+                        paymentSectionDescription.textContent = 'PayPal account connected. You can now create your budget.';
+                    }
+                }
+                
+                // Auto-select PayPal option if available
+                const paypalOption = document.getElementById('paypalOption');
+                if (paypalOption) {
+                    setTimeout(() => {
+                        paypalOption.click();
+                    }, 100);
+                }
+                
+                // Enable the Create Budget button
+                const createBudgetBtn = document.getElementById('createBudgetBtn');
+                if (createBudgetBtn) {
+                    createBudgetBtn.disabled = false;
+                    createBudgetBtn.style.opacity = '1';
+                    createBudgetBtn.style.cursor = 'pointer';
+                }
+            }
+            
+            // Mount the card Element to the DOM
+            card.mount('#card-element');
+            
+            // Handle real-time validation errors
+            card.addEventListener('change', function(event) {
+                const displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+            
+            // Handle form submission
+            const form = document.getElementById('cardPaymentForm');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Disable the submit button to prevent multiple clicks
+                document.getElementById('submit-payment').disabled = true;
+                document.getElementById('payment-processing').style.display = 'block';
+                
+                const cardholderName = document.getElementById('cardholder-name').value;
+                
+                // Create a payment method using the card Element
+                stripe.createPaymentMethod({
+                    type: 'card',
+                    card: card,
+                    billing_details: {
+                        name: cardholderName
+                    }
+                }).then(function(result) {
+                    if (result.error) {
+                        // Show error to your customer
+                        const errorElement = document.getElementById('card-errors');
+                        errorElement.textContent = result.error.message;
+                        
+                        // Re-enable the submit button
+                        document.getElementById('submit-payment').disabled = false;
+                        document.getElementById('payment-processing').style.display = 'none';
+                    } else {
+                        // Send the payment method ID to your server
+                        // In a real implementation, you would send this to your server to create a payment intent
+                        // For this demo, we'll just simulate a successful payment
+                        
+                        // Simulate processing time
+                        setTimeout(() => {
+                            // Store payment method in localStorage for demo purposes
+                            // In a real app, this would be stored in your database
+                            const lastFour = result.paymentMethod.card.last4;
+                            const cardBrand = result.paymentMethod.card.brand;
+                            const expMonth = result.paymentMethod.card.exp_month;
+                            const expYear = result.paymentMethod.card.exp_year;
+                            
+                            localStorage.setItem('paymentMethod', 'creditCard');
+                            localStorage.setItem('cardDetails', JSON.stringify({
+                                id: result.paymentMethod.id,
+                                type: cardBrand.charAt(0).toUpperCase() + cardBrand.slice(1),
+                                number: `**** ${lastFour}`,
+                                expiry: `${expMonth.toString().padStart(2, '0')}/${expYear.toString().slice(-2)}`
+                            }));
+                            
+                            // Display success message
+                            alert('Payment successful!');
+                            
+                            // Redirect to payment methods page
+                            window.location.href = 'payment_methods.html';
+                        }, 2000);
+                    }
+                });
+            });
+            
+            // Handle PayPal Payment
+            document.querySelector('.btn-paypal').addEventListener('click', function () {
+                handlePayPalLogin();
+            });
+
+            const profileImage = document.getElementById('profileImage');
+            const profileImg = document.getElementById('profileImg');
+            const profileImageInput = document.getElementById('profileImageInput');
+
+            // Handle profile image click
+            profileImage.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+
+            // Handle file selection
+            profileImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImg.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+    // PayPal Button: Show "Log in with PayPal" if detected from pay.html
     const paypalBtn = document.getElementById('paypalButton');
     if (paypalBtn && localStorage.getItem('paymentMethod') === 'paypal') {
-        paypalBtn.textContent = 'Logged with PayPal';
+        paypalBtn.textContent = 'Log in with PayPal';
         paypalBtn.style.backgroundColor = '#ffc439'; // PayPal yellow
         paypalBtn.style.color = '#111827'; // Dark text for contrast
         paypalBtn.style.cursor = 'not-allowed';
         paypalBtn.disabled = true;
     }
 
-    // Change header to "Payment Method Selected" if payment was made on pay.html
+    // Check and handle payment method from pay.html
     const paymentHeader = document.getElementById('paymentSectionHeader');
+    const payMethodFromPay = localStorage.getItem('paymentMethodFromPay');
+    
+    // If we have a payment method from pay.html, preserve it
+    if (payMethodFromPay) {
+        // Save it to our standard payment method key
+        localStorage.setItem('paymentMethod', payMethodFromPay);
+        
+        // Track the source of the payment method for flow tracking
+        localStorage.setItem('paymentSource', 'pay.html');
+        
+        // We don't need to keep the original key anymore
+        localStorage.removeItem('paymentMethodFromPay');
+    }
+    
+    // Change header to "Payment Method" if payment was made on pay.html or elsewhere
     if (
         (localStorage.getItem('paymentMethod') === 'creditCard' && localStorage.getItem('cardDetails')) ||
         localStorage.getItem('paymentMethod') === 'paypal'
     ) {
         if (paymentHeader) {
-            paymentHeader.textContent = 'Payment Method Selected';
+            paymentHeader.textContent = 'Payment Method';
+            // Update the helper text below the heading
+            const paymentSectionDescription = paymentHeader.nextElementSibling;
+            if (paymentSectionDescription) {
+                paymentSectionDescription.textContent = 'You can now create your budget with the selected payment method';
+            }
+            
+            // Auto-enable the Create Budget button
+            const createBudgetBtn = document.getElementById('createBudgetBtn');
+            if (createBudgetBtn) {
+                createBudgetBtn.disabled = false;
+                createBudgetBtn.style.opacity = '1';
+                createBudgetBtn.style.cursor = 'pointer';
+            }
         }
     }
 
@@ -855,10 +1303,20 @@
                 age,
                 email,
                 phone,
-                profilePicture
+                profilePicture,
+                // Save payment information from the flow
+                paymentMethod: localStorage.getItem('paymentMethod') || '',
+                paymentSource: localStorage.getItem('paymentSource') || 'onboarding',
+                // Save when this profile was completed in the flow
+                completedAt: new Date().toISOString(),
+                // Track the full flow
+                flow: 'pay.html -> register.html -> onboarding.html -> mainpage.html'
             };
             localStorage.setItem('memberProfile', JSON.stringify(updatedProfile));
-
+            
+            // Set a flag that we're coming from the onboarding flow
+            localStorage.setItem('comingFrom', 'onboarding');
+            
             // Navigate to mainpage.html
             window.location.href = 'mainpage.html';
         });
@@ -911,6 +1369,33 @@
             // Add active class to PayPal option
             document.getElementById('paypalOption').classList.add('active');
             document.getElementById('creditCardOption').classList.remove('active');
+            
+            // Check if already logged in with PayPal
+            if (localStorage.getItem('paymentMethod') === 'paypal') {
+                // Update the button to show connected state
+                const paypalBtn = document.getElementById('paypalButton');
+                if (paypalBtn) {
+                    paypalBtn.textContent = 'PayPal Connected';
+                    
+                    // Add checkmark icon if not already present
+                    if (!paypalBtn.querySelector('.material-icons')) {
+                        const checkIcon = document.createElement('i');
+                        checkIcon.className = 'material-icons';
+                        checkIcon.textContent = 'check_circle';
+                        checkIcon.style.marginLeft = '8px';
+                        checkIcon.style.verticalAlign = 'middle';
+                        paypalBtn.appendChild(checkIcon);
+                    }
+                }
+                
+                // Enable the Create Budget button
+                const createBudgetBtn = document.getElementById('createBudgetBtn');
+                if (createBudgetBtn) {
+                    createBudgetBtn.disabled = false;
+                    createBudgetBtn.style.opacity = '1';
+                    createBudgetBtn.style.cursor = 'pointer';
+                }
+            }
         }
 
         function startPayPalPayment() {
@@ -950,19 +1435,11 @@
             }
         });
 
+        // The submit event is now replaced by the "Create Budget" button click 
+        // which shows the payment method selection modal
         budgetForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const budgetData = {
-                amount: amountInput.value.replace(/,/g, ''),
-                name: budgetNameInput.value,
-                description: descriptionInput.value,
-                createdAt: new Date().toISOString(),
-                timeLeft: '45 days left'
-            };
-            // Simulate budget creation
-            alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
-            budgetForm.reset();
-            // Optionally redirect or update UI here
+            // Form submission is now handled by the payment method selection flow
         });
     }
 
@@ -979,6 +1456,13 @@
         if (paymentSection) {
             paymentSection.style.display = 'none';
         }
+        
+        // Hide the Budget Actions section (the section with the buttons)
+        const actionsSection = Array.from(document.querySelectorAll('.profile-section'))
+            .find(section => section.querySelector('.skip-btn') && section.querySelector('.create-btn'));
+        if (actionsSection) {
+            actionsSection.style.display = 'none';
+        }
 
         // Enable the Complete Profile button
         const completeProfileBtn = document.getElementById('completeProfileBtn');
@@ -989,16 +1473,457 @@
             completeProfileBtn.style.background = 'linear-gradient(90deg, #22c55e, #a855f7)';
             completeProfileBtn.style.color = '#ffffff';
         }
+        
+        // Add a flag to localStorage to indicate budget creation was skipped
+        localStorage.setItem('budgetSkipped', 'true');
+        
+        // Save flow information
+        const paymentSource = localStorage.getItem('paymentSource') || 'onboarding';
+        const flowInfo = {
+            flow: 'pay.html -> register.html -> onboarding.html -> mainpage.html',
+            completedAt: new Date().toISOString(),
+            paymentSource: paymentSource,
+            budgetCreated: false,
+            budgetSkipped: true
+        };
+        localStorage.setItem('userFlowInfo', JSON.stringify(flowInfo));
     }
 
     function handlePayPalLogin() {
-        // Store the current page URL to return to after PayPal login
+        // Check if already logged in with PayPal
+        if (localStorage.getItem('paymentMethod') === 'paypal') {
+            // Already logged in, just update UI and enable continue flow
+            const paypalBtn = document.getElementById('paypalButton');
+            if (paypalBtn) {
+                paypalBtn.textContent = 'PayPal Connected';
+                paypalBtn.style.backgroundColor = '#ffc439';
+                paypalBtn.style.color = '#111827';
+                
+                // Add checkmark icon to indicate successful connection
+                if (!paypalBtn.querySelector('.material-icons')) {
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'material-icons';
+                    checkIcon.textContent = 'check_circle';
+                    checkIcon.style.marginLeft = '8px';
+                    checkIcon.style.verticalAlign = 'middle';
+                    paypalBtn.appendChild(checkIcon);
+                }
+            }
+            
+            // Update payment header
+            const paymentHeader = document.getElementById('paymentSectionHeader');
+            if (paymentHeader) {
+                paymentHeader.textContent = 'Payment Method';
+                
+                // Update the helper text below the heading
+                const paymentSectionDescription = paymentHeader.nextElementSibling;
+                if (paymentSectionDescription) {
+                    paymentSectionDescription.textContent = 'PayPal account connected. You can now create your budget.';
+                }
+            }
+            
+            // Save the source of this payment if not already set
+            if (!localStorage.getItem('paymentSource')) {
+                localStorage.setItem('paymentSource', 'onboarding');
+            }
+            
+            // Enable the Create Budget button
+            const createBudgetBtn = document.getElementById('createBudgetBtn');
+            if (createBudgetBtn) {
+                createBudgetBtn.disabled = false;
+                createBudgetBtn.style.opacity = '1';
+                createBudgetBtn.style.cursor = 'pointer';
+            }
+            
+            // Scroll to the budget section
+            const budgetSection = document.querySelector('.profile-section:last-of-type');
+            if (budgetSection) {
+                budgetSection.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            return; // No need to redirect to PayPal
+        }
+        
+        // Not logged in yet, store the current page URL to return to after PayPal login
         localStorage.setItem('returnToOnboarding', 'true');
         
         // Redirect to PayPal login
         const paypalLoginUrl = 'https://www.paypal.com/signin';
         window.location.href = paypalLoginUrl;
     }
+
+    // Payment Method Selection Modal Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Modal elements
+        const modal = document.getElementById('paymentMethodModal');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelPaymentSelection');
+        const confirmBtn = document.getElementById('confirmPaymentSelection');
+        const createBudgetBtn = document.getElementById('createBudgetBtn');
+        const paymentMethodsLoading = document.getElementById('paymentMethodsLoading');
+        const noPaymentMethods = document.getElementById('noPaymentMethods');
+        const paymentMethodsList = document.getElementById('paymentMethodsList');
+        const addNewPaymentMethodBtn = document.getElementById('addNewPaymentMethod');
+
+        // Sample payment methods for demo (replace with real API call later)
+        const samplePaymentMethods = [
+            {
+                id: 'pm_1NjkH2KXnJYQQVH7N7QgzlAi',
+                type: 'card',
+                card: {
+                    brand: 'visa',
+                    last4: '4242',
+                    exp_month: 12,
+                    exp_year: 2025
+                },
+                isDefault: true
+            },
+            {
+                id: 'pm_1NjkHBKXnJYQQVH7YfiFYjpU',
+                type: 'card',
+                card: {
+                    brand: 'mastercard',
+                    last4: '5678',
+                    exp_month: 10,
+                    exp_year: 2024
+                },
+                isDefault: false
+            }
+        ];
+
+        // Check if we have card details from pay.html or previous steps
+        const cardDetails = localStorage.getItem('cardDetails');
+        if (cardDetails) {
+            try {
+                const cardData = JSON.parse(cardDetails);
+                // Add this card to our payment methods
+                samplePaymentMethods.push({
+                    id: cardData.id || 'pm_custom_card',
+                    type: 'card',
+                    card: {
+                        brand: cardData.type || 'visa',
+                        last4: cardData.number ? cardData.number.slice(-4) : '1234',
+                        exp_month: cardData.expiry ? parseInt(cardData.expiry.split('/')[0]) : 12,
+                        exp_year: cardData.expiry ? parseInt('20' + cardData.expiry.split('/')[1]) : 2026
+                    },
+                    isDefault: true,
+                    source: localStorage.getItem('paymentSource') || 'onboarding'
+                });
+                
+                // Set this as the default
+                samplePaymentMethods.forEach(method => {
+                    method.isDefault = (method.id === (cardData.id || 'pm_custom_card'));
+                });
+            } catch (e) {
+                console.error('Error parsing card details:', e);
+            }
+        }
+
+        // Check if PayPal is stored in localStorage and add it to sample methods
+        if (localStorage.getItem('paymentMethod') === 'paypal') {
+            // Remove any existing PayPal methods
+            const paypalIndex = samplePaymentMethods.findIndex(m => m.type === 'paypal');
+            if (paypalIndex !== -1) {
+                samplePaymentMethods.splice(paypalIndex, 1);
+            }
+            
+            samplePaymentMethods.push({
+                id: 'pm_paypal1',
+                type: 'paypal',
+                email: 'user@example.com',
+                isDefault: !cardDetails, // Make default if no card is set
+                source: localStorage.getItem('paymentSource') || 'onboarding'
+            });
+        }
+
+        // Event: Show modal when Create Budget button is clicked
+        if (createBudgetBtn) {
+            createBudgetBtn.addEventListener('click', function() {
+                // Validate budget form
+                const amount = document.getElementById('amount').value.trim();
+                const budgetName = document.getElementById('budgetName').value.trim();
+                const description = document.getElementById('description').value.trim();
+                
+                if (!amount || !budgetName) {
+                    alert('Please fill in the budget amount and name');
+                    return;
+                }
+                
+                // Save budget info to localStorage for the flow
+                const budgetInfo = {
+                    amount: parseFloat(amount),
+                    name: budgetName,
+                    description: description,
+                    createdAt: new Date().toISOString(),
+                    paymentMethod: localStorage.getItem('paymentMethod') || ''
+                };
+                localStorage.setItem('currentBudget', JSON.stringify(budgetInfo));
+
+                // Show modal
+                if (modal) modal.style.display = 'block';
+                
+                // Simulate loading payment methods
+                if (paymentMethodsLoading) paymentMethodsLoading.style.display = 'block';
+                if (noPaymentMethods) noPaymentMethods.style.display = 'none';
+                if (paymentMethodsList) paymentMethodsList.style.display = 'none';
+                
+                // Check if we have a credit card or PayPal saved
+                const hasCardDetails = localStorage.getItem('cardDetails');
+                const hasPayPal = localStorage.getItem('paymentMethod') === 'paypal';
+                
+                // Simulate API call to fetch payment methods
+                setTimeout(() => {
+                    if (paymentMethodsLoading) paymentMethodsLoading.style.display = 'none';
+                    
+                    // Check if we have payment methods
+                    if (!hasCardDetails && !hasPayPal) {
+                        if (noPaymentMethods) noPaymentMethods.style.display = 'block';
+                    } else {
+                        if (paymentMethodsList) {
+                            paymentMethodsList.style.display = 'block';
+                            renderPaymentMethods(samplePaymentMethods);
+                        }
+                    }
+                }, 1000);
+            });
+        }
+
+        // Event: Close modal when X button is clicked
+        if (closeModal) {
+            closeModal.addEventListener('click', function() {
+                if (modal) modal.style.display = 'none';
+            });
+        }
+
+        // Event: Close modal when Cancel button is clicked
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                if (modal) modal.style.display = 'none';
+            });
+        }
+
+        // Event: Add new payment method
+        if (addNewPaymentMethodBtn) {
+            addNewPaymentMethodBtn.addEventListener('click', function() {
+                // Close modal
+                if (modal) modal.style.display = 'none';
+                
+                // Show payment section
+                const paymentSection = document.querySelector('.payment-section');
+                if (paymentSection) {
+                    paymentSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Auto-select credit card option
+                    showCardPaymentForm();
+                }
+            });
+        }
+
+        // Event: Confirm payment method selection and create budget
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', function() {
+                // Get selected payment method
+                const selectedPaymentMethodElement = document.querySelector('.payment-method-item.selected');
+                
+                if (!selectedPaymentMethodElement) {
+                    alert('Please select a payment method');
+                    return;
+                }
+                
+                const paymentMethodId = selectedPaymentMethodElement.getAttribute('data-id');
+                const paymentMethodType = selectedPaymentMethodElement.getAttribute('data-type');
+                
+                // Get budget data
+                const amountInput = document.getElementById('amount');
+                const budgetNameInput = document.getElementById('budgetName');
+                const descriptionInput = document.getElementById('description');
+                
+                const budgetData = {
+                    amount: amountInput.value.replace(/,/g, ''),
+                    name: budgetNameInput.value,
+                    description: descriptionInput.value || '',
+                    createdAt: new Date().toISOString(),
+                    timeLeft: '45 days left',
+                    paymentMethod: {
+                        id: paymentMethodId,
+                        type: paymentMethodType
+                    }
+                };
+                
+                // Save budget data to localStorage for demo
+                const existingBudgets = JSON.parse(localStorage.getItem('budgets') || '[]');
+                existingBudgets.push(budgetData);
+                localStorage.setItem('budgets', JSON.stringify(existingBudgets));
+                
+                // Save completed flow information
+                const paymentSource = localStorage.getItem('paymentSource') || 'onboarding';
+                const flowInfo = {
+                    flow: 'pay.html -> register.html -> onboarding.html -> mainpage.html',
+                    completedAt: new Date().toISOString(),
+                    paymentSource: paymentSource,
+                    budgetCreated: true,
+                    selectedPaymentMethod: {
+                        id: paymentMethodId,
+                        type: paymentMethodType
+                    }
+                };
+                localStorage.setItem('userFlowInfo', JSON.stringify(flowInfo));
+                localStorage.setItem('currentBudget', JSON.stringify(budgetData));
+                
+                // Close modal
+                if (modal) modal.style.display = 'none';
+                
+                // Show success message
+                alert(`$${parseFloat(budgetData.amount).toLocaleString()} has been added to your account balance!`);
+                
+                // Reset form and redirect
+                if (budgetForm) budgetForm.reset();
+                window.location.href = 'dashboard.html';
+            });
+        }
+
+        // Function to render payment methods in the modal
+        function renderPaymentMethods(paymentMethods) {
+            if (!paymentMethodsList) return;
+            
+            // Clear existing content
+            paymentMethodsList.innerHTML = '';
+            
+            // Create payment method items
+            paymentMethods.forEach(method => {
+                const methodItem = document.createElement('div');
+                methodItem.className = `payment-method-item ${method.isDefault ? 'selected' : ''}`;
+                methodItem.setAttribute('data-id', method.id);
+                methodItem.setAttribute('data-type', method.type);
+                methodItem.style.cssText = 'padding: 15px; border: 1px solid #ddd; border-radius: 5px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center;';
+                
+                if (method.isDefault) {
+                    methodItem.style.borderColor = '#22c55e';
+                    methodItem.style.backgroundColor = 'rgba(34, 197, 94, 0.05)';
+                }
+                
+                // Create payment method icon
+                const icon = document.createElement('div');
+                icon.className = 'payment-method-icon';
+                icon.style.cssText = 'margin-right: 15px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; border-radius: 5px;';
+                
+                if (method.type === 'card') {
+                    const brandIcon = document.createElement('i');
+                    brandIcon.className = 'material-icons';
+                    brandIcon.textContent = 'credit_card';
+                    icon.appendChild(brandIcon);
+                } else if (method.type === 'paypal') {
+                    const brandIcon = document.createElement('i');
+                    brandIcon.className = 'material-icons';
+                    brandIcon.textContent = 'account_balance_wallet';
+                    icon.appendChild(brandIcon);
+                }
+                
+                // Create payment method details
+                const details = document.createElement('div');
+                details.className = 'payment-method-details';
+                details.style.cssText = 'flex: 1;';
+                
+                const title = document.createElement('div');
+                title.className = 'payment-method-title';
+                title.style.cssText = 'font-weight: 600; margin-bottom: 5px;';
+                
+                if (method.type === 'card') {
+                    const brand = method.card.brand.charAt(0).toUpperCase() + method.card.brand.slice(1);
+                    title.textContent = `${brand} •••• ${method.card.last4}`;
+                    
+                    const expiry = document.createElement('div');
+                    expiry.className = 'payment-method-expiry';
+                    expiry.style.cssText = 'color: #666; font-size: 0.9em;';
+                    expiry.textContent = `Expires ${method.card.exp_month}/${method.card.exp_year}`;
+                    details.appendChild(expiry);
+                } else if (method.type === 'paypal') {
+                    title.textContent = 'PayPal';
+                    
+                    const email = document.createElement('div');
+                    email.className = 'payment-method-email';
+                    email.style.cssText = 'color: #666; font-size: 0.9em;';
+                    email.textContent = method.email;
+                    details.appendChild(email);
+                }
+                
+                details.prepend(title);
+                
+                // Create default indicator
+                if (method.isDefault) {
+                    const defaultBadge = document.createElement('div');
+                    defaultBadge.className = 'payment-method-default';
+                    defaultBadge.style.cssText = 'background-color: #22c55e; color: white; padding: 3px 8px; border-radius: 10px; font-size: 0.7em; margin-left: 10px; display: inline-block;';
+                    defaultBadge.textContent = 'Default';
+                    title.appendChild(defaultBadge);
+                }
+                
+                // Add elements to payment method item
+                methodItem.appendChild(icon);
+                methodItem.appendChild(details);
+                
+                // Add selection indicator
+                const selectionIndicator = document.createElement('div');
+                selectionIndicator.className = 'selection-indicator';
+                selectionIndicator.style.cssText = `width: 20px; height: 20px; border-radius: 50%; border: 2px solid ${method.isDefault ? '#22c55e' : '#ddd'}; margin-left: 10px; display: flex; align-items: center; justify-content: center;`;
+                
+                if (method.isDefault) {
+                    const checkmark = document.createElement('i');
+                    checkmark.className = 'material-icons';
+                    checkmark.textContent = 'check';
+                    checkmark.style.cssText = 'color: #22c55e; font-size: 16px;';
+                    selectionIndicator.appendChild(checkmark);
+                }
+                
+                methodItem.appendChild(selectionIndicator);
+                
+                // Add click event to select this payment method
+                methodItem.addEventListener('click', function() {
+                    // Remove selected class from all payment methods
+                    document.querySelectorAll('.payment-method-item').forEach(item => {
+                        item.classList.remove('selected');
+                        item.style.borderColor = '#ddd';
+                        item.style.backgroundColor = '';
+                        
+                        // Remove checkmark
+                        const indicator = item.querySelector('.selection-indicator');
+                        if (indicator) {
+                            indicator.style.borderColor = '#ddd';
+                            indicator.innerHTML = '';
+                        }
+                    });
+                    
+                    // Add selected class to this payment method
+                    this.classList.add('selected');
+                    this.style.borderColor = '#22c55e';
+                    this.style.backgroundColor = 'rgba(34, 197, 94, 0.05)';
+                    
+                    // Add checkmark
+                    const indicator = this.querySelector('.selection-indicator');
+                    if (indicator) {
+                        indicator.style.borderColor = '#22c55e';
+                        
+                        const checkmark = document.createElement('i');
+                        checkmark.className = 'material-icons';
+                        checkmark.textContent = 'check';
+                        checkmark.style.cssText = 'color: #22c55e; font-size: 16px;';
+                        
+                        indicator.innerHTML = '';
+                        indicator.appendChild(checkmark);
+                    }
+                });
+                
+                paymentMethodsList.appendChild(methodItem);
+            });
+        }
+
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
 
     // Check if returning from PayPal login
     window.addEventListener('load', function() {
@@ -1009,21 +1934,64 @@
             // Update PayPal button to show logged in state
             const paypalBtn = document.getElementById('paypalButton');
             if (paypalBtn) {
-                paypalBtn.textContent = 'Logged in with PayPal';
+                paypalBtn.textContent = 'PayPal Connected';
                 paypalBtn.style.backgroundColor = '#ffc439';
                 paypalBtn.style.color = '#111827';
-                paypalBtn.style.cursor = 'not-allowed';
-                paypalBtn.disabled = true;
+                paypalBtn.style.cursor = 'pointer';
+                paypalBtn.disabled = false;
+                
+                // Add checkmark icon to indicate successful connection
+                const checkIcon = document.createElement('i');
+                checkIcon.className = 'material-icons';
+                checkIcon.textContent = 'check_circle';
+                checkIcon.style.marginLeft = '8px';
+                checkIcon.style.verticalAlign = 'middle';
+                paypalBtn.appendChild(checkIcon);
             }
 
             // Update payment header
             const paymentHeader = document.getElementById('paymentSectionHeader');
             if (paymentHeader) {
-                paymentHeader.textContent = 'Payment Method Selected';
+                paymentHeader.textContent = 'Payment Method';
+                
+                // Update the helper text below the heading
+                const paymentSectionDescription = paymentHeader.nextElementSibling;
+                if (paymentSectionDescription) {
+                    paymentSectionDescription.textContent = 'PayPal account connected. You can now create your budget.';
+                }
             }
 
             // Store payment method
             localStorage.setItem('paymentMethod', 'paypal');
+            
+            // Set the payment source if not already set
+            if (!localStorage.getItem('paymentSource')) {
+                localStorage.setItem('paymentSource', 'onboarding');
+            }
+            
+            // Store PayPal payment details for future reference
+            const paypalDetails = {
+                connected: true,
+                timestamp: new Date().toISOString(),
+                source: localStorage.getItem('paymentSource') || 'onboarding'
+            };
+            localStorage.setItem('paypalDetails', JSON.stringify(paypalDetails));
+            
+            // Enable the Create Budget button if it exists
+            const createBudgetBtn = document.getElementById('createBudgetBtn');
+            if (createBudgetBtn) {
+                createBudgetBtn.disabled = false;
+                createBudgetBtn.style.opacity = '1';
+                createBudgetBtn.style.cursor = 'pointer';
+                
+                // Scroll to the budget section
+                setTimeout(() => {
+                    const budgetSection = document.querySelector('.profile-section:last-of-type');
+                    if (budgetSection) {
+                        budgetSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }, 500);
+            }
         }
     });
 
@@ -1068,5 +2036,6 @@ document.addEventListener('DOMContentLoaded', function() {
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
+    <script src="/scripts/stripe-api.js"></script>
 </body>
 </html>

@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Complete Your Financial Profile - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Financial Profile - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #a855f7;
+            --secondary-background: #F5F5F5;
+            --primary-text: #333333;
+            --success-color: #4CAF50;
+            --error-color: #FF3B30;
+            --footer-bg: #1f2937;
+            --footer-text: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--secondary-background);
+            color: var(--primary-text);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar ul li a {
+            text-decoration: none;
+            color: var(--primary-text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .sidebar ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-content h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: var(--secondary-background);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon .material-icons {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .stat-info h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .stat-info p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .recent-activity {
+            margin-top: 20px;
+        }
+
+        .recent-activity h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--secondary-background);
+            border-radius: 12px;
+        }
+
+        .activity-info h4 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .activity-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .activity-amount {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .activity-amount.positive {
+            color: var(--success-color);
+        }
+
+        .activity-amount.negative {
+            color: var(--error-color);
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Profile Picture Styles */
+        .profile-picture-container {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            overflow: hidden;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff; /* Optional border for better visibility */
+            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
+            transform: scale(1.1); /* Slightly enlarge the profile picture */
+            cursor: pointer; /* Change cursor to pointer */
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Hide the file input */
+        #profilePictureInput {
+            display: none;
+        }
+
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-text);
+        }
+
+        .cashout-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cashout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .cashout-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Payment Methods Section Styles */
+        .payment-methods-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .payment-methods-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .payment-methods-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method-item {
+            background: var(--secondary-background);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .payment-method-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .payment-method-item.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(74, 144, 226, 0.1);
+        }
+
+        .payment-method-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .payment-method-icon .material-icons {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .payment-method-info h4 {
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .payment-method-info p {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0;
+        }
+
+        .cancel-btn {
+            display: block;
+            width: 100%;
+            background: #f3f4f6;
+            color: #4b5563;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .cancel-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .payment-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .add-payment-btn {
+            display: block;
+            width: 100%;
+            background: var(--secondary-background);
+            color: var(--primary-color);
+            border: 1px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .add-payment-btn:hover {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .loading-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            grid-column: span 2;
+            color: #666;
+        }
+
+        .loading-indicator .material-icons {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .spin {
+            animation: spin 1.5s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .payment-method-item .method-last-digits {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .empty-methods-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            grid-column: span 2;
+        }
+
+        /* Payment Details Form */
+        .payment-details-form {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav" style="background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white;">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand" style="color: white;">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link" style="color: white;">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link" style="color: white;">Wallet</a>
+                <a href="add-transaction.html" class="nav-link" style="color: white;">Transfer</a>
+                <a href="activities.html" class="nav-link" style="color: white;">Activities</a>
+                <a href="settings.html" class="nav-link" style="color: white;">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Logout</a>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <aside class="sidebar">
+            <h2>Navigation</h2>
+            <ul>
+                <li><a href="dashboard.html">Overview</a></li>
+                <li><a href="activities.html">Transactions</a></li>
+                <li><a href="dashboard2.html">Reports</a></li>
+                <li><a href="settings.html">Settings</a></li>
+            </ul>
+        </aside>
+        <section class="main-content">
+            <h1>Financial Dashboard</h1>
+            <div class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons">account_balance_wallet</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Balance</h3>
+                        <p>$12,345.67</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Profit</h3>
+                        <p>$2,345.67</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <span class="material-icons">swap_horiz</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Total Trades</h3>
+                        <p>156</p>
+                    </div>
+                </div>
+            </div>
+            <div class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>Deposit</h4>
+                            <p>2 hours ago</p>
+                        </div>
+                        <div class="activity-amount positive">+$1,000.00</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>Withdrawal</h4>
+                            <p>5 hours ago</p>
+                        </div>
+                        <div class="activity-amount negative">-$500.00</div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-info">
+                            <h4>Trade</h4>
+                            <p>1 day ago</p>
+                        </div>
+                        <div class="activity-amount positive">+$250.00</div>
+                    </div>
+                </div>
+            </div>
+            <section class="section balance-card">
+                <h2>Your Balance</h2>
+                <p>Current Account Balance</p>
+                <p class="amount">$10,000.00</p>
+                <button id="cashoutBtn" class="cashout-btn">Cash Out Full Balance</button>
+                
+                <!-- Payment Methods Section (Hidden by default) -->
+                <div id="paymentMethodsSection" class="payment-methods-section" style="display: none;">
+                    <h3>Select Payment Method</h3>
+                    <div id="paymentMethodsContainer" class="payment-methods-container">
+                        <!-- Payment methods will be loaded dynamically -->
+                        <div class="loading-indicator">
+                            <span class="material-icons spin">autorenew</span>
+                            <p>Loading your payment methods...</p>
+                        </div>
+                    </div>
+                    <div class="payment-actions">
+                        <button id="addNewPaymentMethodBtn" class="add-payment-btn">Add New Payment Method</button>
+                        <button id="cancelCashoutBtn" class="cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    const profilePicture = document.getElementById('profilePicture');
+    const profilePictureInput = document.getElementById('profilePictureInput');
+
+    // Make the profile picture clickable
+    profilePicture.addEventListener('click', () => {
+        profilePictureInput.click();
+    });
+
+    // Handle the file input change event
+    profilePictureInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                profilePicture.src = e.target.result; // Update the profile picture preview
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Sync profile picture everywhere on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedPic = localStorage.getItem('profilePicture');
+        if (savedPic) {
+            ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.src = savedPic;
+            });
+        }
+
+        // Cash out functionality
+        const cashoutBtn = document.getElementById('cashoutBtn');
+        const cancelCashoutBtn = document.getElementById('cancelCashoutBtn');
+        const paymentMethodsSection = document.getElementById('paymentMethodsSection');
+        const paymentMethodsContainer = document.getElementById('paymentMethodsContainer');
+        const addNewPaymentMethodBtn = document.getElementById('addNewPaymentMethodBtn');
+        
+        // Sample user payment methods - In a real app, this would come from your backend API
+        const userPaymentMethods = [
+            // These would typically be retrieved from your database
+            { 
+                id: 'pm_1234567890', 
+                type: 'creditCard',
+                name: 'Visa ending in 4242',
+                icon: 'credit_card',
+                lastDigits: '4242',
+                expiryDate: '09/27',
+                default: true
+            },
+            { 
+                id: 'pm_0987654321', 
+                type: 'debitCard',
+                name: 'Mastercard ending in 8888',
+                icon: 'payment',
+                lastDigits: '8888',
+                expiryDate: '11/26',
+                default: false
+            },
+            { 
+                id: 'pm_5678901234', 
+                type: 'bank',
+                name: 'Chase Bank Account',
+                icon: 'account_balance',
+                lastDigits: '7890',
+                accountType: 'Checking',
+                default: false
+            },
+            { 
+                id: 'pm_1357908642', 
+                type: 'paypal',
+                name: 'PayPal Account',
+                icon: 'payments',
+                email: 'user@example.com',
+                default: false
+            }
+        ];
+        
+        // Show payment methods when cashout button is clicked
+        if (cashoutBtn) {
+            cashoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                cashoutBtn.style.display = 'none';
+                paymentMethodsSection.style.display = 'block';
+                
+                // Load the user's payment methods
+                loadUserPaymentMethods();
+            });
+        }
+        
+        // Load user's payment methods
+        function loadUserPaymentMethods() {
+            // Clear the container first
+            paymentMethodsContainer.innerHTML = '';
+            
+            // In a real app, you'd fetch this from your backend API
+            // For this example, we'll use the sample data defined above
+            setTimeout(() => {
+                if (userPaymentMethods.length === 0) {
+                    // Show message if no payment methods
+                    paymentMethodsContainer.innerHTML = `
+                        <div class="empty-methods-message">
+                            <p>You don't have any payment methods saved yet.</p>
+                        </div>
+                    `;
+                } else {
+                    // Create payment method items
+                    userPaymentMethods.forEach(method => {
+                        const methodItem = createPaymentMethodItem(method);
+                        paymentMethodsContainer.appendChild(methodItem);
+                    });
+                    
+                    // Add event listeners to payment method items
+                    const paymentMethodItems = document.querySelectorAll('.payment-method-item');
+                    paymentMethodItems.forEach(item => {
+                        item.addEventListener('click', function() {
+                            // Remove selected class from all items
+                            paymentMethodItems.forEach(i => i.classList.remove('selected'));
+                            
+                            // Add selected class to the clicked item
+                            this.classList.add('selected');
+                            
+                            // Get the payment method ID
+                            const methodId = this.getAttribute('data-method-id');
+                            
+                            // Find the payment method object
+                            const method = userPaymentMethods.find(m => m.id === methodId);
+                            
+                            // Show the confirmation form
+                            showConfirmationForm(method);
+                        });
+                    });
+                }
+            }, 1000); // Simulate loading delay
+        }
+        
+        // Create a payment method item element
+        function createPaymentMethodItem(method) {
+            const item = document.createElement('div');
+            item.className = 'payment-method-item';
+            item.setAttribute('data-method-id', method.id);
+            item.setAttribute('data-method-type', method.type);
+            
+            // If it's the default method, pre-select it
+            if (method.default) {
+                item.classList.add('selected');
+            }
+            
+            let methodDetails = '';
+            
+            // Add specific details based on the method type
+            switch (method.type) {
+                case 'creditCard':
+                case 'debitCard':
+                    methodDetails = `<p>Ending in ${method.lastDigits} • Expires ${method.expiryDate}</p>`;
+                    break;
+                case 'bank':
+                    methodDetails = `<p>${method.accountType} ending in ${method.lastDigits}</p>`;
+                    break;
+                case 'paypal':
+                    methodDetails = `<p>${method.email}</p>`;
+                    break;
+            }
+            
+            item.innerHTML = `
+                <div class="payment-method-icon">
+                    <span class="material-icons">${method.icon}</span>
+                </div>
+                <div class="payment-method-info">
+                    <h4>${method.name}</h4>
+                    ${methodDetails}
+                    ${method.default ? '<span class="default-badge">Default</span>' : ''}
+                </div>
+            `;
+            
+            return item;
+        }
+        
+        // Hide payment methods when cancel button is clicked
+        if (cancelCashoutBtn) {
+            cancelCashoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                paymentMethodsSection.style.display = 'none';
+                cashoutBtn.style.display = 'block';
+                
+                // Hide any confirmation forms that might be visible
+                const confirmationForms = document.querySelectorAll('.payment-details-form');
+                confirmationForms.forEach(form => {
+                    form.remove();
+                });
+            });
+        }
+        
+        // Handle "Add New Payment Method" button click
+        if (addNewPaymentMethodBtn) {
+            addNewPaymentMethodBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Redirect to the payment methods page to add a new method
+                window.location.href = 'payment_methods.html?action=add&returnUrl=' + encodeURIComponent(window.location.href);
+            });
+        }
+        
+        // Show confirmation form for selected payment method
+        function showConfirmationForm(method) {
+            // Get the current balance
+            const balanceText = document.querySelector('.amount').textContent;
+            const balance = balanceText.replace('$', '').replace(',', '');
+            
+            // Remove any existing forms
+            const existingForms = document.querySelectorAll('.payment-details-form');
+            existingForms.forEach(form => {
+                form.remove();
+            });
+            
+            // Create the confirmation form
+            const formHTML = `
+                <div id="confirmationForm" class="payment-details-form">
+                    <form>
+                        <div class="form-group">
+                            <label>Selected Payment Method</label>
+                            <div class="selected-method-display">
+                                <div class="payment-method-icon">
+                                    <span class="material-icons">${method.icon}</span>
+                                </div>
+                                <div class="payment-method-info">
+                                    <h4>${method.name}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cashoutAmount">Amount to Cash Out</label>
+                            <input type="text" id="cashoutAmount" value="$${balance}" readonly>
+                        </div>
+                        <button type="submit" class="submit-btn">Confirm Cashout</button>
+                    </form>
+                </div>
+            `;
+            
+            // Add the form to the payment methods section
+            paymentMethodsSection.insertAdjacentHTML('beforeend', formHTML);
+            
+            // Show the form
+            document.getElementById('confirmationForm').style.display = 'block';
+            
+            // Add submit event listener to the form
+            document.getElementById('confirmationForm').querySelector('form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Show success message
+                alert(`Your cashout request for ${balanceText} via ${method.name} has been submitted successfully! You will receive your funds shortly.`);
+                
+                // Reset the UI
+                paymentMethodsSection.style.display = 'none';
+                cashoutBtn.style.display = 'block';
+                
+                // Remove the form
+                this.closest('.payment-details-form').remove();
+            });
+        }
+        
+        // Add some custom styling for the selected method display
+        document.head.insertAdjacentHTML('beforeend', `
+            <style>
+                .selected-method-display {
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                    background: var(--secondary-background);
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-top: 5px;
+                }
+                
+                .default-badge {
+                    display: inline-block;
+                    background-color: var(--primary-color);
+                    color: white;
+                    font-size: 0.7rem;
+                    padding: 2px 6px;
+                    border-radius: 4px;
+                    margin-top: 5px;
+                }
+            </style>
+        `);
+    });
+</script>
+<script src="/scripts/profile-picture-sync.js"></script>
+<script src="/scripts/sync.js"></script>
+<script src="/scripts/header.js"></script>
+<script>
+  applyTranslations(); // Call this on page load
+</script>
+<script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
+</script>
+<!-- Google Translate integration -->
+<div class="nav-actions">
+    <a href="login.html" class="btn btn-outline" data-i18n="nav-login">Log in</a>
+    <a href="PAY.HTML" class="btn btn-primary btn-large" data-i18n="nav-get-started">Get Started</a>
+    <!-- Google Translate language selector button -->
+    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+</div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+</body>
+</html>

@@ -551,7 +551,7 @@
                 <div class="footer-brand">
                     <div class="brand-wrapper">
                         <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                        <span class="brand-name">TowerClub</span>
+                        <span class="brand-name">TowerClub LLC</span>
                     </div>
                     <p class="brand-description">
                         Your trusted platform for financial growth and investment opportunities.
@@ -1075,25 +1075,25 @@
                 if (!userId) return;
 
                 // Update notification counts
-                updateNotificationCounts(userId);
+                updateNotificationCounts();
                 
                 // Set up periodic updates
                 setInterval(() => {
-                    updateNotificationCounts(userId);
-                }, 10000); // Update every 10 seconds
+                    updateNotificationCounts();
+                }, 30000); // Update every 30 seconds
                 
             } catch (error) {
                 console.error('Error initializing notifications:', error);
             }
         }
 
-        function updateNotificationCounts(userId) {
+        async function updateNotificationCounts(userId) {
             try {
                 // Get unread message count
-                const unreadMessages = messagingService.getUnreadMessageCount(userId);
+                const unreadMessages = await messagingService.getUnreadMessageCount();
                 
                 // Get unread notification count
-                const unreadNotifications = messagingService.getUnreadNotificationCount(userId);
+                const unreadNotifications = await messagingService.getUnreadNotificationCount();
                 
                 // Update UI indicators if they exist
                 updateMessageIndicator(unreadMessages);
