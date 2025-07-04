@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Jane Smith's Profile - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Jane Smith's Profile - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff;
+            color: #15161E;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-top: 100px;
+        }
+
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #15161E;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 16px;
+        }
+
+        .app-bar h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .profile-header {
+            position: relative;
+            height: 290px;
+            margin-bottom: 16px;
+        }
+
+        .cover-image {
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 24px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cover-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .cover-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-image-container {
+            position: relative;
+            margin: 0 auto;
+            margin-top: -60px;
+            width: 120px;
+            height: 120px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #FFFFFF;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-info {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .profile-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #15161E;
+            margin-bottom: 8px;
+        }
+
+        .profile-email {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 16px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 20px;
+            font-weight: 600;
+            color: #15161E;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+
+        .profile-content {
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #15161E;
+            margin-bottom: 16px;
+        }
+
+        .bio-section {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .bio-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .interests-section {
+            margin-bottom: 24px;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .interest-tag {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .recent-activity {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 16px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: #6B7280;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link">Transfer</a>
+                <a href="activities.html" class="nav-link">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+            <div class="nav-actions">
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <a href="logout.html" class="btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="app-bar">
+            <button class="back-button" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1>Profile</h1>
+        </div>
+
+        <div class="profile-header">
+            <div class="cover-image">
+                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Cover Photo">
+            </div>
+            <div class="profile-image-container">
+                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" alt="Jane Smith">
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <h2 class="profile-name">Jane Smith</h2>
+            <p class="profile-email">jane.smith@example.com</p>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number">2,156</div>
+                    <div class="stat-label">Followers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">892</div>
+                    <div class="stat-label">Following</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">156</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn-primary">Follow</button>
+                <button class="btn-secondary">Message</button>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <div class="bio-section">
+                <h3 class="section-title">About</h3>
+                <p class="bio-text">
+                    Hello! I'm Jane Smith, a financial advisor and crypto investor. I specialize in helping people 
+                    make informed investment decisions and navigate the world of digital assets. Passionate about 
+                    financial literacy and empowering others to achieve their financial goals.
+                </p>
+            </div>
+
+            <div class="interests-section">
+                <h3 class="section-title">Interests</h3>
+                <div class="interests-grid">
+                    <div class="interest-tag">Financial Planning</div>
+                    <div class="interest-tag">Cryptocurrency</div>
+                    <div class="interest-tag">Investment Strategy</div>
+                    <div class="interest-tag">Personal Finance</div>
+                    <div class="interest-tag">Market Analysis</div>
+                    <div class="interest-tag">Wealth Building</div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h3 class="section-title">Recent Activity</h3>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">Shared investment tips for beginners</div>
+                        <div class="activity-time">1 hour ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">Analyzed market trends for the week</div>
+                        <div class="activity-time">3 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="activity-content">
+                        <div class="activity-text">Joined a new investment group</div>
+                        <div class="activity-time">2 days ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/lang.js"></script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        // DarkMode.init() is called automatically on DOMContentLoaded
+    </script>
+</body>
+</html>

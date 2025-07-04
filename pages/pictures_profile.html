@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Update Your Profile Pictures - TowerClub" data-i18n="meta-description">
+    <title data-i18n="page-title">Profile Pictures - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fff;
+            color: #15161E;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px; /* Match size from referral profile */
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+            padding-top: 100px; /* Adjust for fixed header */
+        }
+
+        .app-bar {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            background-color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #15161E;
+            cursor: pointer;
+            padding: 8px;
+            margin-right: 16px;
+        }
+
+        .app-bar h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        .profile-header {
+            position: relative;
+            height: 290px;
+            margin-bottom: 16px;
+        }
+
+        /* Cover Image */
+        .cover-image {
+            height: 200px;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 24px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .cover-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .cover-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Picture */
+        .profile-image-container {
+            position: relative;
+            margin: 0 auto;
+            margin-top: -60px;
+            width: 120px;
+            height: 120px;
+            background-color: #FFFFFF;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid #FFFFFF;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Profile Info */
+        .profile-info {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .profile-info h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: #15161E;
+            margin-bottom: 20px;
+        }
+
+        .profile-info .username {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 20px;
+            font-weight: 500;
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+        }
+
+        .profile-info .email {
+            font-size: 16px;
+            color: #6B7280;
+            margin-bottom: 0;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-bottom: 60px;
+            padding: 40px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #15161E;
+            margin-bottom: 12px;
+        }
+
+        .stat-item p {
+            font-size: 14px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .collections-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            margin-bottom: 12px;
+        }
+
+        .collections-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        .show-all {
+            color: #6F61EF;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .collections-grid {
+            padding: 0 12px;
+        }
+
+        .collection-item {
+            background-color: #fff;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+
+        .collection-item .main-image {
+            flex: 3;
+        }
+
+        .collection-item .side-images {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .collection-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .collection-info {
+            padding: 12px 0 4px;
+        }
+
+        .collection-info h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .collection-info p {
+            color: #606A85;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .profile-picture-container {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logout-button {
+            margin-left: 15px;
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .logout-button:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .editable-image {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .editable-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            opacity: 0.8;
+        }
+
+        .profile-picture {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (min-width: 768px) {
+            .collection-item {
+                display: flex;
+                gap: 8px;
+            }
+
+            .main-image {
+                width: 60%;
+            }
+
+            .side-images {
+                width: 40%;
+            }
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 80px;
+            padding: 30px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary.following {
+            background: #E5E7EB;
+            color: #374151;
+        }
+
+        .btn-secondary {
+            background: #F3F4F6;
+            color: #374151;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: #E5E7EB;
+        }
+
+        .profile-content {
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #15161E;
+            margin-bottom: 16px;
+        }
+
+        .bio-section {
+            background: #F9FAFB;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .bio-text {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #374151;
+        }
+
+        .interests-section {
+            margin-bottom: 24px;
+        }
+
+        .interests-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .interest-tag {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .edit-btn {
+            background: transparent;
+            border: none;
+            color: #6B7280;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: color 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            color: #22c55e;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .save-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            background: #F3F4F6;
+            color: #374151;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #E5E7EB;
+        }
+
+        .add-interest-btn {
+            background: #E5E7EB;
+            color: #374151;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-interest-btn:hover {
+            background: #D1D5DB;
+        }
+
+        .collections-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .bio-text[contenteditable="true"] {
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px;
+            background: #F9FAFB;
+            outline: none;
+        }
+
+        .interest-tag[contenteditable="true"] {
+            border: 2px solid #E5E7EB;
+            background: #F9FAFB;
+            color: #374151;
+        }
+
+        /* User Card Styles */
+        .user-card {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #15161E;
+        }
+
+        .follow-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+        // We'll import the follow system dynamically in the code below
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <!-- Updated Header -->
+<nav class="main-nav">
+    <div class="nav-content">
+        <!-- Brand Section -->
+        <a href="/pages/mainpage.html" class="nav-brand">
+            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo" data-i18n="logo-alt">
+            <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+            <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+        </a>
+        <!-- Navigation Links -->
+        <div class="nav-links">
+            <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+            <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+            <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+            <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+            <a href="/pages/settings.html" class="nav-link">Settings</a>
+        </div>
+        <!-- Navigation Actions -->
+        <div class="nav-actions">
+            <!-- Profile Picture -->
+            <div class="profile-picture-container">
+                <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+            </div>
+            <!-- Log Out Button -->
+            <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
+        </div>
+    </div>
+</nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <header class="app-bar">
+            <button class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <h1 data-i18n="profile-pictures-title">Profile Pictures</h1>
+        </header>
+
+        <main>
+            <div class="profile-header">
+                <!-- Cover Image -->
+                <div class="cover-image">
+                    <img id="coverImage" src="https://images.unsplash.com/photo-1538370965046-79c0d6907d47" alt="Cover Image">
+                    <input type="file" id="coverImageInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="profile-image-container">
+                    <div class="profile-image">
+                        <img id="profileImage" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d" alt="Profile Picture">
+                        <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- Profile Info -->
+                <div class="profile-info" style="margin-bottom: 80px;">
+                    <h2>John Doe</h2>
+                    <p class="username">#johndoe</p>
+                    <p class="email">john.doe@example.com</p>
+                </div>
+            </div>
+
+            <div class="stats-container" style="margin-top: 120px; margin-bottom: 60px;">
+                <div class="stat-item">
+                    <h3>2021</h3>
+                    <p>Since</p>
+                </div>
+                <div class="stat-item">
+                    <h3>567</h3>
+                    <p>Followers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>89</h3>
+                    <p>Posts</p>
+                </div>
+            </div>
+
+            <div class="profile-actions" style="margin-top: 60px; margin-bottom: 60px;">
+                <button class="btn-primary" id="followBtn">Follow</button>
+                <button class="btn-secondary" id="messageBtn">Message</button>
+            </div>
+
+            <div class="profile-content" style="margin-top: 60px;">
+                <div class="bio-section">
+                    <div class="section-header">
+                        <h3 class="section-title">About</h3>
+                        <button class="edit-btn" onclick="toggleEdit('bio')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="bio-content">
+                        <p class="bio-text" id="bioText" contenteditable="false">
+                            Hi! I'm John Doe, a passionate investor and crypto enthusiast. I love exploring new technologies 
+                            and sharing insights about the financial markets. Always looking to connect with like-minded 
+                            individuals who are interested in building wealth through smart investments.
+                        </p>
+                        <div class="edit-actions" id="bioActions" style="display: none;">
+                            <button class="save-btn" onclick="saveBio()">Save</button>
+                            <button class="cancel-btn" onclick="cancelEdit('bio')">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interests-section">
+                    <div class="section-header">
+                        <h3 class="section-title">Interests</h3>
+                        <button class="edit-btn" onclick="toggleEdit('interests')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="interests-content">
+                        <div class="interests-grid" id="interestsGrid">
+                            <div class="interest-tag" contenteditable="false">Cryptocurrency</div>
+                            <div class="interest-tag" contenteditable="false">Investment</div>
+                            <div class="interest-tag" contenteditable="false">Technology</div>
+                            <div class="interest-tag" contenteditable="false">Finance</div>
+                            <div class="interest-tag" contenteditable="false">Trading</div>
+                            <div class="interest-tag" contenteditable="false">Blockchain</div>
+                        </div>
+                        <div class="edit-actions" id="interestsActions" style="display: none;">
+                            <button class="save-btn" onclick="saveInterests()">Save</button>
+                            <button class="cancel-btn" onclick="cancelEdit('interests')">Cancel</button>
+                            <button class="add-interest-btn" onclick="addInterest()">Add Interest</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collections-header">
+                <h2>Collections</h2>
+                <div class="collections-actions">
+                    <button class="edit-btn" id="collectionsEditBtn" aria-label="Edit Collections">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <input type="file" id="addCollectionImageInput" accept="image/*" style="display:none;" multiple>
+                    <button class="add-collection-image-btn" id="addCollectionImageBtn" style="display:none;">
+                        <i class="fas fa-plus"></i> Add Photo
+                    </button>
+                    <a href="#" class="show-all">Show All</a>
+                </div>
+            </div>
+
+            <div class="collections-grid" id="collectionsGrid">
+                <div class="collection-item">
+                    <div class="main-image">
+                        <img src="https://images.unsplash.com/photo-1498931299472-f7a63a5a1cfa" alt="Main Image" class="editable-image" id="collectionMainImage1">
+                        <input type="file" id="collectionMainImageInput1" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="side-images">
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574" alt="Side Image 1" class="editable-image" id="collectionSideImage1">
+                        <input type="file" id="collectionSideImageInput1" accept="image/*" style="display: none;">
+                        <img src="https://images.unsplash.com/photo-1628800242113-98ffcfcc2e77" alt="Side Image 2" class="editable-image" id="collectionSideImage2">
+                        <input type="file" id="collectionSideImageInput2" accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Example user card -->
+        </main>
+    </div>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const backButton = document.querySelector('.back-button');
+
+            backButton.addEventListener('click', function () {
+                window.history.back();
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePicture = document.getElementById('profilePicture');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Make the profile picture clickable to trigger file input
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicture.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Cover Image Upload
+            const coverImage = document.getElementById('coverImage');
+            const coverImageInput = document.getElementById('coverImageInput');
+
+            coverImage.addEventListener('click', () => {
+                coverImageInput.click();
+            });
+
+            coverImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        coverImage.src = e.target.result; // Update the cover image preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Profile Picture Upload
+            const profileImage = document.getElementById('profileImage');
+            const profileImageInput = document.getElementById('profileImageInput');
+
+            profileImage.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+
+            profileImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImage.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            const profileImageInput = document.getElementById('profileImageInput');
+
+            // Make the profile picture clickable
+            profileImage.addEventListener('click', () => {
+                profileImageInput.click();
+            });
+
+            // Handle the file input change event for the profile picture
+            profileImageInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImage.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const editableImages = document.querySelectorAll('.editable-image');
+
+            editableImages.forEach((image) => {
+                const inputId = image.id + 'Input';
+                const fileInput = document.getElementById(inputId);
+
+                // Make the image clickable
+                image.addEventListener('click', () => {
+                    fileInput.click();
+                });
+
+                // Handle the file input change event
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            image.src = e.target.result; // Update the image preview
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const profilePictureHeader = document.getElementById('profilePicture'); // Header profile picture
+            const profilePictureMain = document.getElementById('profileImage'); // Main profile picture
+            const profilePictureInput = document.getElementById('profilePictureInput'); // File input for profile picture
+
+            // Make the header profile picture clickable
+            profilePictureHeader.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Make the main profile picture clickable
+            profilePictureMain.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        // Update both profile pictures
+                        profilePictureHeader.src = e.target.result;
+                        profilePictureMain.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
+        // Edit functionality
+        let originalBio = '';
+        let originalInterests = [];
+
+        function toggleEdit(section) {
+            if (section === 'bio') {
+                const bioText = document.getElementById('bioText');
+                const bioActions = document.getElementById('bioActions');
+                
+                if (bioText.contentEditable === 'false') {
+                    // Enter edit mode
+                    originalBio = bioText.textContent;
+                    bioText.contentEditable = 'true';
+                    bioText.focus();
+                    bioActions.style.display = 'flex';
+                } else {
+                    // Exit edit mode
+                    bioText.contentEditable = 'false';
+                    bioActions.style.display = 'none';
+                }
+            } else if (section === 'interests') {
+                const interestTags = document.querySelectorAll('#interestsGrid .interest-tag');
+                const interestsActions = document.getElementById('interestsActions');
+                
+                if (interestTags[0].contentEditable === 'false') {
+                    // Enter edit mode
+                    originalInterests = Array.from(interestTags).map(tag => tag.textContent);
+                    interestTags.forEach(tag => {
+                        tag.contentEditable = 'true';
+                    });
+                    interestsActions.style.display = 'flex';
+                } else {
+                    // Exit edit mode
+                    interestTags.forEach(tag => {
+                        tag.contentEditable = 'false';
+                    });
+                    interestsActions.style.display = 'none';
+                }
+            } else if (section === 'collections') {
+                collectionsEditMode = !collectionsEditMode;
+                document.getElementById('addCollectionImageBtn').style.display = collectionsEditMode ? 'inline-flex' : 'none';
+                // You can add more edit UI logic here if needed
+            }
+        }
+
+        function saveBio() {
+            const bioText = document.getElementById('bioText');
+            bioText.contentEditable = 'false';
+            document.getElementById('bioActions').style.display = 'none';
+            // Here you would typically save to backend
+            console.log('Bio saved:', bioText.textContent);
+        }
+
+        function saveInterests() {
+            const interestTags = document.querySelectorAll('#interestsGrid .interest-tag');
+            interestTags.forEach(tag => {
+                tag.contentEditable = 'false';
+            });
+            document.getElementById('interestsActions').style.display = 'none';
+            // Here you would typically save to backend
+            const interests = Array.from(interestTags).map(tag => tag.textContent);
+            console.log('Interests saved:', interests);
+        }
+
+        function cancelEdit(section) {
+            if (section === 'bio') {
+                const bioText = document.getElementById('bioText');
+                bioText.textContent = originalBio;
+                bioText.contentEditable = 'false';
+                document.getElementById('bioActions').style.display = 'none';
+            } else if (section === 'interests') {
+                const interestTags = document.querySelectorAll('#interestsGrid .interest-tag');
+                interestTags.forEach((tag, index) => {
+                    tag.textContent = originalInterests[index];
+                    tag.contentEditable = 'false';
+                });
+                document.getElementById('interestsActions').style.display = 'none';
+            }
+        }
+
+        function addInterest() {
+            const interestsGrid = document.getElementById('interestsGrid');
+            const newInterest = document.createElement('div');
+            newInterest.className = 'interest-tag';
+            newInterest.contentEditable = 'true';
+            newInterest.textContent = 'New Interest';
+            newInterest.focus();
+            interestsGrid.appendChild(newInterest);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const editBtn = document.getElementById('collectionsEditBtn');
+            const addBtn = document.getElementById('addCollectionImageBtn');
+            const addInput = document.getElementById('addCollectionImageInput');
+            const collectionsGrid = document.getElementById('collectionsGrid');
+
+            // Toggle add photo button when edit is active
+            editBtn.addEventListener('click', function () {
+                if (addBtn.style.display === 'none' || addBtn.style.display === '') {
+                    addBtn.style.display = 'inline-flex';
+                } else {
+                    addBtn.style.display = 'none';
+                }
+            });
+
+            // Show file input when "Add Photo" is clicked
+            addBtn.addEventListener('click', function () {
+                addInput.click();
+            });
+
+            // Handle file selection and preview/upload
+            addInput.addEventListener('change', function (event) {
+                const files = Array.from(event.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const newItem = document.createElement('div');
+                        newItem.className = 'collection-item';
+                        newItem.innerHTML = `
+                            <div class="main-image">
+                                <img src="${e.target.result}" alt="Collection Image" class="editable-image">
+                            </div>
+                        `;
+                        collectionsGrid.appendChild(newItem);
+                    };
+                    reader.readAsDataURL(file);
+
+                    // Optionally, upload to backend here
+                    // let formData = new FormData();
+                    // formData.append('image', file);
+                    // fetch('/api/upload-collection-image', { method: 'POST', body: formData });
+                });
+                addInput.value = '';
+            });
+        });
+
+        // Example: Replace with actual API call or backend data
+        const profileData = {
+            name: "Jonatthan Asis",
+            referralCode: "jonatthanasis",
+            email: "john.doe@example.com",
+            since: 2025,
+            followers: 420,
+            posts: 15200
+        };
+
+        // Format numbers (e.g., 15200 -> 15.2k)
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+            return num.toString();
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Import follow system
+            let followSystem;
+            try {
+                const followSystemModule = await import('/scripts/followers.js');
+                followSystem = followSystemModule.default;
+            } catch (error) {
+                console.error('Failed to import follow system:', error);
+            }
+            
+            // Get profile user ID from URL or page data
+            const profileUserId = window.location.pathname.split('/').pop().replace('_profile.html', '') || 'john_doe';
+            
+            // Profile Info
+            document.querySelector('.profile-info h2').textContent = profileData.name;
+            document.querySelector('.profile-info .username').textContent = `#${profileData.referralCode}`;
+            document.querySelector('.profile-info .email').textContent = profileData.email;
+
+            // Stats
+            const statItems = document.querySelectorAll('.stat-item h3');
+            if (statItems.length >= 3) {
+                statItems[0].textContent = profileData.since; // Since
+                
+                // Use follower count from follow system if available
+                const followerCount = followSystem ? 
+                    followSystem.getFollowerCount(profileUserId) || profileData.followers : 
+                    profileData.followers;
+                    
+                statItems[1].textContent = formatNumber(followerCount); // Followers
+                statItems[2].textContent = formatNumber(profileData.posts); // Posts
+            }
+        });
+    </script>
+    <script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    // DarkMode.init() is called automatically on DOMContentLoaded
+</script>
+<!-- Scripts -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+(function() {
+    // Helper to check if Google Translate banner iframe is present
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    // Check on load and every second (in case of language change)
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Redirect to chatssection.html when Message button is clicked
+    const messageBtn = document.getElementById('messageBtn');
+    if (messageBtn) {
+        messageBtn.addEventListener('click', function () {
+            window.location.href = '/pages/chatssection.html';
+        });
+    }
+});
+
+// Handle follow/unfollow functionality
+document.addEventListener('DOMContentLoaded', async function () {
+    // Import follow system
+    const followSystemModule = await import('/scripts/followers.js');
+    const followSystem = followSystemModule.default;
+    
+    const followBtn = document.getElementById('followBtn');
+    const followerCountEl = document.querySelector('.stat-item:nth-child(2) h3');
+    
+    // Get profile user ID from URL or page data
+    // For demo, we'll use a hardcoded ID, but in a real app, you'd extract from URL or page data
+    const profileUserId = window.location.pathname.split('/').pop().replace('_profile.html', '') || 'john_doe';
+    
+    // Update follower count display
+    function updateFollowerCount() {
+        const count = followSystem.getFollowerCount(profileUserId);
+        followerCountEl.textContent = formatNumber(count || 420); // Use default 420 if no followers yet
+    }
+    
+    // Update follow button state
+    function updateFollowButtonState() {
+        const isFollowing = followSystem.isFollowing(profileUserId);
+        
+        if (isFollowing) {
+            followBtn.textContent = 'Following';
+            followBtn.classList.add('following');
+        } else {
+            followBtn.textContent = 'Follow';
+            followBtn.classList.remove('following');
+        }
+    }
+    
+    // Initialize UI
+    updateFollowerCount();
+    updateFollowButtonState();
+    
+    // Handle follow button click
+    followBtn.addEventListener('click', function() {
+        const isFollowing = followSystem.isFollowing(profileUserId);
+        
+        if (isFollowing) {
+            // Unfollow the user
+            followSystem.unfollowUser(profileUserId);
+            followBtn.textContent = 'Follow';
+            followBtn.classList.remove('following');
+        } else {
+            // Follow the user
+            followSystem.followUser(profileUserId);
+            followBtn.textContent = 'Following';
+            followBtn.classList.add('following');
+        }
+        
+        // Update follower count
+        updateFollowerCount();
+    });
+});
+</script>
+</body>
+</html>

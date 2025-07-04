@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage Your Payment Methods - TowerClub">
+    <title>Payment Methods - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --positive-color: #39D2C0;
+            --negative-color: #F06A6A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient on hover */
+            color: #ffffff; /* White text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .upload-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .profile-image:hover .upload-overlay {
+            opacity: 1;
+        }
+
+        .upload-overlay span {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            padding-top: 100px; /* Adjust for fixed header */
+            flex: 1;
+        }
+
+        .app-header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .back-button .material-icons {
+            font-size: 24px;
+        }
+
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .card-container {
+            margin-bottom: 20px;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+        }
+
+        .card-logo {
+            height: 14px;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background-color: var(--card-background);
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-box h3 {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .amount {
+            font-size: 32px;
+            font-weight: 600;
+            margin: 8px 0;
+        }
+
+        .amount.positive {
+            color: var(--positive-color);
+        }
+
+        .amount.negative {
+            color: var(--negative-color);
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .trend-indicator.positive {
+            background-color: rgba(57, 210, 192, 0.3);
+            color: var(--positive-color);
+        }
+
+        .trend-indicator.negative {
+            background-color: rgba(240, 106, 106, 0.3);
+            color: var(--negative-color);
+        }
+
+        .quick-services {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 16px 16px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .quick-services h2 {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .service-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .service-btn {
+            background-color: var(--background-color);
+            border: none;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .service-btn:hover {
+            background-color: #E0E0E0;
+        }
+
+        .service-btn .material-icons {
+            font-size: 40px;
+        }
+
+        .transactions {
+            background-color: var(--card-background);
+            padding: 20px;
+        }
+
+        .transactions h2 {
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background-color: var(--background-color);
+        }
+
+        .transaction-icon {
+            background-color: rgba(57, 210, 192, 0.4);
+            border-radius: 50%;
+            padding: 8px;
+            margin-right: 12px;
+        }
+
+        .transaction-icon .material-icons {
+            color: var(--positive-color);
+        }
+
+        .transaction-details {
+            flex-grow: 1;
+        }
+
+        .transaction-name {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .transaction-type {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            text-align: right;
+            color: var(--positive-color);
+            font-weight: 500;
+        }
+
+        .transaction-time {
+            font-size: 14px;
+            color: #666;
+            text-align: right;
+        }
+
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+        }
+
+        .fab .material-icons {
+            font-size: 24px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-container, .stats-container, .quick-services, .transactions {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .stats-container {
+            animation-delay: 0.1s;
+        }
+
+        .quick-services {
+            animation-delay: 0.2s;
+        }
+
+        .transactions {
+            animation-delay: 0.3s;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .paypal-login {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-paypal {
+            background: #ffc439;
+            color: #111827;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-paypal:hover {
+            background: #e0a800;
+            transform: scale(1.05);
+        }
+
+        .service-card {
+            background-color: var(--card-background);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .service-card:hover {
+            background-color: #E0E0E0;
+        }
+
+        .service-card .material-icons {
+            font-size: 40px;
+        }
+        
+        /* Stripe Elements Styling */
+        .StripeElement {
+            height: 40px;
+            padding: 10px 12px;
+            width: 100%;
+            color: #32325d;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+            border-color: #22c55e;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+
+        /* Payment Method Form Styles */
+        .payment-method-form-container {
+            background-color: var(--card-background);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none; /* Hidden by default */
+        }
+
+        .payment-method-form-container h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-form {
+            display: grid;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .payment-method-form button {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+        }
+
+        .payment-method-form button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .payment-method-form button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Payment methods list styles */
+        .payment-methods-list {
+            margin: 20px 0;
+        }
+
+        .payment-methods-list h2 {
+            font-size: 18px;
+            margin-bottom: 16px;
+        }
+
+        .payment-method-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-method-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-method-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .payment-method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f0f0;
+        }
+
+        .payment-method-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .payment-method-name {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        .payment-method-number {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .payment-method-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .payment-method-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #555;
+            transition: color 0.2s;
+        }
+
+        .payment-method-action-btn:hover {
+            color: #000;
+        }
+
+        .default-badge {
+            background-color: #22c55e;
+            color: white;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: #22c55e;
+            animation: spin 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                <span class="brand-name">TowerClub</span>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="add-transaction.html" class="nav-link">Transfer</a>
+                <a href="activities.html" class="nav-link">Activities</a>
+                <a href="settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <div class="profile-image" id="profileImage">
+                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile" id="profileImg">
+                        <div class="upload-overlay">
+                            <span>Click to upload photo</span>
+                        </div>
+                    </div>
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-container">
+        <header class="app-header">
+            <button class="back-button" onclick="handleBack()">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <h1>Payment Methods</h1>
+        </header>
+
+        <main>
+            <div class="card-container" id="selectedPaymentMethod">
+                <!-- The selected payment method from my_card.html will be displayed here -->
+                <div class="credit-card">
+                    <div class="card-header">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" class="card-logo" id="selectedCardLogo">
+                    </div>
+                    <div class="card-details">
+                        <span class="card-number" id="selectedCardNumber">**** 0250</span>
+                        <span class="card-expiry" id="selectedCardExpiry">06/25</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-container" id="statsContainer">
+                <div class="stat-box">
+                    <h3>Money cashed out</h3>
+                    <p class="amount positive" id="moneyCashedOut">Loading...</p>
+                    <div class="trend-indicator positive">
+                        <span id="cashoutTrend">--%</span>
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <h3>Spending</h3>
+                    <p class="amount negative" id="spendingAmount">Loading...</p>
+                    <div class="trend-indicator negative">
+                        <span id="spendingTrend">--%</span>
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-services">
+                <h2>Quick Service</h2>
+                <div class="service-buttons">
+                    <button class="service-btn" onclick="handleTransfer()">
+                        <span class="material-icons">swap_horiz</span>
+                        <span>Transfer</span>
+                    </button>
+                    <button class="service-btn" onclick="window.location.href='my_card.html'">
+                        <span class="material-icons">add_card</span>
+                        <span>Change Card</span>
+                    </button>
+                    <button class="service-btn" onclick="showAddPaymentMethodForm()">
+                        <span class="material-icons">add_circle</span>
+                        <span>Add Payment Method</span>
+                    </button>
+                    <button class="service-btn" onclick="loadPaymentMethods()">
+                        <span class="material-icons">refresh</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Payment Methods List -->
+            <div class="payment-methods-list" id="paymentMethodsList">
+                <h2>Your Payment Methods</h2>
+                <div id="payment-methods-container">
+                    <div class="loading-container" id="loading-payment-methods" style="text-align: center; padding: 20px;">
+                        <div class="spinner"></div>
+                        <p style="margin-top: 10px;">Loading payment methods...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Payment Method Form -->
+            <div class="payment-method-form-container" id="paymentMethodFormContainer">
+                <h2>Add New Payment Method</h2>
+                <form id="payment-method-form" class="payment-method-form">
+                    <div class="form-group">
+                        <label for="cardholder-name">Cardholder Name</label>
+                        <input type="text" id="cardholder-name" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-element">Card Information</label>
+                        <div id="card-element" class="form-control">
+                            <!-- Stripe Element will be inserted here -->
+                        </div>
+                        <!-- Used to display form errors -->
+                        <div id="card-errors" role="alert" style="color: #fa755a; margin-top: 8px; font-size: 0.9em;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="billing-address">Billing Address</label>
+                        <input type="text" id="billing-address" placeholder="123 Main St, City, State, ZIP" required>
+                    </div>
+                    <div class="form-check" style="display: flex; align-items: center; margin-top: 10px;">
+                        <input type="checkbox" id="make-default" style="margin-right: 10px;">
+                        <label for="make-default">Make this my default payment method</label>
+                    </div>
+                    <div class="form-actions" style="margin-top: 20px; display: flex; justify-content: space-between;">
+                        <button type="button" onclick="hideAddPaymentMethodForm()" style="background: #f5f5f5; color: #333;">Cancel</button>
+                        <button type="submit" id="submit-payment-method">Add Payment Method</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="paypal-login">
+                <button class="btn-paypal" id="paypalLoginBtn" onclick="loginWithPayPal()">Log in with PayPal</button>
+            </div>
+        </main>
+
+        <button class="fab" onclick="handleAddTransaction()">
+            <span class="material-icons">add</span>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
+                        <span class="brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample transaction data
+        const transactions = [
+            {
+                name: 'Salary Deposit',
+                type: 'Income',
+                amount: '+$2,500',
+                time: '2 hours ago'
+            },
+            {
+                name: 'Grocery Shopping',
+                type: 'Expense',
+                amount: '-$120',
+                time: '5 hours ago'
+            },
+            {
+                name: 'Electric Bill',
+                type: 'Expense',
+                amount: '-$85',
+                time: '1 day ago'
+            }
+        ];
+
+        // Function to format relative time
+        function formatRelativeTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+
+            if (minutes < 60) {
+                return `${minutes} minutes ago`;
+            } else if (hours < 24) {
+                return `${hours} hours ago`;
+            } else {
+                return `${days} days ago`;
+            }
+        }
+
+        // Function to create transaction item
+        function createTransactionItem(transaction) {
+            const transactionElement = document.createElement('div');
+            transactionElement.className = 'transaction-item';
+            transactionElement.innerHTML = `
+                <div class="transaction-icon">
+                    <span class="material-icons">monetization_on</span>
+                </div>
+                <div class="transaction-details">
+                    <div class="transaction-name">${transaction.name}</div>
+                    <div class="transaction-type">${transaction.type}</div>
+                </div>
+                <div class="transaction-info">
+                    <div class="transaction-amount">${transaction.amount}</div>
+                    <div class="transaction-time">${transaction.time}</div>
+                </div>
+            `;
+            return transactionElement;
+        }
+
+        // Function to populate transactions
+        function populateTransactions() {
+            const transactionsList = document.getElementById('transactions-list');
+            transactionsList.innerHTML = '';
+
+            if (transactions.length === 0) {
+                transactionsList.innerHTML = `
+                    <div class="no-transactions">
+                        <img src="assets/no-transactions.png" alt="No transactions" style="width: 230px; height: 300px;">
+                    </div>
+                `;
+                return;
+            }
+
+            transactions.forEach(transaction => {
+                const transactionElement = createTransactionItem(transaction);
+                transactionsList.appendChild(transactionElement);
+            });
+        }
+
+        // Event handlers
+        function handleBack() {
+            window.history.back();
+        }
+
+        function handleTransfer() {
+            // Redirect to edittransaction.html
+            window.location.href = 'edittransaction.html';
+        }
+
+        function handleChangeCard() {
+            // Implement change card functionality
+            console.log('Change card clicked');
+        }
+
+        function handleAddTransaction() {
+            // Implement add transaction functionality
+            console.log('Add transaction clicked');
+        }
+
+        // Helper: Check if user is logged in with PayPal (simple example using localStorage)
+        function isPayPalLoggedIn() {
+            return localStorage.getItem('paypalLoggedIn') === 'true';
+        }
+
+        // Redirect to PayPal login and return to this page after login
+        function loginWithPayPal() {
+            // Simulate PayPal login redirect
+            const returnUrl = encodeURIComponent(window.location.href);
+            window.location.href = `https://www.paypal.com/signin?returnUrl=${returnUrl}`;
+        }
+
+        // On page load, check PayPal login status and update button
+        document.addEventListener('DOMContentLoaded', function() {
+            const paypalBtn = document.getElementById('paypalLoginBtn');
+            if (!paypalBtn) return;
+
+            // Simulate PayPal login callback (for demo, check for ?paypal=success in URL)
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('paypal') === 'success') {
+                localStorage.setItem('paypalLoggedIn', 'true');
+                // Remove the query param from URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            if (isPayPalLoggedIn()) {
+                paypalBtn.textContent = 'Logged in with PayPal';
+                paypalBtn.disabled = true;
+                paypalBtn.style.background = '#e0e0e0';
+                paypalBtn.style.color = '#111827';
+                paypalBtn.style.cursor = 'default';
+                paypalBtn.title = 'You are already logged in with PayPal';
+                // Show tooltip on hover
+                paypalBtn.addEventListener('mouseenter', function() {
+                    paypalBtn.textContent = 'Logged in with PayPal';
+                });
+                paypalBtn.addEventListener('mouseleave', function() {
+                    paypalBtn.textContent = 'Logged in with PayPal';
+                });
+            } else {
+                paypalBtn.textContent = 'Log in with PayPal';
+                paypalBtn.disabled = false;
+                paypalBtn.style.background = '';
+                paypalBtn.style.color = '';
+                paypalBtn.style.cursor = 'pointer';
+                paypalBtn.title = '';
+            }
+        });
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTransactions();
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const profileImage = document.getElementById('profileImage');
+            const profileImg = document.getElementById('profileImg');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Handle profile image click
+            profileImage.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle file selection
+            profilePictureInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profileImg.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
+        // Always reflect the selected card from localStorage if present
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedCard = JSON.parse(localStorage.getItem('selectedCard'));
+            if (selectedCard) {
+                document.getElementById('selectedCardLogo').src = selectedCard.logo;
+                document.getElementById('selectedCardLogo').alt = selectedCard.type;
+                document.getElementById('selectedCardNumber').textContent = selectedCard.number;
+                document.getElementById('selectedCardExpiry').textContent = selectedCard.expiry;
+            } else {
+                // Fallback: fetch from API if no card is selected
+                fetchPaymentMethod();
+            }
+        });
+
+        // Fetch and display transactions from API
+        async function fetchTransactions() {
+            try {
+                const response = await fetch('/api/transactions');
+                if (!response.ok) throw new Error('Failed to fetch transactions');
+                const transactions = await response.json();
+
+                const transactionsList = document.getElementById('transactions-list');
+                transactionsList.innerHTML = '';
+
+                if (transactions.length === 0) {
+                    transactionsList.innerHTML = `
+                        <div class="no-transactions">
+                            <p>No transactions found.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const transactionElement = document.createElement('div');
+                    transactionElement.className = 'transaction-item';
+                    transactionElement.innerHTML = `
+                        <div class="transaction-icon">
+                            <span class="material-icons">monetization_on</span>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">${transaction.name}</div>
+                            <div class="transaction-type">${transaction.type}</div>
+                        </div>
+                        <div class="transaction-info">
+                            <div class="transaction-amount">${transaction.amount}</div>
+                            <div class="transaction-time">${new Date(transaction.timestamp).toLocaleString()}</div>
+                        </div>
+                    `;
+                    transactionsList.appendChild(transactionElement);
+                });
+            } catch (error) {
+                console.error('Error fetching transactions:', error);
+            }
+        }
+
+        // Fetch and display stats from API
+        async function fetchStats() {
+            try {
+                const response = await fetch('/api/stats');
+                if (!response.ok) throw new Error('Failed to fetch stats');
+                const stats = await response.json();
+
+                // Example: update stats in the DOM
+                document.querySelector('.stats-container .stat-box:nth-child(1) .amount').textContent = stats.moneyCashedOut;
+                document.querySelector('.stats-container .stat-box:nth-child(2) .amount').textContent = stats.spending;
+                // Add more as needed
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Fetch and display user profile info from API (for profile picture, etc.)
+        async function fetchUserProfile() {
+            try {
+                const response = await fetch('/api/profile');
+                if (!response.ok) throw new Error('Failed to fetch profile');
+                const profile = await response.json();
+
+                // Example: update profile picture
+                const profileImg = document.getElementById('profileImg');
+                if (profileImg && profile.profilePictureUrl) {
+                    profileImg.src = profile.profilePictureUrl;
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchTransactions();
+            fetchStats();
+            fetchUserProfile();
+        });
+
+        // Example: Load selected payment method from localStorage (set by my_card.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Try to get selected card info from localStorage
+            const selectedCard = JSON.parse(localStorage.getItem('selectedCard')) || {
+                type: 'Visa',
+                logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png',
+                number: '**** 0250',
+                expiry: '06/25'
+            };
+
+            document.getElementById('selectedCardLogo').src = selectedCard.logo;
+            document.getElementById('selectedCardLogo').alt = selectedCard.type;
+            document.getElementById('selectedCardNumber').textContent = selectedCard.number;
+            document.getElementById('selectedCardExpiry').textContent = selectedCard.expiry;
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    // Example API endpoints (replace with your real endpoints)
+    const apiBase = 'https://api.example.com/user/stats'; // Replace with your backend
+
+    fetch(apiBase, {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + (localStorage.getItem('authToken') || ''),
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Example response: { cashedOut: 12402, cashoutTrend: 4.5, spending: 8392, spendingTrend: 4.5 }
+        document.getElementById('moneyCashedOut').textContent = 
+            (data.cashedOut >= 0 ? '+$' : '-$') + Math.abs(data.cashedOut).toLocaleString();
+        document.getElementById('cashoutTrend').textContent = (data.cashoutTrend || 0) + '%';
+
+        document.getElementById('spendingAmount').textContent = 
+            (data.spending >= 0 ? '-$' : '+$') + Math.abs(data.spending).toLocaleString();
+        document.getElementById('spendingTrend').textContent = (data.spendingTrend || 0) + '%';
+    })
+    .catch(err => {
+        document.getElementById('moneyCashedOut').textContent = 'N/A';
+        document.getElementById('cashoutTrend').textContent = '--%';
+        document.getElementById('spendingAmount').textContent = 'N/A';
+        document.getElementById('spendingTrend').textContent = '--%';
+        console.error('Failed to fetch stats:', err);
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the selected payment method
+    const selectedMethod = localStorage.getItem('selectedPaymentMethod');
+    
+    // Log to console for debugging
+    console.log('Selected payment method:', selectedMethod);
+    
+    if (selectedMethod) {
+        // Do something with the selected method
+        const methodDisplay = document.createElement('div');
+        methodDisplay.textContent = `Selected payment method: ${selectedMethod}`;
+        document.body.appendChild(methodDisplay);
+    }
+});
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script src="/scripts/payment-methods-manager.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+    <script>
+    // Log out functionality: clear session/localStorage and redirect to index.html
+    document.addEventListener('DOMContentLoaded', function() {
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Clear user session data (customize as needed)
+                localStorage.clear();
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            });
+        }
+    });
+</script>
+<script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
+</script>
+<!-- Scripts -->
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+(function() {
+    // Helper to check if Google Translate banner iframe is present
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    // Check on load and every second (in case of language change)
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
+</script>
+</body>
+</html>
