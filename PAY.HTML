@@ -1,0 +1,1857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Payment Methods">
+    <title>My Payment Methods</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --positive-color: #39D2C0;
+            --negative-color: #F06A6A;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for branding */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for better contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff; /* White border on hover */
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            padding-top: 100px; /* Adjust for fixed header */
+            flex: 1;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the payment options */
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .payment-option {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            background-color: #f0f0f0;
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .payment-form {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 0 auto; /* Center the payment forms */
+            max-width: 400px; /* Optional: Limit the width of the forms */
+        }
+
+        .payment-form h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center; /* Center the form title */
+        }
+
+        .paypal-button-container {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .form-group button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .form-group button:hover {
+            background-color: #00796B;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .btn-paypal {
+            background-color: #ffc439 !important; /* PayPal yellow */
+            color: #111827 !important;            /* Dark text for contrast */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .btn-paypal:hover {
+            background-color: #e0a800 !important; /* Darker yellow on hover */
+            color: #111827 !important;
+            transform: scale(1.05);
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 80px 20px;
+            background-color: #f9fafb; /* Light background */
+            text-align: center;
+            margin-top: 200px; /* Increased spacing from the previous section */
+        }
+
+        .pricing-section h2 {
+            margin-bottom: 30px; /* Reduced spacing below the heading */
+        }
+
+        .pricing-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+        }
+
+        .pricing-card {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .pricing-card.featured {
+            max-width: 400px;
+            margin: 0 auto;
+            transform: scale(1.05);
+        }
+
+        .pricing-header {
+            margin-bottom: 20px;
+        }
+
+        .pricing-header h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #22c55e;
+        }
+
+        .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #6b7280;
+        }
+
+        .pricing-features {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .pricing-features li {
+            margin-bottom: 10px;
+            color: #4b5563;
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: #ffffff;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            text-align: center;
+            display: inline-block;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        /* Center the Make Payment header */
+        .app-header {
+            text-align: center; /* Center the text */
+            margin-bottom: 20px; /* Add spacing below the header */
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #make-payment-section {
+                padding: 15px;
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero-section {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-actions .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .hero-actions .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Payment Section Styles */
+        .payment-section {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-option {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .btn-credit-card {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-credit-card:hover {
+            background-color: #00796B;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .payment-section {
+                padding: 30px 15px;
+            }
+
+            .section-header {
+                font-size: 1.5rem;
+            }
+
+            .payment-option {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .payment-option i {
+                margin-bottom: 10px;
+            }
+
+            .btn-credit-card {
+                padding: 12px 24px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Add styles for the success message buttons */
+        .payment-success .btn {
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .payment-success .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-success .btn-primary {
+            background: white;
+            color: #22c55e;
+        }
+        .payment-success .btn-primary:hover {
+            background: #f8f8f8;
+        }
+        .payment-success .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .referral-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0 30px 0;
+        }
+        .referral-form {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 320px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .referral-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #22c55e;
+            letter-spacing: 0.01em;
+        }
+        .referral-input-group {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .referral-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #22c55e;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .referral-input:focus {
+            border-color: #a855f7;
+        }
+        .referral-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+        }
+        .referral-btn:hover {
+            background: linear-gradient(90deg, #a855f7, #22c55e);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .referral-message {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.98rem;
+            min-height: 20px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        @media (max-width: 600px) {
+            .referral-form {
+                padding: 16px 8px;
+                min-width: 0;
+            }
+            .referral-input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .referral-btn {
+                width: 100%;
+            }
+        }
+
+        /* Update footer styles to ensure it stays at the bottom */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .app-container {
+            flex: 1 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px;
+        }
+
+        .main-footer {
+            flex-shrink: 0;
+            width: 100%;
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+
+        .landing-content {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+
+        /* Ensure footer stays at bottom even with little content */
+        @media (min-height: 100vh) {
+            .main-footer {
+                margin-top: auto;
+            }
+        }
+
+        /* Add style for selected plan button */
+        .selected-plan {
+            background: linear-gradient(90deg, #22c55e, #a855f7) !important;
+            color: #fff !important;
+            border: none !important;
+            font-weight: 700;
+            pointer-events: none;
+        }
+
+        /* Make Payment Section */
+        #make-payment-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #make-payment-section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #make-payment-section .payment-option {
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        #make-payment-section .payment-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        #make-payment-section .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        #make-payment-section .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        #make-payment-section .btn-paypal {
+            background-color: #ffc439 !important; /* PayPal yellow */
+            color: #111827 !important;            /* Dark text for contrast */
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        #make-payment-section .btn-paypal:hover {
+            background-color: #e0a800 !important; /* Darker yellow on hover */
+            color: #111827 !important;
+            transform: scale(1.05);
+        }
+
+        /* Center the Make Payment header */
+        .app-header {
+            text-align: center; /* Center the text */
+            margin-bottom: 20px; /* Add spacing below the header */
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            text-decoration: none; /* Remove underline */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #make-payment-section {
+                padding: 15px;
+            }
+        }
+
+        /* Hero Section Styles */
+        .hero-section {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-actions .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .hero-actions .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Payment Section Styles */
+        .payment-section {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .payment-option {
+            background-color: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .payment-option:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .payment-option i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .payment-option span {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .btn-credit-card {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .btn-credit-card:hover {
+            background-color: #00796B;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .payment-section {
+                padding: 30px 15px;
+            }
+
+            .section-header {
+                font-size: 1.5rem;
+            }
+
+            .payment-option {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .payment-option i {
+                margin-bottom: 10px;
+            }
+
+            .btn-credit-card {
+                padding: 12px 24px;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Add styles for the success message buttons */
+        .payment-success .btn {
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .payment-success .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .payment-success .btn-primary {
+            background: white;
+            color: #22c55e;
+        }
+        .payment-success .btn-primary:hover {
+            background: #f8f8f8;
+        }
+        .payment-success .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .referral-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0 30px 0;
+        }
+        .referral-form {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+            padding: 24px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 320px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .referral-label {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #22c55e;
+            letter-spacing: 0.01em;
+        }
+        .referral-input-group {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .referral-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 1.5px solid #22c55e;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .referral-input:focus {
+            border-color: #a855f7;
+        }
+        .referral-btn {
+            background: linear-gradient(90deg, #22c55e, #a855f7);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+        }
+        .referral-btn:hover {
+            background: linear-gradient(90deg, #a855f7, #22c55e);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .referral-message {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.98rem;
+            min-height: 20px;
+            text-align: center;
+            transition: color 0.2s;
+        }
+        @media (max-width: 600px) {
+            .referral-form {
+                padding: 16px 8px;
+                min-width: 0;
+            }
+            .referral-input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .referral-btn {
+                width: 100%;
+            }
+        }
+
+        /* Update footer styles to ensure it stays at the bottom */
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding: 0;
+        }
+
+        .app-container {
+            flex: 1 0 auto;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            padding-top: 100px;
+        }
+
+        .main-footer {
+            flex-shrink: 0;
+            width: 100%;
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: 60px;
+        }
+
+        .landing-content {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+
+        /* Ensure footer stays at bottom even with little content */
+        @media (min-height: 100vh) {
+            .main-footer {
+                margin-top: auto;
+            }
+        }
+
+        /* Add style for selected plan button */
+        .selected-plan {
+            background: linear-gradient(90deg, #22c55e, #a855f7) !important;
+            color: #fff !important;
+            border: none !important;
+            font-weight: 700;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <div class="nav-brand">
+                <a href="index.html" class="brand-link">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                    <span class="brand-name">TowerClub</span>
+                    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="index.html#features" class="nav-link">Features</a>
+                <a href="index.html#pricing" class="nav-link">Pricing</a>
+                <a href="index.html#about" class="nav-link">About</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <a href="login.html" class="btn btn-outline">Log in</a>
+                <a href="#" class="btn btn-primary btn-large" onclick="document.querySelector('.payment-section').scrollIntoView({behavior:'smooth',block:'start'});return false;">Get Started</a>
+                <!-- Google Translate language selector button placed next to Get Started -->
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="app-container">
+        <!-- Pricing Section -->
+        <section id="pricing" class="pricing-section">
+            <h2>Plan & Pricing</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card featured">
+                    <div class="pricing-header">
+                        <h3>VIP Member</h3>
+                        <div class="price">$14.95<span>/month</span></div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>Advanced analytics</li>
+                        <li>Build Financial social Network</li>
+                        <li>Financial Newsupdates</li>
+                        <li>Crypto Currencies updates</li>
+                        <li>Priority support</li>
+                        <li>Transfers between Members</li>
+                        <li>Profile and Chats</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block get-started-btn" data-plan="VIP Member">Get Started</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Referral Code Section -->
+        <div class="referral-section">
+            <form id="referralCodeForm" class="referral-form">
+                <label for="referralCodeInput" class="referral-label">Have a referral code?</label>
+                <div class="referral-input-group">
+                    <input 
+                        type="text" 
+                        id="referralCodeInput" 
+                        placeholder="#Enter referral code" 
+                        class="referral-input"
+                        pattern="#.*"
+                        title="Referral code must start with #"
+                    >
+                    <button type="submit" class="referral-btn">Apply Code</button>
+                </div>
+                <span id="referralCodeMessage" class="referral-message"></span>
+            </form>
+        </div>
+        <style>
+            .referral-section {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 40px 0 30px 0;
+            }
+            .referral-form {
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(34,197,94,0.08);
+                padding: 24px 32px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                min-width: 320px;
+                max-width: 400px;
+                width: 100%;
+            }
+            .referral-label {
+                font-size: 1.1rem;
+                font-weight: 500;
+                margin-bottom: 12px;
+                color: #22c55e;
+                letter-spacing: 0.01em;
+            }
+            .referral-input-group {
+                display: flex;
+                width: 100%;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .referral-input {
+                flex: 1;
+                padding: 10px 14px;
+                border: 1.5px solid #22c55e;
+                border-radius: 6px;
+                font-size: 1rem;
+                outline: none;
+                transition: border-color 0.2s;
+            }
+            .referral-input:focus {
+                border-color: #a855f7;
+            }
+            .referral-btn {
+                background: linear-gradient(90deg, #22c55e, #a855f7);
+                color: #fff;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: background 0.2s, transform 0.2s;
+                box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+            }
+            .referral-btn:hover {
+                background: linear-gradient(90deg, #a855f7, #22c55e);
+                transform: translateY(-2px) scale(1.03);
+            }
+            .referral-message {
+                display: block;
+                margin-top: 8px;
+                font-size: 0.98rem;
+                min-height: 20px;
+                text-align: center;
+                transition: color 0.2s;
+            }
+            @media (max-width: 600px) {
+                .referral-form {
+                    padding: 16px 8px;
+                    min-width: 0;
+                }
+                .referral-input-group {
+                    flex-direction: column;
+                    gap: 8px;
+                }
+                .referral-btn {
+                    width: 100%;
+                }
+            }
+        </style>
+
+        <!-- Payment Section -->
+        <div class="payment-section">
+            <h1 class="section-header">Make Payment</h1>
+            <div class="payment-options">
+                <div class="payment-option" id="creditCardOption">
+                    <i class="material-icons">credit_card</i>
+                    <span>Pay with Credit/Debit Card</span>
+                </div>
+
+                <div class="payment-form" id="cardPaymentFormContainer">
+                    <h2>Pay with Credit/Debit Card</h2>
+                    <div class="form-group">
+                        <button type="button" class="btn-credit-card" id="externalStripePayBtn">Pay Now</button>
+                    </div>
+                    <!-- OR separator -->
+                    <div style="display: flex; align-items: center; margin: 24px 0;">
+                        <hr style="flex: 1; border: none; border-top: 1.5px solid #e5e7eb;">
+                        <span style="margin: 0 16px; color: #888; font-weight: 600;">OR</span>
+                        <hr style="flex: 1; border: none; border-top: 1.5px solid #e5e7eb;">
+                    </div>
+                </div>
+
+                <div class="payment-option" id="paypalOption">
+                    <i class="material-icons">account_balance_wallet</i>
+                    <span>Pay with PayPal</span>
+                </div>
+
+                <div class="payment-form" id="paypalPaymentFormContainer">
+                    <!-- PayPal SDK Integration -->
+                    <div id="paypal-button-container-P-17H9335690871034HNBGKHXQ"></div>
+                    <script src="https://www.paypal.com/sdk/js?client-id=ASYjr6BK6SQ2hpqkN3DYUHusu_X3hbbxsb82hzf_0ns2I_KWifq8RPMb4hM4iWMNmgszLWNOgp9L2hpa&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+                    <script>
+                      paypal.Buttons({
+                          style: {
+                              shape: 'pill',
+                              color: 'gold',
+                              layout: 'vertical',
+                              label: 'paypal'
+                          },
+                          createSubscription: function(data, actions) {
+                            // Get the selected plan details
+                            const plan = selectedPlan || sessionStorage.getItem('selectedPlan');
+                            const amount = selectedPlanAmount || parseFloat(sessionStorage.getItem('selectedPlanAmount'));
+
+                            if (!plan || !amount) {
+                                alert('Please select a plan before proceeding with payment.');
+                                return;
+                            }
+
+                            return actions.subscription.create({
+                                'plan_id': 'P-17H9335690871034HNBGKHXQ',
+                                'custom_id': plan,
+                                'application_context': {
+                                    'shipping_preference': 'NO_SHIPPING',
+                                    'user_action': 'SUBSCRIBE_NOW',
+                                    'description': `TowerClub ${plan} Subscription - $${amount.toFixed(2)}/month`
+                                }
+                            });
+                          },
+                          onApprove: function(data, actions) {
+                            // Payment successful - store all necessary data
+                            const plan = selectedPlan || sessionStorage.getItem('selectedPlan');
+                            const amount = selectedPlanAmount || parseFloat(sessionStorage.getItem('selectedPlanAmount'));
+
+                            // Store payment and subscription details
+                            sessionStorage.setItem('paymentComplete', 'true');
+                            sessionStorage.setItem('subscriptionID', data.subscriptionID);
+                            sessionStorage.setItem('selectedPlan', plan);
+                            sessionStorage.setItem('selectedPlanAmount', amount);
+                            sessionStorage.setItem('paymentMethod', 'paypal');
+                            sessionStorage.setItem('paymentTimestamp', new Date().toISOString());
+                            
+                            // Show success message
+                            alert(`Thank you! Your ${plan} subscription is now active.`);
+                            
+                            // Redirect to registration with payment data
+                            window.location.href = `register.html?payment=complete&plan=${encodeURIComponent(plan)}&subscription=${data.subscriptionID}`;
+                        },
+                        onError: function(err) {
+                            console.error('PayPal Error:', err);
+                            alert('There was an error processing your payment. Please try again.');
+                        },
+                        onCancel: function(data) {
+                            alert('Payment cancelled. Please try again when you\'re ready.');
+                        }
+                      }).render('#paypal-button-container-P-17H9335690871034HNBGKHXQ'); // Renders the PayPal button
+                    </script>
+                </div>
+            </div>
+        </div>
+             
+    </div>
+
+    <!-- Hero Section -->
+    <main class="landing-content">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Take Control of Your Financial Future</h1>
+                <p class="hero-subtitle">Smart financial management made simple. Track expenses, set budgets, and achieve your financial goals with TowerClub LLC.</p>
+                <div class="hero-actions">
+                    <a href="#" class="btn btn-primary btn-large" onclick="document.querySelector('.payment-section').scrollIntoView({behavior:'smooth',block:'start'});return false;">Get Started Now</a>
+                    <a href="#demo" class="btn btn-outline btn-large">Watch Demo</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Track selected plan and payment status
+        let selectedPlan = null;
+        let selectedPlanAmount = null;
+        window.paymentSecured = false;
+
+        // Pricing for each plan (must match your pricing section)
+        const planPrices = {
+            "VIP Member": 14.95
+        };
+
+        // Membership selection algorithm for "Get Started" buttons
+        document.querySelectorAll('.get-started-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default link behavior and NO redirect
+                e.stopPropagation(); // Stop event bubbling
+
+                // Remove "Selected" from all buttons and reset text
+                document.querySelectorAll('.get-started-btn').forEach(function(b) {
+                    b.textContent = 'Get Started';
+                    b.classList.remove('selected-plan');
+                    b.style.pointerEvents = 'auto'; // Make all buttons clickable again
+                });
+
+                // Set this button as selected
+                btn.textContent = 'Selected';
+                btn.classList.add('selected-plan');
+                selectedPlan = btn.getAttribute('data-plan');
+                selectedPlanAmount = planPrices[selectedPlan];
+                btn.style.pointerEvents = 'auto'; // Keep selected button clickable
+                
+                // Store the selected state
+                btn.setAttribute('data-selected', 'true');
+                
+                // After selecting plan, scroll to payment section
+                document.querySelector('.payment-section').scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                // Show message to complete payment
+                if (!window.paymentSecured && !sessionStorage.getItem('paymentComplete')) {
+                    alert('Please complete your payment for the selected plan.');
+                }
+            });
+
+            // Ensure "Selected" text persists on hover
+            btn.addEventListener('mouseenter', function() {
+                if (btn.classList.contains('selected-plan') && btn.getAttribute('data-selected') === 'true') {
+                    btn.textContent = 'Selected';
+                } else {
+                    btn.textContent = 'Get Started';
+                }
+            });
+
+            btn.addEventListener('mouseleave', function() {
+                if (btn.classList.contains('selected-plan') && btn.getAttribute('data-selected') === 'true') {
+                    btn.textContent = 'Selected';
+                } else {
+                    btn.textContent = 'Get Started';
+                }
+            });
+
+            // Prevent any default link behavior
+            btn.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+        });
+
+        // Payment logic for card
+        document.getElementById('cardPaymentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (!selectedPlan || !selectedPlanAmount) {
+                alert('Please select a plan before making payment.');
+                return;
+            }
+            const cardNumber = document.getElementById('cardNumber').value;
+            const cardExpiry = document.getElementById('cardExpiry').value;
+            const cardCVC = document.getElementById('cardCVC').value;
+            const cardHolder = document.getElementById('cardHolder').value;
+
+            // Simulate payment processing for the selected plan
+            alert(`Processing payment of $${selectedPlanAmount.toFixed(2)} for ${selectedPlan} plan. Card ending in ${cardNumber.slice(-4)} under ${cardHolder}.`);
+            window.paymentSecured = true;
+            sessionStorage.setItem('paymentComplete', 'true');
+            sessionStorage.setItem('selectedPlan', selectedPlan);
+            sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+            // Redirect to register.html
+            window.location.href = 'register.html';
+        });
+
+        // On page load, check if returning from PayPal login
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paypalReturn = urlParams.get('paypal_return') === 'true';
+
+            if (paypalReturn || sessionStorage.getItem('returnToPayPage') === 'true') {
+                sessionStorage.setItem('paypalLoggedIn', 'true');
+                sessionStorage.removeItem('returnToPayPage');
+
+                // Update PayPal button UI
+                const paypalButton = document.getElementById('paypalButton');
+                if (paypalButton) {
+                    paypalButton.textContent = 'Logged with PayPal';
+                    paypalButton.style.backgroundColor = '#22c55e';
+                    paypalButton.style.color = '#ffffff';
+                }
+
+                // Show Pay Now with PayPal button
+                const makePaypalPayment = document.getElementById('makePaypalPayment');
+                if (makePaypalPayment) {
+                    makePaypalPayment.style.display = 'block';
+                    // Restore selected plan amount if needed
+                    const amt = sessionStorage.getItem('selectedPlanAmount');
+                    makePaypalPayment.textContent = `Pay $${amt ? Number(amt).toFixed(2) : ''} with PayPal`;
+                }
+
+                // Clean up URL
+                if (paypalReturn) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            }
+        });
+
+        // Special handling for Get Started buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Header Get Started button - check payment status
+            const headerGetStarted = document.querySelector('.nav-actions .btn-primary');
+            if (headerGetStarted) {
+                headerGetStarted.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        // If no payment, scroll to payment section
+                        const paymentSection = document.querySelector('.payment-section');
+                        if (paymentSection) {
+                            paymentSection.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                        // Show message about payment requirement
+                        alert('Please complete your payment before proceeding to registration.');
+                    }
+                });
+            }
+
+            // Hero section Get Started Now button - check payment status
+            const heroGetStarted = document.querySelector('.hero-actions .btn-primary');
+            if (heroGetStarted) {
+                heroGetStarted.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (window.paymentSecured || sessionStorage.getItem('paymentComplete') === 'true') {
+                        window.location.href = 'register.html';
+                    } else {
+                        alert('Please complete your payment before proceeding to registration.');
+                        // Scroll to payment section
+                        document.querySelector('.payment-section').scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            }
+        });
+
+        // Referral Code Form Logic
+        document.addEventListener('DOMContentLoaded', function() {
+            // Referral Code Form Logic with user tracking
+            const referralForm = document.getElementById('referralCodeForm');
+            const referralInput = document.getElementById('referralCodeInput');
+            const referralMessage = document.getElementById('referralCodeMessage');
+
+            // Function to validate username/referral code format
+            function isValidReferralFormat(code) {
+                return code.startsWith('#') && code.length >= 4;
+            }
+
+            referralForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const code = referralInput.value.trim();
+
+                if (!isValidReferralFormat(code)) {
+                    referralMessage.textContent = 'Invalid format. Code must start with # and be at least 4 characters.';
+                    referralMessage.style.color = '#ff4444';
+                    referralMessage.style.display = 'block';
+                    return;
+                }
+
+                try {
+                    // Store referral data
+                    const referralData = {
+                        referralCode: code,
+                        timestamp: new Date().toISOString(),
+                        plan: selectedPlan || sessionStorage.getItem('selectedPlan'),
+                        amount: selectedPlanAmount || sessionStorage.getItem('selectedPlanAmount')
+                    };
+
+                    // Store in sessionStorage for registration
+                    sessionStorage.setItem('referralCode', code);
+                    sessionStorage.setItem('referralData', JSON.stringify(referralData));
+
+                    referralMessage.textContent = 'Referral code applied successfully!';
+                    referralMessage.style.color = '#22c55e';
+                    referralMessage.style.display = 'block';
+
+                    // Disable input after successful application
+                    referralInput.disabled = true;
+                    referralForm.querySelector('.referral-btn').textContent = 'Applied';
+                    referralForm.querySelector('.referral-btn').style.backgroundColor = '#22c55e';
+
+                } catch (error) {
+                    referralMessage.textContent = 'Error applying referral code. Please try again.';
+                    referralMessage.style.color = '#ff4444';
+                    referralMessage.style.display = 'block';
+                }
+            });
+        });
+
+        // Stripe integration for card payments.
+        // You must have a backend endpoint that creates a PaymentIntent and returns its client_secret.
+        // Replace STRIPE_PUBLISHABLE_KEY and /create-payment-intent endpoint with your real values.
+        const STRIPE_PUBLISHABLE_KEY = 'pk_live_51Q1c9WKxFfFtkJUstOvyWc7Wvvuma7hmZtslUdXcGj4Ri5cVDXET75L0M0Bpvq8BIvDPQdK9pa74i9jWuTHz2Ujw00eADQnvsR'; // Your live Stripe publishable key
+        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+        const elements = stripe.elements();
+        const cardElement = elements.create('card', {hidePostalCode: true});
+        cardElement.mount('#card-element');
+
+        const cardForm = document.getElementById('cardPaymentForm');
+        const cardErrors = document.getElementById('card-errors');
+        const cardPayBtn = document.getElementById('cardPayBtn');
+
+        cardForm.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            cardPayBtn.disabled = true;
+            cardPayBtn.textContent = 'Processing...';
+            cardErrors.textContent = '';
+
+            // You should get the selected plan and amount from your UI logic
+            let selectedPlan = window.selectedPlan || sessionStorage.getItem('selectedPlan');
+            let selectedPlanAmount = window.selectedPlanAmount || sessionStorage.getItem('selectedPlanAmount');
+            if (!selectedPlan || !selectedPlanAmount) {
+                cardErrors.textContent = 'Please select a plan before making payment.';
+                cardPayBtn.disabled = false;
+                cardPayBtn.textContent = 'Pay Now';
+                return;
+            }
+
+            // Call your backend to create a PaymentIntent and get client_secret
+            let clientSecret;
+            try {
+                const response = await fetch('/api/create-payment-intent', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        amount: Math.round(Number(selectedPlanAmount) * 100), // amount in cents
+                        plan: selectedPlan
+                    })
+                });
+                const data = await response.json();
+                if (!data.clientSecret) throw new Error('No client secret returned');
+                clientSecret = data.clientSecret;
+            } catch (err) {
+                cardErrors.textContent = 'Payment initialization failed. Please try again.';
+                cardPayBtn.disabled = false;
+                cardPayBtn.textContent = 'Pay Now';
+                return;
+            }
+
+            // Confirm card payment
+            const {error, paymentIntent} = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: cardElement,
+                }
+            });
+
+            if (error) {
+                cardErrors.textContent = error.message;
+                cardPayBtn.disabled = false;
+                cardPayBtn.textContent = 'Pay Now';
+            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+                // Payment successful
+                window.paymentSecured = true;
+                sessionStorage.setItem('paymentComplete', 'true');
+                sessionStorage.setItem('selectedPlan', selectedPlan);
+                sessionStorage.setItem('selectedPlanAmount', selectedPlanAmount);
+                window.location.href = 'register.html';
+            } else {
+                cardErrors.textContent = 'Payment failed. Please try again.';
+                cardPayBtn.disabled = false;
+                cardPayBtn.textContent = 'Pay Now';
+            }
+        });
+    </script>
+    <script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Pay Now (Stripe Checkout)
+    const stripePayBtn = document.getElementById('externalStripePayBtn');
+    if (stripePayBtn) {
+        stripePayBtn.addEventListener('click', function() {
+            // Open Stripe Checkout in a new tab
+            window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
+            // After payment, user should be redirected to register.html via Stripe's success_url
+        });
+    }
+
+    // Pay Now with Paypal
+    const paypalBtn = document.getElementById('paypalPayBtn');
+    if (paypalBtn) {
+        paypalBtn.addEventListener('click', function() {
+            // Open PayPal payment in a new tab (replace with your PayPal link)
+            window.open('https://www.paypal.com/your-paypal-link', '_blank');
+            // After payment, set PayPal's return URL to /pages/register.html
+        });
+    }
+
+    // Get Started Now
+    const getStartedBtn = document.getElementById('getStartedNowBtn');
+    if (getStartedBtn) {
+        getStartedBtn.addEventListener('click', function() {
+            // Open payment in a new tab or process payment
+            window.open('https://buy.stripe.com/3cI14o1tV3q3eqq8LbbII00', '_blank');
+            // After payment, user should be redirected to register.html via Stripe's success_url
+        });
+    }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const referralForm = document.getElementById('referralCodeForm');
+    const referralInput = document.getElementById('referralCodeInput');
+    const referralMsg = document.getElementById('referralCodeMsg');
+
+    referralForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const code = referralInput.value.trim();
+        // Replace this with your real referral code validation logic/API call
+        const isValid = await validateReferralCode(code); // returns true if valid
+
+        if (isValid) {
+            referralMsg.textContent = "Referral code Applied Successfully!";
+            referralMsg.style.color = "green";
+        } else {
+            referralMsg.textContent = "Invalid referral code. Please try again.";
+            referralMsg.style.color = "red";
+        }
+    });
+
+    // Dummy validation function, replace with real API call
+    async function validateReferralCode(code) {
+        // Example: simulate API delay and check for a sample code
+        await new Promise(res => setTimeout(res, 300));
+        return code === "YOUR_VALID_CODE"; // Replace with your logic
+    }
+});
+</script>
+<script>
+document.getElementById('makePaypalPayment').addEventListener('click', function() {
+    // Store current page URL for return
+    sessionStorage.setItem('returnToPayPage', 'true');
+    
+    // Get selected plan amount
+    const amount = selectedPlanAmount || sessionStorage.getItem('selectedPlanAmount');
+    
+    // Construct PayPal URL with return parameters
+    const paypalBaseUrl = 'https://www.paypal.com/signin';
+    const returnUrl = encodeURIComponent(window.location.origin + window.location.pathname + '?paypal_return=true');
+    
+    // Open PayPal in new window
+    window.open(`${paypalBaseUrl}?returnUrl=${returnUrl}`, '_blank');
+});
+
+// Add this code after the existing DOMContentLoaded event listener
+window.addEventListener('load', function() {
+    // Check if returning from PayPal
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('paypal_return') === 'true') {
+        // Show the PayPal payment buttons container
+        const paypalContainer = document.getElementById('paypal-button-container-P-17H9335690871034HNBGKHXQ');
+        if (paypalContainer) {
+            paypalContainer.style.display = 'block';
+        }
+        
+        // Update UI to show logged-in state
+        const paypalBtn = document.getElementById('makePaypalPayment');
+        if (paypalBtn) {
+            paypalBtn.textContent = 'Complete Payment with PayPal';
+            paypalBtn.style.backgroundColor = '#169BD7';
+        }
+        
+        // Clean up URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+});
+</script>
+<script>
+// Validate plan selection
+document.getElementById('makePaypalPayment').addEventListener('click', function(e) {
+    if (!selectedPlan || !selectedPlanAmount) {
+        e.preventDefault();
+        alert('Please select a membership plan before proceeding with payment.');
+        document.querySelector('.pricing-section').scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+        return false;
+    }
+});
+</script>
+</body>
+</html>
+

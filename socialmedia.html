@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Social Network" data-i18n="meta-description">
+    <title data-i18n="page-title">Social Network - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #22c55e;
+            --text-color: #333333;
+            --background-color: #f9fafb;
+            --card-background: #ffffff;
+            --border-color: #E5E7EB;
+            --error-color: #FF4D4F;
+            --success-color: #22c55e;
+            --footer-bg: #1f2937;
+            --footer-text: #9ca3af;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            padding-top: 100px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .balance-card, .transaction-section, .chat-section, .summary-card, .portfolio-section, .news-section {
+            background-color: var(--card-background);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .balance-card {
+            position: relative;
+            background: linear-gradient(135deg, #4A90E2, #22c55e);
+            color: white;
+        }
+        
+        .balance-card::after {
+            content: "View Details →";
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .balance-card:hover::after {
+            opacity: 1;
+            transform: translateX(5px);
+        }
+
+        .balance-card .amount {
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            margin: 10px 0;
+        }
+        
+        .balance-card h2, .balance-card p {
+            color: white;
+        }
+
+        .transaction-item, .chat-item, .news-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: var(--background-color);
+            margin-bottom: 10px;
+        }
+
+        .transaction-item .amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--error-color);
+        }
+
+        .portfolio-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .chat-item {
+            cursor: pointer; /* Indicate the item is clickable */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .chat-item:hover {
+            transform: translateY(-5px); /* Slight lift effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            background-color: #f9fafb; /* Optional: subtle background change */
+        }
+
+        .activity-item {
+            cursor: pointer; /* Indicate the item is clickable */
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .activity-item:hover {
+            transform: translateY(-5px); /* Slight lift effect */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Enhanced shadow */
+            background-color: #f9fafb; /* Optional: subtle background change */
+        }
+
+        .clickable-section {
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+        .clickable-section:hover {
+            transform: translateY(-4px) scale(1.01);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+            background: #f3f4f6;
+        }
+
+        .news-item {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+
+        .news-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
+                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture" data-i18n="profile-picture-alt">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <section class="section balance-card clickable-section" onclick="window.location.href='financial_profile.html'">
+            <h2>Your Balance</h2>
+            <p>Current Account Balance</p>
+            <p class="amount" id="accountBalance">$10,000.00</p>
+        </section>
+
+        <section class="section transaction-section clickable-section" onclick="window.location.href='activities.html'">
+            <h2>Recent Transactions</h2>
+            <div class="transaction-item" id="recentTransactions">
+                <span>Grocery Shopping</span>
+                <span class="amount">-$50.00</span>
+            </div>
+            <div class="transaction-item">
+                <span>Salary Deposit</span>
+                <span class="amount">+$2,000.00</span>
+            </div>
+        </section>
+
+        <section class="section chat-section clickable-section" onclick="window.location.href='chatssection.html'">
+            <h2>Chats</h2>
+            <div class="chat-item" id="recentChats">
+                <span>John Doe</span>
+                <span>Hello! How are you?</span>
+            </div>
+            <div class="chat-item">
+                <span>Jane Smith</span>
+                <span>Thanks for the update.</span>
+            </div>
+        </section>
+
+        <section class="section summary-card clickable-section" onclick="window.location.href='dashboard.html'">
+            <h2>Summary</h2>
+            <div>
+                <span>Income</span>
+                <span id="summaryIncome">+$2,000.00</span>
+            </div>
+            <div>
+                <span>Expenses</span>
+                <span id="summaryExpenses">-$500.00</span>
+            </div>
+        </section>
+
+        <section class="section portfolio-section clickable-section" onclick="window.location.href='crypto.html'">
+            <h2>Your Crypto</h2>
+            <p class="portfolio-value">$50,000</p>
+        </section>
+
+        <section class="section news-section clickable-section" onclick="window.open('https://www.cnbc.com', '_blank')">
+            <h2>Financial News</h2>
+            <div id="newsContainer">
+                <div class="news-item">
+                    <span>Loading financial news...</span>
+                    <span>Source: CNBC</span>
+                </div>
+                <div class="news-item">
+                    <span>Please wait...</span>
+                    <span>Source: Reuters</span>
+                </div>
+            </div>
+        </section>
+
+    
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo" data-i18n="footer-logo-alt">
+                        <span class="brand-name" data-i18n="footer-brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description" data-i18n="footer-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p data-i18n="footer-copyright">&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script>
+        applyTranslations(); // Call this on page load
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Balance card click handling
+            const balanceCard = document.querySelector('.balance-card');
+            if (balanceCard) {
+                // Additional click handler for better mobile support
+                balanceCard.addEventListener('click', (e) => {
+                    // Save current balance to localStorage before navigating
+                    const balanceAmount = document.getElementById('accountBalance').textContent;
+                    const numericBalance = parseFloat(balanceAmount.replace(/[^0-9.-]+/g, ''));
+                    localStorage.setItem('userBalance', numericBalance.toString());
+                    
+                    // Navigate to financial profile
+                    window.location.href = 'financial_profile.html';
+                });
+                
+                // Visual feedback on touch/click
+                balanceCard.addEventListener('mousedown', () => {
+                    balanceCard.style.transform = 'scale(0.98)';
+                });
+                
+                balanceCard.addEventListener('mouseup', () => {
+                    balanceCard.style.transform = '';
+                });
+                
+                balanceCard.addEventListener('mouseleave', () => {
+                    balanceCard.style.transform = '';
+                });
+            }
+            
+            // Add touch events for mobile
+            balanceCard.addEventListener('touchstart', () => {
+                balanceCard.style.transform = 'scale(0.98)';
+            }, {passive: true});
+            
+            balanceCard.addEventListener('touchend', () => {
+                balanceCard.style.transform = '';
+            }, {passive: true});
+            
+            const profilePicture = document.getElementById('profilePicture');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Make the profile picture clickable
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicture.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatItems = document.querySelectorAll('.chat-item');
+
+            chatItems.forEach((chatItem, index) => {
+                chatItem.addEventListener('click', () => {
+                    // Redirect to socialmedia2.html with a query parameter for the selected chat
+                    window.location.href = `/pages/socialmedia2.html?chat=${index + 1}`;
+                });
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const activityItems = document.querySelectorAll('.activity-item');
+
+            activityItems.forEach((activityItem) => {
+                activityItem.addEventListener('click', () => {
+                    // Redirect to activities.html
+                    window.location.href = '/pages/activities.html';
+                });
+            });
+
+            // Add news items click functionality
+            const newsItems = document.querySelectorAll('.news-item');
+
+            newsItems.forEach((newsItem, index) => {
+                newsItem.addEventListener('click', (e) => {
+                    // Prevent the parent section click when clicking on individual news items
+                    e.stopPropagation();
+                    
+                    // Redirect to specific news article based on index
+                    const newsUrls = [
+                        '/pages/news-article.html?article=market-surges',
+                        '/pages/news-article.html?article=interest-rates'
+                    ];
+                    
+                    if (newsUrls[index]) {
+                        window.location.href = newsUrls[index];
+                    } else {
+                        window.location.href = '/pages/news.html';
+                    }
+                });
+            });
+
+            // Fetch financial news from APIs
+            fetchFinancialNews();
+        });
+    </script>
+    <script>
+        // Financial News API Integration
+        async function fetchFinancialNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            if (!newsContainer) return;
+
+            try {
+                // Try to fetch CNBC RSS feed using a CORS proxy
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const cnbcRssUrl = 'https://www.cnbc.com/id/100003114/device/rss/rss.html';
+                
+                const response = await fetch(proxyUrl + encodeURIComponent(cnbcRssUrl));
+                const text = await response.text();
+                
+                // Parse RSS XML
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(text, 'text/xml');
+                const items = xmlDoc.querySelectorAll('item');
+                
+                const news = [];
+                items.forEach((item, index) => {
+                    if (index < 5) {
+                        const title = item.querySelector('title')?.textContent || '';
+                        const link = item.querySelector('link')?.textContent || '';
+                        
+                        news.push({
+                            title: title,
+                            source: 'CNBC',
+                            url: link
+                        });
+                    }
+                });
+                
+                if (news.length > 0) {
+                    displayNews(news);
+                } else {
+                    displayFallbackNews();
+                }
+            } catch (error) {
+                console.warn('CNBC RSS fetch failed:', error);
+                displayFallbackNews();
+            }
+        }
+
+        function displayNews(newsData) {
+            const newsContainer = document.getElementById('newsContainer');
+            if (!newsContainer) return;
+
+            newsContainer.innerHTML = '';
+            
+            newsData.forEach((news, index) => {
+                const newsItem = document.createElement('div');
+                newsItem.className = 'news-item';
+                newsItem.innerHTML = `
+                    <span>${truncateTitle(news.title)}</span>
+                    <span>Source: ${news.source}</span>
+                `;
+                
+                // Add click event to open news URL
+                newsItem.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (news.url) {
+                        window.open(news.url, '_blank');
+                    } else {
+                        window.open('https://www.cnbc.com', '_blank');
+                    }
+                });
+                
+                newsContainer.appendChild(newsItem);
+            });
+        }
+
+        function displayFallbackNews() {
+            const newsContainer = document.getElementById('newsContainer');
+            if (!newsContainer) return;
+
+            newsContainer.innerHTML = `
+                <div class="news-item">
+                    <span>Market Surges to New Highs</span>
+                    <span>Source: CNBC</span>
+                </div>
+                <div class="news-item">
+                    <span>Interest Rates Remain Unchanged</span>
+                    <span>Source: Reuters</span>
+                </div>
+                <div class="news-item">
+                    <span>Tech Stocks Rally on Earnings</span>
+                    <span>Source: Bloomberg</span>
+                </div>
+                <div class="news-item">
+                    <span>Oil Prices Stabilize</span>
+                    <span>Source: CNBC</span>
+                </div>
+                <div class="news-item">
+                    <span>Federal Reserve Meeting Today</span>
+                    <span>Source: Reuters</span>
+                </div>
+            `;
+
+            // Add click events to fallback news items
+            const fallbackNewsItems = newsContainer.querySelectorAll('.news-item');
+            fallbackNewsItems.forEach((item, index) => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    window.open('https://www.cnbc.com', '_blank');
+                });
+            });
+        }
+
+        function truncateTitle(title, maxLength = 50) {
+            if (title.length <= maxLength) return title;
+            return title.substring(0, maxLength) + '...';
+        }
+    </script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+        });
+    </script>
+    <script>
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+    </script>
+    <!-- Scripts -->
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ar,zh-CN,es,fr',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+      }
+    </script>
+    <script 
+      type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+    <script>
+    (function() {
+        // Helper to check if Google Translate banner iframe is present
+        function checkGoogleBanner() {
+            var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+            if (bannerFrame && bannerFrame.style.display !== 'none') {
+                document.body.classList.add('has-google-banner');
+            } else {
+                document.body.classList.remove('has-google-banner');
+            }
+        }
+        // Check on load and every second (in case of language change)
+        window.addEventListener('load', function() {
+            setInterval(checkGoogleBanner, 1000);
+        });
+    })();
+    </script>
+    <script>
+        // Example: Place this in a <script> tag or your main JS file for the dashboard page
+        // Fetch and render: Balance, Recent Transactions, Chats, and Summary
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE = 'https://api.yourtowerclub.com';
+            const API_KEY = 'YOUR_API_KEY'; // Use secure authentication in production
+
+            // Load balance from localStorage if available (for demo purposes)
+            function loadBalanceFromLocalStorage() {
+                const balanceElement = document.getElementById('accountBalance');
+                if (balanceElement) {
+                    // Try to get balance from localStorage first (for consistency across pages)
+                    const storedBalance = localStorage.getItem('userBalance');
+                    if (storedBalance) {
+                        const balance = parseFloat(storedBalance);
+                        balanceElement.textContent = `$${balance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    }
+                }
+            }
+            
+            // Call this immediately to show local data first
+            loadBalanceFromLocalStorage();
+
+            // 1. Fetch Current Account Balance
+            async function fetchBalance() {
+                try {
+                    const res = await fetch(`${API_BASE}/user/balance?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    document.getElementById('accountBalance').textContent = `$${parseFloat(data.balance).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } catch (e) {
+                    console.error('Error fetching balance:', e);
+                    // Use local storage as fallback
+                    loadBalanceFromLocalStorage();
+                }
+            }
+
+            // 2. Fetch Recent Transactions
+            async function fetchRecentTransactions() {
+                try {
+                    const res = await fetch(`${API_BASE}/user/transactions?limit=5&apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    const txList = document.getElementById('recentTransactions');
+                    txList.innerHTML = '';
+                    data.transactions.forEach(tx => {
+                        const txDiv = document.createElement('div');
+                        txDiv.className = 'transaction-item';
+                        txDiv.innerHTML = `
+                            <span>${tx.description}</span>
+                            <span class="amount ${tx.amount >= 0 ? 'positive' : 'negative'}">
+                                ${tx.amount >= 0 ? '+' : '-'}$${Math.abs(tx.amount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                            </span>
+                        `;
+                        txList.appendChild(txDiv);
+                    });
+                } catch (e) {
+                    console.error('Error fetching transactions:', e);
+                }
+            }
+
+            // 3. Fetch Recent Chats (top 2)
+            async function fetchRecentChats() {
+                try {
+                    const res = await fetch(`${API_BASE}/messages/recent?limit=2&apiKey=${API_KEY}`, { credentials: 'include' });
+                    const data = await res.json();
+                    const chatList = document.getElementById('recentChats');
+                    chatList.innerHTML = '';
+                    data.forEach(chat => {
+                        const chatDiv = document.createElement('div');
+                        chatDiv.className = 'chat-item';
+                        chatDiv.innerHTML = `
+                            <span class="chat-name">${chat.senderName}</span>
+                            <span class="chat-message">${chat.message}</span>
+                        `;
+                        chatList.appendChild(chatDiv);
+                    });
+                } catch (e) {
+                    console.error('Error fetching chats:', e);
+                }
+            }
+
+            // 4. Fetch Summary (Income & Expenses)
+            async function fetchSummary() {
+                try {
+                    const incomeRes = await fetch(`${API_BASE}/user/income?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const expenseRes = await fetch(`${API_BASE}/user/expenses?apiKey=${API_KEY}`, { credentials: 'include' });
+                    const incomeData = await incomeRes.json();
+                    const expenseData = await expenseRes.json();
+                    document.getElementById('summaryIncome').textContent = `Income +$${parseFloat(incomeData.income).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    document.getElementById('summaryExpenses').textContent = `Expenses -$${parseFloat(expenseData.expenses).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } catch (e) {
+                    console.error('Error fetching summary:', e);
+                }
+            }
+
+            // Call all fetchers
+            fetchBalance();
+            fetchRecentTransactions();
+            fetchRecentChats();
+            fetchSummary();
+        });
+    </script>
+</body>
+</html>

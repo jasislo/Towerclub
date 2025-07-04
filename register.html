@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Registration" data-i18n="meta-description">
+    <title data-i18n="page-title">Register - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Register Page Styles */
+        :root {
+            --primary-color: #22c55e; /* Green */
+            --secondary-color: #a855f7; /* Fuchsia */
+            --background-color: #ffffff; /* White */
+            --card-background: #f3f4f6; /* Light Gray */
+            --text-color: #1a1f24; /* Dark Gray */
+            --text-secondary: #6b7280; /* Medium Gray */
+            --input-background: #ffffff; /* White */
+            --input-border: #d1d5db; /* Light Gray Border */
+            --error-color: #ef4444; /* Red */
+            --success-color: #10b981; /* Green */
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--card-background);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 180px;
+            height: auto;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease;
+            object-fit: contain;
+        }
+
+        .auth-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: var(--input-background);
+            border: 1px solid var(--input-border);
+            border-radius: 8px;
+            padding: 0 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        }
+
+        .input-group .material-icons {
+            color: var(--text-secondary);
+            margin-right: 12px;
+            transition: color 0.3s ease;
+        }
+
+        .input-group:focus-within .material-icons {
+            color: var(--primary-color);
+        }
+
+        .input-group input {
+            flex: 1;
+            background: none;
+            border: none;
+            padding: 12px 0;
+            color: var(--text-color);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .toggle-password {
+            cursor: pointer;
+            transition: color 0.2s;
+            color: #606A85;
+        }
+
+        .toggle-password:hover {
+            color: #22c55e; /* or any highlight color you prefer */
+        }
+
+        .verify-github-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .verify-github-btn:hover {
+            color: var(--primary-color);
+            background-color: rgba(34, 197, 94, 0.1);
+        }
+
+        .verify-github-btn.verifying {
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        .verify-github-btn.verified {
+            color: var(--success-color);
+        }
+
+        .verify-github-btn.error {
+            color: var(--error-color);
+        }
+
+        .github-status {
+            margin-top: 8px;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .github-status.success {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .github-status.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .github-status.info {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--primary-color);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .terms-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .terms-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            border: 2px solid var(--input-border);
+            appearance: none;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .terms-checkbox input[type="checkbox"]:checked {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .terms-checkbox input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-size: 12px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .terms-checkbox a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .terms-checkbox a:hover {
+            color: var(--secondary-color);
+        }
+
+        .auth-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .auth-footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 16px;
+            }
+            
+            .auth-card {
+                padding: 24px;
+            }
+            
+            .form-options {
+                flex-direction: column;
+                gap: 16px;
+                align-items: flex-start;
+            }
+
+            .auth-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+
+    <!-- Add translation manager script -->
+    <script type="module">
+        import translationManager from '../scripts/translation-manager.js';
+    </script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                <h1>Create Account</h1>
+                <p>Join TowerClub to manage your finances</p>
+            </div>
+
+            <form class="auth-form" id="registerForm">
+                <div class="form-group">
+                    <label for="fullName" data-i18n="form-full-name">Full Name</label>
+                    <div class="input-group">
+                        <span class="material-icons">person</span>
+                        <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required data-i18n-placeholder="form-full-name-placeholder">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" data-i18n="form-email">Email Address</label>
+                    <div class="input-group">
+                        <span class="material-icons">email</span>
+                        <input type="email" id="email" name="email" placeholder="Enter your email" required data-i18n-placeholder="form-email-placeholder">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <div class="input-group">
+                        <span class="material-icons">phone</span>
+                        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" data-i18n="form-password">Password</label>
+                    <div class="input-group">
+                        <span class="material-icons">lock</span>
+                        <input type="password" id="password" name="password" placeholder="Create a password" required data-i18n-placeholder="form-password-placeholder">
+                        <span class="material-icons password-toggle" id="passwordToggle">visibility_off</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" data-i18n="form-confirm-password">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="material-icons">lock</span>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required data-i18n-placeholder="form-confirm-password-placeholder">
+                        <span class="material-icons password-toggle" id="confirmPasswordToggle">visibility_off</span>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="terms-checkbox">
+                        <input type="checkbox" name="terms" required>
+                        <span data-i18n="register-terms">
+                            I agree to the 
+                            <a href="/pages/domainmodels.html" target="_blank" data-i18n="register-terms-link">Terms & Conditions</a>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="auth-button">
+                    <span data-i18n="register-submit">Create Account</span>
+                    <span class="material-icons">arrow_forward</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p data-i18n="register-have-account">Already have an account? <a href="login.html" data-i18n="register-login">Sign In</a></p>
+                <div id="google_translate_element"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password visibility toggle logic
+        document.addEventListener('DOMContentLoaded', function () {
+            function setupToggle(inputId, toggleId) {
+                const input = document.getElementById(inputId);
+                const toggle = document.getElementById(toggleId);
+                toggle.addEventListener('click', function () {
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.textContent = type === 'password' ? 'visibility_off' : 'visibility';
+                });
+            }
+            setupToggle('password', 'passwordToggle');
+            setupToggle('confirmPassword', 'confirmPasswordToggle');
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // Get form values
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsChecked = document.querySelector('input[name="terms"]').checked;
+
+            // Simple validation
+            if (!fullName || !email || !phone || !password || !confirmPassword || !termsChecked) {
+                alert('Please fill out all fields and agree to the terms.');
+                return;
+            }
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            // Save user info to localStorage (or sessionStorage as needed)
+            const userInfo = {
+                fullName,
+                email,
+                phone,
+                password // In production, never store plain passwords!
+            };
+            localStorage.setItem('pendingRegistration', JSON.stringify(userInfo));
+
+            // Redirect to onboarding page
+            window.location.href = 'onboarding.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    // Save form data with correct field IDs
+                    localStorage.setItem('reg_name', document.getElementById('fullName').value);
+                    localStorage.setItem('reg_email', document.getElementById('email').value);
+                    localStorage.setItem('reg_phone', document.getElementById('phone').value);
+                    // You can add any other fields you want to store
+                });
+            }
+        });
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en'},
+        'google_translate_element'
+      );
+    }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>

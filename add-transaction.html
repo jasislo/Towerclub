@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Add Transaction – TowerClub">
+    <title>Add Transaction – TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/transactions.css">
+    <link rel="stylesheet" href="/styles/header.css">
+    <style>
+        body {
+            padding-top: 70px; /* Add padding to prevent content from hiding behind fixed nav */
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background */
+            padding: 15px 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff;
+            color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        /* Center the Transaction Details Section */
+        .transaction-details-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .content-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .balance-overview,
+        .transaction-history {
+            margin-top: 20px;
+        }
+
+        .balance-overview h2,
+        .transaction-history h2 {
+            text-align: center;
+        }
+
+        .balance-cards {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .transaction-list {
+            margin-top: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-item:hover {
+            background: #f3f4f6;
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .transaction-amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .transaction-amount.positive {
+            color: #10b981; /* Green for positive amounts */
+        }
+
+        .transaction-amount.negative {
+            color: #ef4444; /* Red for negative amounts */
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .balance-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .transaction-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .transaction-amount {
+                margin-top: 10px;
+            }
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .footer-top {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-links-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .balance-overview {
+            margin: 40px auto;
+            max-width: 1200px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .balance-overview h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .balance-cards {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .balance-card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .balance-card h3 {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #4f46e5;
+        }
+
+        .balance-card.total {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .balance-card.total h3 {
+            color: white;
+        }
+
+        .balance-card.total .balance-amount {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .balance-cards {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        .transaction-history {
+            margin: 40px auto;
+            max-width: 1200px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-history h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .transaction-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #f9fafb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-item:hover {
+            background: #f3f4f6;
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .transaction-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .transaction-amount {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .transaction-amount.positive {
+            color: #10b981; /* Green for positive amounts */
+        }
+
+        .transaction-amount.negative {
+            color: #ef4444; /* Red for negative amounts */
+        }
+
+        @media (max-width: 768px) {
+            .transaction-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .transaction-amount {
+                margin-top: 10px;
+            }
+        }
+
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-details-container {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-overview {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-card {
+            background: #3d3d3d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .balance-card h3 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-history {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-item {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-item:hover {
+            background: #4d4d4d;
+        }
+
+        body.dark-mode .transaction-title {
+            color: #ffffff;
+        }
+
+        body.dark-mode .transaction-date {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .main-footer {
+            background-color: #1a1a1a;
+        }
+
+        body.dark-mode .footer-brand .brand-description {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .footer-column ul li a {
+            color: #b0b0b0;
+        }
+
+        body.dark-mode .footer-column ul li a:hover {
+            color: #ffffff;
+        }
+
+        body.dark-mode .footer-bottom {
+            color: #b0b0b0;
+        }
+
+        /* Dark mode button styles */
+        body.dark-mode .btn-outline {
+            background: #3d3d3d;
+            border-color: #4d4d4d;
+            color: #ffffff;
+        }
+
+        body.dark-mode .btn-outline:hover {
+            background: #4d4d4d;
+            color: #22c55e;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
+                <span class="brand-name">TowerClub</span>
+            </a>
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+            <!-- Navigation Actions -->
+            <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <!-- Google Translate Selector -->
+                <div id="google_translate_element"></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <main class="main-content">
+            <!-- Centered Transaction Details Section -->
+            <div class="transaction-details-container">
+                <!-- Header Section -->
+                <div class="content-header">
+                    <div class="header-left">
+                        <button onclick="history.back()" class="btn btn-icon">
+                            <span class="material-icons">arrow_back</span>
+                        </button>
+                        <div>
+                            <h1>Add Transaction</h1>
+                            <p>Enter your transaction details below.</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button id="editBtn" class="btn btn-secondary" onclick="window.location.href='edittransaction.html'">
+                            <span class="material-icons">send</span>
+                            I want to make a Transfer
+                        </button>
+                        <button id="deleteBtn" class="btn btn-error">
+                            <span class="material-icons">delete</span>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Balance Overview Section -->
+                <div class="balance-overview">
+                    <h2>Account Balance</h2>
+                    <div class="balance-cards">
+                        <div class="balance-card">
+                            <h3>Money In</h3>
+                            <p class="balance-amount" id="moneyIn"></p>
+                        </div>
+                        <div class="balance-card">
+                            <h3>Money Out</h3>
+                            <p class="balance-amount" id="moneyOut"></p>
+                        </div>
+                        <div class="balance-card total">
+                            <h3>Total Balance</h3>
+                            <p class="balance-amount" id="totalBalance"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transaction History Section -->
+                <div class="transaction-history">
+                    <h2>Transaction History</h2>
+                    <div class="transaction-list"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="footer-logo">
+                        <span class="brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">X</a></li>
+                            <li><a href="#">Youtube</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="/scripts/add-transaction.js"></script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/netlify/functions/header.js"></script>
+    <script type="module">
+        import DarkMode from '/scripts/dark-mode.js';
+        document.addEventListener('DOMContentLoaded', () => {
+            DarkMode.init();
+        });
+    </script>
+    <script>
+        // Page-specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize page functionality
+            initializePage();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Load initial data
+            loadTransactionData();
+        });
+
+        function initializePage() {
+            console.log('Add Transaction page initialized');
+            // Removed authentication check and redirect
+        }
+
+        function setupEventListeners() {
+            // Back button functionality
+            const backButton = document.querySelector('.btn-icon');
+            if (backButton) {
+                backButton.addEventListener('click', function() {
+                    history.back();
+                });
+            }
+
+            // Transfer button functionality
+            const transferButton = document.getElementById('editBtn');
+            if (transferButton) {
+                transferButton.addEventListener('click', function() {
+                    window.location.href = 'edittransaction.html';
+                });
+            }
+
+            // Cancel button functionality
+            const cancelButton = document.getElementById('deleteBtn');
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function() {
+                    if (confirm('Are you sure you want to cancel? All unsaved changes will be lost.')) {
+                        window.location.href = 'activities.html';
+                    }
+                });
+            }
+
+            // Listen for dark mode changes
+            document.addEventListener('darkModeChange', function(e) {
+                updatePageForDarkMode(e.detail.isDarkMode);
+            });
+        }
+
+        function loadTransactionData() {
+            // Load balance data
+            updateBalanceDisplay();
+            
+            // Load transaction history
+            loadTransactionHistory();
+        }
+
+        function updateBalanceDisplay() {
+            // This would typically load from an API
+            // For now, using static data
+            const moneyIn = 12340.00;
+            const moneyOut = 8120.00;
+            const totalBalance = moneyIn - moneyOut;
+
+            document.getElementById('moneyIn').textContent = `$${moneyIn.toFixed(2)}`;
+            document.getElementById('moneyOut').textContent = `$${moneyOut.toFixed(2)}`;
+            document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
+        }
+
+        function loadTransactionHistory() {
+            // This would typically load from an API
+            // For now, the data is already in the HTML
+            console.log('Transaction history loaded');
+        }
+
+        function updatePageForDarkMode(isDarkMode) {
+            // Additional dark mode updates specific to this page
+            const body = document.body;
+            
+            if (isDarkMode) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        }
+
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
+        // Export functions for use in other scripts
+        window.AddTransactionPage = {
+            initializePage,
+            setupEventListeners,
+            loadTransactionData,
+            updateBalanceDisplay,
+            loadTransactionHistory,
+            updatePageForDarkMode
+        };
+    </script>
+    <script type="module">
+    import profilePictureManager from '/scripts/profile-picture-manager.js';
+    // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
+</script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="module">
+    import transferService from '/scripts/transfer-service.js';
+
+    // Update balance display
+    function updateBalanceDisplay() {
+        // Get transactions from transfer service
+        const transactions = transferService.getTransactions();
+        
+        // Calculate money in and money out
+        let moneyIn = 0;
+        let moneyOut = 0;
+        
+        transactions.forEach(transaction => {
+            if (transaction.type === 'income') {
+                moneyIn += transaction.amount;
+            } else if (transaction.type === 'expense') {
+                moneyOut += transaction.amount;
+            }
+        });
+        
+        // Get current balance
+        const totalBalance = transferService._getUserBalance();
+        
+        // Update UI
+        document.getElementById('moneyIn').textContent = `$${moneyIn.toFixed(2)}`;
+        document.getElementById('moneyOut').textContent = `$${moneyOut.toFixed(2)}`;
+        document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
+    }
+
+    // Load transaction history
+    function loadTransactionHistory() {
+        const transactions = transferService.getTransactions();
+        const transactionList = document.querySelector('.transaction-list');
+        
+        // Clear existing transactions
+        transactionList.innerHTML = '';
+        
+        if (transactions.length === 0) {
+            transactionList.innerHTML = '<p class="no-transactions">No transactions found</p>';
+            return;
+        }
+        
+        // Sort transactions by date (newest first)
+        transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+        
+        // Add transactions to the list
+        transactions.forEach(transaction => {
+            const item = document.createElement('div');
+            item.className = 'transaction-item';
+            
+            const formattedDate = new Date(transaction.date).toLocaleDateString();
+            const formattedAmount = transaction.amount.toFixed(2);
+            
+            item.innerHTML = `
+                <div class="transaction-info">
+                    <div class="transaction-title">${transaction.description}</div>
+                    <div class="transaction-date">${formattedDate}</div>
+                </div>
+                <div class="transaction-amount ${transaction.type === 'income' ? 'positive' : 'negative'}">
+                    ${transaction.type === 'income' ? '+' : '-'}$${formattedAmount}
+                </div>
+            `;
+            
+            transactionList.appendChild(item);
+        });
+    }
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+        updateBalanceDisplay();
+        loadTransactionHistory();
+        
+        // Update when new transactions are added
+        window.addEventListener('transaction-added', () => {
+            updateBalanceDisplay();
+            loadTransactionHistory();
+        });
+    });
+</script>
+</body>
+</html>

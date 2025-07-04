@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referral Profile - TowerClub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="/styles/referral.css">
+    <link rel="stylesheet" href="/styles/footer.css">
+    <link rel="stylesheet" href="/styles/header.css">
+    <script type="module" src="/scripts/referral.js"></script>
+    <link rel="icon" type="image/png" href="/assets/images/towerclub_logo.png">
+    <style>
+        /* General Layout Improvements */
+        .main-content {
+            padding: 40px 20px; /* Add padding for better spacing */
+            max-width: 1000px; /* Limit the width for better readability */
+            margin: 0 auto; /* Center the content horizontally */
+        }
+
+        .content-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the content horizontally */
+            text-align: center; /* Center the text */
+            margin-bottom: 40px; /* Add spacing below the header */
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px; /* Add spacing between elements */
+        }
+
+        .header-left h1 {
+            font-size: 2rem; /* Adjust font size for better visibility */
+            margin: 0;
+        }
+
+        .header-left p {
+            font-size: 1rem; /* Adjust font size for better readability */
+            margin: 0;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(0, 0, 0, 0.1); /* Add a subtle hover effect */
+        }
+
+        .referral-container {
+            max-width: 800px; /* Reduce width for better centering */
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 12px; /* Slightly larger border radius for a modern look */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Enhance shadow for depth */
+        }
+
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Add spacing between profile image and info */
+        }
+
+        .profile-image {
+            width: 120px; /* Adjust size for better visibility */
+            height: 120px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: pointer; /* Change cursor to pointer to indicate clickability */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .profile-image:hover {
+            transform: scale(1.1); /* Slightly enlarge the profile picture on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a shadow effect on hover */
+        }
+
+        .profile-info {
+            text-align: center; /* Center-align the text */
+        }
+
+        .referral-code {
+            display: flex;
+            align-items: center;
+            background: #f3f4f6;
+            padding: 15px; /* Increase padding for better spacing */
+            border-radius: 5px;
+            gap: 15px; /* Increase spacing between elements */
+        }
+
+        .referral-code span {
+            font-size: 0.9rem;
+            color: #4f46e5;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e5e7eb;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .btn-icon:hover {
+            background: #d1d5db;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Adjust column size for better layout */
+            gap: 30px; /* Increase spacing between cards */
+            margin-top: 30px; /* Add spacing above the stats grid */
+        }
+
+        .stat-card {
+            background: #f9fafb;
+            padding: 20px; /* Increase padding for better spacing */
+            border-radius: 10px; /* Slightly larger border radius for a modern look */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Enhance shadow for depth */
+        }
+
+        .stat-card.clickable {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .stat-card.clickable:hover {
+            transform: translateY(-5px); /* Slightly lift the card */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow effect */
+            background-color: #f3f4f6; /* Optional: Change background color on hover */
+        }
+
+        .stat-icon {
+            font-size: 2.5rem; /* Increase icon size for better visibility */
+            color: #4f46e5;
+        }
+
+        .stat-value {
+            font-size: 1.5rem; /* Adjust font size for better readability */
+            font-weight: 500;
+            color: #111827;
+        }
+
+        .stat-label {
+            font-size: 1rem; /* Adjust font size for better readability */
+            color: #6b7280;
+        }
+
+        .main-footer {
+            background-color: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand {
+            max-width: 300px;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .brand-wrapper img {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-description {
+            color: #9ca3af;
+            line-height: 1.6;
+        }
+
+        .footer-links-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+
+        .footer-column h4 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-column ul li a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .main-nav {
+            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background for contrast */
+            padding: 15px 30px; /* Adjust padding for better spacing */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-brand img {
+            height: 40px; /* Adjust logo size */
+            width: auto;
+        }
+
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #ffffff; /* White text for contrast */
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: #ffffff; /* White text for contrast */
+            font-weight: 500;
+            font-size: 1rem;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+            border-color: #ffffff;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-outline:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        .main-content {
+            padding: 80px 20px; /* Add top padding to prevent content from being hidden behind the header */
+            max-width: 1000px; /* Limit the width for better readability */
+            margin: 0 auto; /* Center the content horizontally */
+        }
+
+        .profile-picture-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #ffffff;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-picture-container:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            transform: scale(1.1);
+        }
+
+        .profile-picture-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logout-button {
+            margin-left: 15px;
+            background: transparent;
+            border: 2px solid #ffffff;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .logout-button:hover {
+            background: #ffffff; /* White background on hover */
+            color: #22c55e; /* Green text on hover */
+        }
+
+        @media (max-width: 768px) {
+            .nav-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .content-header {
+                align-items: flex-start; /* Align content to the left on smaller screens */
+                text-align: left;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Adjust for smaller screens */
+            }
+
+            .footer-top {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-links-section {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        .referral-list-container {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .referral-list {
+            margin-top: 20px;
+        }
+
+        .referral-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .referral-item:last-child {
+            border-bottom: none;
+        }
+
+        .referral-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .referral-user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .referral-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .referral-username {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .referral-date {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .referral-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .referral-status.active {
+            background: #22c55e;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <!-- Brand Section -->
+            <a href="/pages/mainpage.html" class="nav-brand">
+                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                <span class="brand-name">TowerClub</span>
+                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+            </a>
+
+            <!-- Navigation Links -->
+            <div class="nav-links">
+                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link">Activities</a>
+                <a href="/pages/settings.html" class="nav-link">Settings</a>
+            </div>
+
+            <!-- Navigation Actions -->
+            <div class="nav-actions">
+                <!-- Profile Picture -->
+                <div class="profile-picture-container">
+                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
+                </div>
+                <!-- Log Out Button -->
+                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-header">
+            <div class="header-left">
+                <button onclick="history.back()" class="btn btn-icon back-button">
+                    <span class="material-icons">arrow_back</span>
+                </button>
+                <div>
+                    <h1>Referral Profile</h1>
+                    <p>Track your referrals and rewards</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="referral-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-image" onclick="redirectToPicturesProfile()">
+                    <img id="profilePicture" src="https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=900&q=60" alt="Profile Picture">
+                </div>
+                <div class="profile-info">
+                    <h2 id="userName">Jonatthan Asis</h2>
+                    <div class="referral-code">
+                        <span class="material-icons">link</span>
+                        <span>Referral code:</span>                  
+                        <span id="referralCode">#jonatthanasis</span>
+                        <button class="btn btn-icon" onclick="copyReferralCode()">
+                        <span class="material-icons">content_copy</span>
+                    </div>
+                    <p class="username">
+                        <input 
+                            id="referralCodeInput"
+                            type="text"
+                            value="#jonatthanasis"
+                            style="border:none; background:transparent; color:#4A5568; font-size:14px; font-weight:500; width:auto; text-align:center;"
+                            maxlength="30"
+                        />
+                        <span id="editReferralCode" style="cursor:pointer; margin-left:6px; color:#a855f7;" title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </span>
+                    </p>
+                    <p id="referralCodeMessage" style="display:none; color:#22c55e; text-align:center; font-weight:500;"></p>
+                </div>
+            </div>
+
+            <!-- Username Display -->
+            <div style="text-align:center; margin-top:20px;">
+    <label>Username:</label>
+    <span id="displayUsername">#jonatthanasis</span>
+</div>
+
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <!-- Followers Card -->
+                <div class="stat-card clickable" onclick="window.location.href='pictures_profile.html'">
+                    <div class="stat-icon">
+                        <span class="material-icons">supervisor_account</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="followersCount">24k</span>
+                        <span class="stat-label">Followers</span>
+                    </div>
+                </div>
+
+                <!-- Referral Reward Card -->
+                <div class="stat-card clickable" onclick="showReferralRewardInfo()">
+                    <div class="stat-icon">
+                        <span class="material-icons">payments</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="rewardAmount">$2,340</span>
+                        <span class="stat-label">Referral Reward</span>
+                    </div>
+                </div>
+
+                <!-- Platinum Level Card -->
+                <div class="stat-card clickable" onclick="showAccountLevelInfo()">
+                    <div class="stat-icon">
+                        <span class="material-icons">military_tech</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="accountLevel">Platinum</span>
+                        <span class="stat-label">Account Level</span>
+                    </div>
+                </div>
+
+                <!-- Cash Out Reward Card -->
+                <div class="stat-card clickable" onclick="showCashOutModal()">
+                    <div class="stat-icon">
+                        <span class="material-icons">account_balance_wallet</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" id="cashOutReward">$1,200</span>
+                        <span class="stat-label">Cash Out Reward</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add this after your stats grid -->
+<div class="referral-list-container">
+    <h3>Your Referrals</h3>
+    <div class="referral-list" id="referralList">
+        <!-- Referrals will be populated here -->
+    </div>
+</div>
+
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="brand-wrapper">
+                        <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
+                        <span class="brand-name">TowerClub LLC</span>
+                    </div>
+                    <p class="brand-description">
+                        Your trusted platform for financial growth and investment opportunities.
+                    </p>
+                </div>
+                <div class="footer-links-section">
+                    <div class="footer-column">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Careers</a></li>
+                            <li><a href="#">Press</a></li>
+                            <li><a href="#">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Guides</a></li>
+                            <li><a href="#">API</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Legal</h4>
+                        <ul>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms</a></li>
+                            <li><a href="#">Security</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Social</h4>
+                        <ul>
+                            <li><a href="#">Twitter</a></li>
+                            <li><a href="#">LinkedIn</a></li>
+                            <li><a href="#">Facebook</a></li>
+                            <li><a href="#">Instagram</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 TowerClub LLC. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Add this modal HTML at the end of your body -->
+<div id="referralRewardModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; max-width:350px; text-align:center; position:relative;">
+        <button onclick="closeReferralRewardModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Referral Reward Details</h3>
+        <p>
+            <strong>Total Accumulated:</strong> <span id="modalTotalReward"></span><br>
+            <strong>Cash Out Available:</strong> <span id="modalCashOutReward"></span>
+        </p>
+        <small>
+            Your cash out reward is based on the referral program algorithm.<br>
+            Accumulated rewards grow as your referrals and their generations increase.
+        </small>
+    </div>
+</div>
+
+<!-- Add this modal at the end of your body -->
+<div id="cashOutModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:2rem; border-radius:12px; max-width:400px; text-align:center; position:relative;">
+        <button onclick="closeCashOutModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Cash Out Reward</h3>
+        <p style="margin-bottom:1rem;">Cash out <span id="cashOutAmount" style="font-weight:600;"></span> to your preferred payment method:</p>
+        
+        <div style="margin:1rem 0; text-align:left;">
+            <div style="margin-bottom:1rem;">
+                <select id="paymentMethodSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                    <option value="">Select Payment Method</option>
+                    <option value="account">TowerClub Account Balance</option>
+                    <option value="card">Debit/Credit Card</option>
+                    <option value="bank">Bank Account</option>
+                    <option value="paypal">PayPal</option>
+                </select>
+            </div>
+            
+            <!-- Payment method details (initially hidden) -->
+            <div id="paymentMethodDetails" style="display:none; border:1px solid #eee; padding:1rem; border-radius:6px; margin-bottom:1rem;">
+                <!-- This will be populated dynamically -->
+            </div>
+        </div>
+        
+        <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:center;">
+            <button id="cashOutYesBtn" style="padding:0.5rem 1.5rem; background:#22c55e; color:#fff; border:none; border-radius:6px; font-weight:600; cursor:pointer; opacity:0.7;" disabled>Cash Out</button>
+            <button id="cashOutNoBtn" style="padding:0.5rem 1.5rem; background:#eee; color:#333; border:none; border-radius:6px; font-weight:600; cursor:pointer;">Cancel</button>
+        </div>
+        <p style="font-size:0.8rem; margin-top:1rem; color:#666;">Funds will typically arrive within 1-3 business days depending on your payment method.</p>
+    </div>
+</div>
+
+<!-- Account Level Modal -->
+<div id="accountLevelModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:2100; align-items:center; justify-content:center;">
+    <div style="background:#fff; padding:30px; border-radius:10px; max-width:350px; text-align:center; position:relative;">
+        <button onclick="closeAccountLevelModal()" style="position:absolute; top:10px; right:10px; background:none; border:none; font-size:20px; cursor:pointer;">&times;</button>
+        <h3>Account Level Details</h3>
+        <p>
+            <strong>Current Level:</strong> <span id="modalAccountLevel"></span><br>
+            <strong>Benefits:</strong>
+            <ul style="text-align:left; margin:10px 0 0 0; padding-left:20px;">
+                <li>Higher referral rewards</li>
+                <li>If 1000 followers and 100 referrals: VIP Member</li>
+                <li>If 10000 followers and 1000 referrals: Silver Level </li>
+                <li>If 50000 followers and 10000 referrals: Gold level</li>
+                <li>If 100000 followers and 50000 referrals: Platinum level</li>
+                <li>Priority support</li>
+                <li>And more!</li>
+            </ul>
+        </p>
+        <small>
+            Your account level increases as you refer more users and engage with the platform.<br>
+            Reach higher levels for greater benefits.
+        </small>
+    </div>
+</div>
+
+    <!-- Notification Toast -->
+    <div id="notificationToast" style="display:none; position:fixed; bottom:20px; right:20px; background-color:#22c55e; color:white; padding:12px 20px; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:9999; max-width:350px;">
+        <div style="display:flex; align-items:center;">
+            <span class="material-icons" style="margin-right:10px;">check_circle</span>
+            <div>
+                <div id="notificationTitle" style="font-weight:500; margin-bottom:2px;">Success</div>
+                <div id="notificationMessage" style="font-size:0.9rem;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePicture = document.getElementById('profilePicture');
+            const profilePictureInput = document.getElementById('profilePictureInput');
+
+            // Make the profile picture clickable to trigger file input
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle the file input change event
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        profilePicture.src = e.target.result; // Update the profile picture preview
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Initialize payment methods if there are saved ones
+            initializePaymentMethods();
+        });
+        
+        // Function to initialize payment methods
+        function initializePaymentMethods() {
+            // In a real app, you would fetch this from your API/backend
+            // For this demo, we'll set up some dummy data
+            
+            // Check if we have stored payment methods
+            if (!localStorage.getItem('paymentMethods')) {
+                // Create some example payment methods
+                const paymentMethods = {
+                    cards: [
+                        { id: 'visa_1234', label: 'Visa ending in 1234', type: 'visa' },
+                        { id: 'mastercard_5678', label: 'Mastercard ending in 5678', type: 'mastercard' }
+                    ],
+                    bankAccounts: [
+                        { id: 'chase_1234', label: 'Chase Bank (...1234)', type: 'chase' },
+                        { id: 'bofa_5678', label: 'Bank of America (...5678)', type: 'bofa' }
+                    ],
+                    paypal: {
+                        email: 'user@example.com',
+                        verified: true
+                    }
+                };
+                
+                localStorage.setItem('paymentMethods', JSON.stringify(paymentMethods));
+            }
+        }
+
+        function redirectToPicturesProfile() {
+            window.location.href = 'pictures_profile.html'; // Redirect to pictures_profile.html
+        }
+
+        // Copy referral code to clipboard
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').innerText;
+            navigator.clipboard.writeText(code).then(() => {
+                // Optional: show feedback to user
+                alert('Referral code copied!');
+            });
+        }
+
+        function showReferralRewardInfo() {
+            // Calculate or fetch the totalReward and cashOutReward values
+            const totalReward = 2340; // Example value
+            const cashOutReward = 1200; // Example value
+
+            // Update the modal content
+            document.getElementById('modalTotalReward').innerText = `$${totalReward.toLocaleString()}`;
+            document.getElementById('modalCashOutReward').innerText = `$${cashOutReward.toLocaleString()}`;
+
+            // Show the modal
+            document.getElementById('referralRewardModal').style.display = 'flex';
+        }
+
+        function closeReferralRewardModal() {
+            // Hide the modal
+            document.getElementById('referralRewardModal').style.display = 'none';
+        }
+        
+        function showCashOutModal() {
+            // Get the cash out amount from the page
+            const cashOutAmount = document.getElementById('cashOutReward').innerText;
+            document.getElementById('cashOutAmount').innerText = cashOutAmount;
+            
+            // Reset the form
+            document.getElementById('paymentMethodSelect').value = '';
+            document.getElementById('paymentMethodDetails').style.display = 'none';
+            document.getElementById('paymentMethodDetails').innerHTML = '';
+            document.getElementById('cashOutYesBtn').disabled = true;
+            document.getElementById('cashOutYesBtn').style.opacity = '0.7';
+            
+            // Show the modal
+            document.getElementById('cashOutModal').style.display = 'flex';
+        }
+
+        // Cash Out functionality
+        document.getElementById('cashOutYesBtn').addEventListener('click', () => {
+            const paymentMethod = document.getElementById('paymentMethodSelect').value;
+            const cashOutAmount = document.getElementById('cashOutAmount').innerText;
+            
+            if (!paymentMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Show processing state
+            const cashOutBtn = document.getElementById('cashOutYesBtn');
+            const originalBtnText = cashOutBtn.innerText;
+            cashOutBtn.innerText = 'Processing...';
+            cashOutBtn.disabled = true;
+            
+            // Get the amount as a number
+            const cashOutValue = parseFloat(cashOutAmount.replace(/[^0-9.-]+/g, ''));
+            
+            // Simulate API call to process the cash out
+            setTimeout(() => {
+                // Update the user's balances
+                // In a real app, this would be an API call to your backend
+                
+                // Update the displayed cash out reward amount to zero
+                document.getElementById('cashOutReward').innerText = '$0';
+                
+                // Add transaction to history
+                const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                
+                // If transferring to TowerClub account balance, update that too
+                if (paymentMethod === 'account') {
+                    // Get current balance (in a real app, you'd fetch this)
+                    let currentBalance = parseFloat(localStorage.getItem('userBalance') || '0');
+                    
+                    // Add cash out amount to balance
+                    const newBalance = currentBalance + cashOutValue;
+                    localStorage.setItem('userBalance', newBalance.toString());
+                    localStorage.setItem('balanceLastUpdated', new Date().toISOString());
+                    
+                    // Record as an internal transfer
+                    transactions.unshift({
+                        id: Date.now().toString(),
+                        type: 'referral_reward',
+                        amount: cashOutValue,
+                        description: 'Referral Reward Cash Out to TowerClub Balance',
+                        timestamp: new Date().toISOString()
+                    });
+                } else {
+                    // Record as an external transfer
+                    let paymentDetails = '';
+                    
+                    switch(paymentMethod) {
+                        case 'card':
+                            const cardSelect = document.getElementById('cardSelect');
+                            const cardId = cardSelect ? cardSelect.value : 'unknown';
+                            paymentDetails = 'to Card';
+                            break;
+                        case 'bank':
+                            const bankSelect = document.getElementById('bankSelect');
+                            const bankId = bankSelect ? bankSelect.value : 'unknown';
+                            paymentDetails = 'to Bank Account';
+                            break;
+                        case 'paypal':
+                            paymentDetails = 'to PayPal';
+                            break;
+                    }
+                    
+                    transactions.unshift({
+                        id: Date.now().toString(),
+                        type: 'referral_reward_external',
+                        amount: cashOutValue,
+                        description: `Referral Reward Cash Out ${paymentDetails}`,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+                
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                
+                // Show success message based on payment method
+                let successMessage = '';
+                switch(paymentMethod) {
+                    case 'account':
+                        successMessage = `${cashOutAmount} has been added to your TowerClub account balance!`;
+                        break;
+                    case 'card':
+                        successMessage = `${cashOutAmount} has been sent to your card! It will arrive in 1-3 business days.`;
+                        break;
+                    case 'bank':
+                        successMessage = `${cashOutAmount} has been sent to your bank account! It will arrive in 1-3 business days.`;
+                        break;
+                    case 'paypal':
+                        successMessage = `${cashOutAmount} has been sent to your PayPal account! It should arrive within 24 hours.`;
+                        break;
+                }
+                
+                alert('Cash out successful! ' + successMessage);
+                closeCashOutModal();
+                
+                // Show notification toast
+                showNotification('Cash Out Successful', successMessage);
+                
+                // Reset button state
+                cashOutBtn.innerText = originalBtnText;
+                cashOutBtn.disabled = false;
+            }, 2000);
+        });
+
+        document.getElementById('cashOutNoBtn').addEventListener('click', () => {
+            closeCashOutModal();
+        });
+        
+        // Handle payment method selection
+        document.getElementById('paymentMethodSelect').addEventListener('change', function() {
+            const selectedMethod = this.value;
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            const cashOutBtn = document.getElementById('cashOutYesBtn');
+            
+            if (!selectedMethod) {
+                detailsContainer.style.display = 'none';
+                cashOutBtn.disabled = true;
+                cashOutBtn.style.opacity = '0.7';
+                return;
+            }
+            
+            // Enable the cash out button
+            cashOutBtn.disabled = false;
+            cashOutBtn.style.opacity = '1';
+            
+            // Show appropriate details form based on selection
+            detailsContainer.style.display = 'block';
+            
+            // Get saved payment methods
+            const paymentMethods = JSON.parse(localStorage.getItem('paymentMethods') || '{}');
+            
+            switch(selectedMethod) {
+                case 'account':
+                    // Get account balance
+                    const balance = parseFloat(localStorage.getItem('userBalance') || '0');
+                    const formattedBalance = '$' + balance.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Your TowerClub Account Balance</p>
+                        <div style="background:#f7f7f7; padding:0.75rem; border-radius:4px;">
+                            <div>Current Balance: <strong>${formattedBalance}</strong></div>
+                            <div style="margin-top:0.5rem;">The funds will be added instantly to your TowerClub account balance.</div>
+                        </div>
+                    `;
+                    break;
+                case 'card':
+                    let cardOptions = '';
+                    if (paymentMethods.cards && paymentMethods.cards.length > 0) {
+                        paymentMethods.cards.forEach(card => {
+                            cardOptions += `<option value="${card.id}">${card.label}</option>`;
+                        });
+                    }
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Select Card</p>
+                        <select id="cardSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                            ${cardOptions}
+                            <option value="new">+ Add a new card</option>
+                        </select>
+                    `;
+                    
+                    // Handle "Add a new card" option
+                    document.getElementById('cardSelect').addEventListener('change', function() {
+                        if (this.value === 'new') {
+                            showAddCardForm();
+                        }
+                    });
+                    break;
+                case 'bank':
+                    let bankOptions = '';
+                    if (paymentMethods.bankAccounts && paymentMethods.bankAccounts.length > 0) {
+                        paymentMethods.bankAccounts.forEach(account => {
+                            bankOptions += `<option value="${account.id}">${account.label}</option>`;
+                        });
+                    }
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">Select Bank Account</p>
+                        <select id="bankSelect" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd; margin-bottom:0.5rem;">
+                            ${bankOptions}
+                            <option value="new">+ Add a new bank account</option>
+                        </select>
+                    `;
+                    
+                    // Handle "Add a new bank account" option
+                    document.getElementById('bankSelect').addEventListener('change', function() {
+                        if (this.value === 'new') {
+                            showAddBankForm();
+                        }
+                    });
+                    break;
+                case 'paypal':
+                    const paypalEmail = paymentMethods.paypal ? paymentMethods.paypal.email : 'No PayPal account connected';
+                    
+                    detailsContainer.innerHTML = `
+                        <p style="margin-bottom:0.5rem;">PayPal Account</p>
+                        <div style="background:#f7f7f7; padding:0.75rem; border-radius:4px; margin-bottom:0.5rem;">
+                            ${paypalEmail}
+                        </div>
+                        <a href="#" onclick="showAddPaypalForm(); return false;" style="color:#4f46e5; text-decoration:none; font-size:0.9rem;">
+                            ${paymentMethods.paypal ? 'Use a different PayPal account' : 'Connect PayPal account'}
+                        </a>
+                    `;
+                    break;
+            }
+        });
+        
+        function showAddCardForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Add New Card</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Card Number</label>
+                        <input type="text" placeholder="1234 5678 9012 3456" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="display:flex; gap:1rem; margin-bottom:0.75rem;">
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Expiry Date</label>
+                            <input type="text" placeholder="MM/YY" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">CVC</label>
+                            <input type="text" placeholder="123" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                        </div>
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Cardholder Name</label>
+                        <input type="text" placeholder="John Smith" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="saveNewCard()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Add Card</button>
+                </div>
+            `;
+        }
+        
+        function showAddBankForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Add Bank Account</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Bank Name</label>
+                        <input type="text" placeholder="Enter bank name" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Account Number</label>
+                        <input type="text" placeholder="Enter account number" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">Routing Number</label>
+                        <input type="text" placeholder="Enter routing number" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="saveNewBank()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Add Bank Account</button>
+                </div>
+            `;
+        }
+        
+        function showAddPaypalForm() {
+            const detailsContainer = document.getElementById('paymentMethodDetails');
+            detailsContainer.innerHTML = `
+                <div style="border:1px solid #ddd; padding:1rem; border-radius:6px;">
+                    <h4 style="margin-top:0; margin-bottom:1rem;">Connect PayPal Account</h4>
+                    <div style="margin-bottom:0.75rem;">
+                        <label style="display:block; margin-bottom:0.25rem; font-size:0.9rem;">PayPal Email</label>
+                        <input type="email" placeholder="your@email.com" style="width:100%; padding:0.75rem; border-radius:6px; border:1px solid #ddd;">
+                    </div>
+                    <button onclick="savePaypal()" style="width:100%; padding:0.75rem; background:#4f46e5; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Connect PayPal</button>
+                </div>
+            `;
+        }
+        
+        // Helper functions to save payment methods
+        function saveNewCard() {
+            // In a real app, you would validate and send to your API
+            alert('Card added successfully!');
+            
+            // Return to card selection
+            document.getElementById('paymentMethodSelect').value = 'card';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
+        
+        function saveNewBank() {
+            // In a real app, you would validate and send to your API
+            alert('Bank account added successfully!');
+            
+            // Return to bank selection
+            document.getElementById('paymentMethodSelect').value = 'bank';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
+        
+        function savePaypal() {
+            // In a real app, you would validate and send to your API
+            alert('PayPal account connected successfully!');
+            
+            // Return to PayPal selection
+            document.getElementById('paymentMethodSelect').value = 'paypal';
+            document.getElementById('paymentMethodSelect').dispatchEvent(new Event('change'));
+        }
+
+        function closeCashOutModal() {
+            document.getElementById('cashOutModal').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const referralInput = document.getElementById('referralCodeInput');
+            const referralMsg = document.getElementById('referralCodeMessage');
+            if (referralInput && referralMsg) {
+                referralInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyReferralCode();
+                    }
+                });
+                referralInput.addEventListener('blur', function() {
+                    referralMsg.style.display = 'none';
+                });
+                // Remove the apply code button if present
+                const btn = document.getElementById('applyReferralBtn');
+                if (btn) btn.remove();
+            }
+            function applyReferralCode() {
+                const code = referralInput.value.trim().toLowerCase();
+                if (code === 'referral code' || code === '#jonatthanasis' || code === 'jonatthanasis') {
+                    referralMsg.textContent = 'Referral code applied! You get 2 months free of charge membership.';
+                    referralMsg.style.color = '#22c55e';
+                    referralMsg.style.display = 'block';
+                } else if (code.length < 3) {
+                    referralMsg.textContent = 'Please enter a valid referral code.';
+                    referralMsg.style.color = '#F06A6A';
+                    referralMsg.style.display = 'block';
+                } else {
+                    referralMsg.textContent = 'Referral code applied!';
+                    referralMsg.style.color = '#22c55e';
+                    referralMsg.style.display = 'block';
+                }
+            }
+        });
+
+        function showAccountLevelInfo() {
+            // Get the current account level from the page
+            const accountLevel = document.getElementById('accountLevel').innerText;
+            document.getElementById('modalAccountLevel').innerText = accountLevel;
+
+            // Show the modal
+            document.getElementById('accountLevelModal').style.display = 'flex';
+        }
+
+        function closeAccountLevelModal() {
+            document.getElementById('accountLevelModal').style.display = 'none';
+        }
+
+        // Sync profile picture everywhere on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.src = savedPic;
+                });
+            }
+        });
+
+        // Function to show notification toast
+        function showNotification(title, message, type = 'success') {
+            const toast = document.getElementById('notificationToast');
+            const titleElem = document.getElementById('notificationTitle');
+            const messageElem = document.getElementById('notificationMessage');
+            
+            // Set content
+            titleElem.textContent = title;
+            messageElem.textContent = message;
+            
+            // Set color based on type
+            if (type === 'success') {
+                toast.style.backgroundColor = '#22c55e'; // Green
+            } else if (type === 'error') {
+                toast.style.backgroundColor = '#ef4444'; // Red
+            } else if (type === 'warning') {
+                toast.style.backgroundColor = '#f59e0b'; // Amber
+            } else if (type === 'info') {
+                toast.style.backgroundColor = '#3b82f6'; // Blue
+            }
+            
+            // Show the toast
+            toast.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get user's referral data
+    const username = document.getElementById('displayUsername').textContent;
+    const referralCode = username; // Username is the referral code
+    
+    // Load referral stats
+    loadReferralStats();
+    
+    // Function to load referral statistics
+    function loadReferralStats() {
+        // Get stored referral data
+        const referralStats = JSON.parse(localStorage.getItem('referralStats') || '{}');
+        const userStats = referralStats[referralCode] || {
+            totalReferrals: 0,
+            activeReferrals: 0,
+            totalRewards: 0,
+            referralList: []
+        };
+
+        // Update UI with stats
+        document.getElementById('followersCount').textContent = 
+            userStats.totalReferrals.toLocaleString();
+        document.getElementById('rewardAmount').textContent = 
+            `$${userStats.totalRewards.toLocaleString()}`;
+        
+        // Update account level based on referral count
+        updateAccountLevel(userStats.totalReferrals);
+    }
+
+    // Function to update account level
+    function updateAccountLevel(referralCount) {
+        let level = 'Standard';
+        if (referralCount >= 50000) {
+            level = 'Platinum';
+        } else if (referralCount >= 10000) {
+            level = 'Gold';
+        } else if (referralCount >= 1000) {
+            level = 'Silver';
+        } else if (referralCount >= 100) {
+            level = 'VIP';
+        }
+        document.getElementById('accountLevel').textContent = level;
+    }
+
+    // Function to add new referral
+    function addNewReferral(referredUser) {
+        const referralStats = JSON.parse(localStorage.getItem('referralStats') || '{}');
+        const userStats = referralStats[referralCode] || {
+            totalReferrals: 0,
+            activeReferrals: 0,
+            totalRewards: 0,
+            referralList: []
+        };
+
+        // Add new referral
+        userStats.totalReferrals++;
+        userStats.activeReferrals++;
+        userStats.referralList.push({
+            username: referredUser,
+            joinDate: new Date().toISOString(),
+            status: 'active'
+        });
+
+        // Calculate rewards (example: $10 per referral)
+        userStats.totalRewards += 10;
+
+        // Save updated stats
+        referralStats[referralCode] = userStats;
+        localStorage.setItem('referralStats', JSON.stringify(referralStats));
+
+        // Update UI
+        loadReferralStats();
+    }
+});
+    </script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <script src="/scripts/header.js"></script>
+    <script>
+      applyTranslations(); // Call this on page load
+    </script>
+    <script type="module">
+    import DarkMode from '/scripts/dark-mode.js';
+    document.addEventListener('DOMContentLoaded', () => {
+        DarkMode.init();
+    });
+</script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'en',
+      includedLanguages: 'en,ar,zh-CN,es,fr',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+<script 
+  type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+<script>
+(function() {
+    function checkGoogleBanner() {
+        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
+        if (bannerFrame && bannerFrame.style.display !== 'none') {
+            document.body.classList.add('has-google-banner');
+        } else {
+            document.body.classList.remove('has-google-banner');
+        }
+    }
+    window.addEventListener('load', function() {
+        setInterval(checkGoogleBanner, 1000);
+    });
+})();
+</script>
+</body>
+</html>
