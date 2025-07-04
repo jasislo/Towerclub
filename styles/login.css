@@ -1,0 +1,274 @@
+/* Login Page Styles */
+:root {
+    --primary-color: #4B39EF;
+    --secondary-color: #2196F3;
+    --background-color: #1A1F24;
+    --card-background: #1D2428;
+    --text-color: #FFFFFF;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --input-background: rgba(255, 255, 255, 0.1);
+    --input-border: rgba(255, 255, 255, 0.2);
+}
+
+body {
+    font-family: 'Lexend', sans-serif;
+    background: linear-gradient(135deg, var(--background-color), #2C3338);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--card-background);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.logo {
+    width: 120px;
+    margin-bottom: 24px;
+}
+
+.auth-header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--input-background);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 0 16px;
+    transition: all 0.3s ease;
+}
+
+.input-group:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(75, 57, 239, 0.2);
+}
+
+.input-group .material-icons {
+    color: var(--text-secondary);
+    margin-right: 12px;
+}
+
+.input-group input {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 12px 0;
+    color: var(--text-color);
+    font-size: 14px;
+    outline: none;
+}
+
+.input-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.toggle-password {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0;
+}
+
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+    color: var(--secondary-color);
+}
+
+.auth-button {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.3s ease;
+}
+
+.auth-button:hover {
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: var(--secondary-color);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: var(--text-secondary);
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.divider span {
+    padding: 0 16px;
+    font-size: 14px;
+}
+
+.phone-login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    background: var(--input-background);
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    padding: 14px;
+    color: var(--text-color);
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.phone-login-button:hover {
+    background: var(--input-border);
+    transform: translateY(-2px);
+}
+
+.phone-login-button .material-icons {
+    font-size: 20px;
+}
+
+.paypal-login {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-paypal {
+    background: #ffc439;
+    color: #111827;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-paypal:hover {
+    background: #e0a800;
+    transform: scale(1.05);
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        padding: 16px;
+    }
+    
+    .auth-card {
+        padding: 24px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+  .main-nav, .footer-content, .auth-container, .profile-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .nav-links, .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-picture, .logo {
+    width: 48px;
+    height: 48px;
+  }
+  /* Add more mobile-specific styles as needed */
+}

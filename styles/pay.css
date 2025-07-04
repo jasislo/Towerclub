@@ -1,0 +1,300 @@
+/* Header Styles */
+.main-nav {
+    background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+    padding: 15px 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Remove underline */
+}
+
+.nav-brand img {
+    height: 40px;
+    width: auto;
+}
+
+.brand-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #ffffff; /* White text for branding */
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #ffffff; /* White text for better contrast */
+    font-weight: 500;
+    font-size: 1rem;
+    text-decoration: none;
+    padding: 8px 16px;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.nav-link:hover {
+    background: #ffffff; /* White background on hover */
+    color: #22c55e; /* Green text on hover */
+    border-color: #ffffff; /* White border on hover */
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+    transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.btn-outline:hover {
+    background: #ffffff; /* White background on hover */
+    color: #22c55e; /* Green text on hover */
+    border-color: transparent; /* Transparent border on hover */
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-primary:hover {
+    background: #ffffff; /* White background on hover */
+    color: #22c55e; /* Green text on hover */
+}
+
+/* Pricing Section */
+.pricing-section {
+    padding: 80px 20px;
+    background-color: #f9fafb; /* Light background */
+    text-align: center;
+    margin-top: 200px; /* Increased spacing from the previous section */
+}
+
+.pricing-section h2 {
+    margin-bottom: 30px; /* Reduced spacing below the heading */
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px; /* Increased gap between cards for better spacing */
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 0; /* Remove any extra top margin for the grid */
+}
+
+.pricing-card {
+    background: linear-gradient(135deg, #ffffff, #f9fafb); /* Subtle gradient for card background */
+    border: 1px solid #e5e7eb;
+    border-radius: 12px; /* Slightly rounded corners for a modern look */
+    padding: 30px; /* Increased padding for better spacing inside cards */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow for depth */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-10px); /* Lift effect on hover */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+    background: linear-gradient(135deg, #f3f4f6, #ffffff); /* Brighter gradient on hover */
+}
+
+.pricing-header {
+    margin-bottom: 25px; /* Increased spacing below the header */
+}
+
+.pricing-header h3 {
+    font-size: 1.8rem; /* Slightly larger font for better readability */
+    font-weight: 600;
+    color: #111827; /* Dark text for better readability */
+}
+
+.price {
+    font-size: 2.2rem; /* Slightly larger font for pricing */
+    font-weight: 700;
+    color: #22c55e; /* Vibrant green for pricing */
+}
+
+.price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #6b7280; /* Gray for /month */
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 25px 0; /* Increased spacing around features */
+    text-align: left;
+}
+
+.pricing-features li {
+    margin-bottom: 12px; /* Increased spacing between features */
+    color: #4b5563; /* Dark gray for features */
+    font-size: 1rem; /* Slightly larger font for readability */
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 25px; /* Increased spacing above buttons */
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid #22c55e; /* Green border */
+    color: #22c55e; /* Green text */
+    padding: 12px 25px; /* Increased padding for better button size */
+    border-radius: 8px; /* Slightly rounded corners */
+    font-size: 1rem;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-outline:hover {
+    background: #22c55e; /* Green background on hover */
+    color: #ffffff; /* White text on hover */
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
+    color: #ffffff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+    transition: background 0.3s, color 0.3s;
+}
+
+.btn-primary:hover {
+    background: #ffffff; /* White background on hover */
+    color: #22c55e; /* Green text on hover */
+}
+
+.featured {
+    border: 2px solid #22c55e; /* Highlighted border for featured card */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow for featured card */
+    background: linear-gradient(135deg, #ffffff, #f3f4f6); /* Subtle gradient for featured card */
+}
+
+#makePaypalPayment {
+    background-color: #00968A;   /* Exact green as .btn-credit-card */
+    color: #fff;                 /* White text */
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px 0;
+    width: 260px;
+    max-width: 100%;
+    margin-top: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.2s;
+    box-shadow: 0 2px 6px rgba(168,85,247,0.08);
+    letter-spacing: 0.01em;
+    display: block;
+}
+
+#makePaypalPayment:hover {
+    background-color: #00796B;   /* Same hover green as .btn-credit-card:hover */
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* --- Add or update these styles --- */
+
+/* Make sure the Google Translate banner is at the very top */
+.goog-te-banner-frame.skiptranslate {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0;
+    width: 100vw !important;
+    height: 48px !important;
+    z-index: 2000 !important;
+    border: none !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Push the header down below the Google Translate banner */
+body.has-google-banner .main-nav,
+body.has-google-banner .app-container {
+    top: 64px !important;           /* Move header 64px from the top */
+    padding-top: 64px !important;   /* Add extra space for visibility */
+}
+
+/* Optional: Adjust default padding for header if banner is not present */
+body:not(.has-google-banner) .main-nav,
+body:not(.has-google-banner) .app-container {
+    top: 0 !important;
+    padding-top: 48px !important;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr; /* Single column layout for smaller screens */
+    }
+
+    .pricing-card {
+        margin-bottom: 30px; /* Add spacing between cards on smaller screens */
+    }
+}
+
+@media (max-width: 600px) {
+  .main-nav, .footer-content, .auth-container, .profile-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .nav-links, .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-picture, .logo {
+    width: 48px;
+    height: 48px;
+  }
+  /* Add more mobile-specific styles as needed */
+}

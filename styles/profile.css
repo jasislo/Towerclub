@@ -1,0 +1,268 @@
+:root {
+    --primary-color: #4A90E2;
+    --secondary-background: #F5F5F5;
+    --primary-text: #333333;
+    --success-color: #4CAF50;
+    --error-color: #FF3B30;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Lexend', sans-serif;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 16px;
+}
+
+.profile-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 140px;
+    height: auto;
+}
+
+.logo-text {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-text);
+}
+
+.content {
+    padding: 24px;
+}
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--primary-text);
+    margin-bottom: 4px;
+}
+
+.subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    color: #666;
+}
+
+.user-name {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.edit-button,
+.settings-button {
+    background: var(--secondary-background);
+    border: 1px solid var(--secondary-background);
+    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover,
+.settings-button:hover {
+    background-color: #e0e0e0;
+}
+
+.edit-button .material-icons,
+.settings-button .material-icons {
+    color: var(--primary-text);
+    font-size: 24px;
+}
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--secondary-background);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon .material-icons {
+    font-size: 24px;
+    color: var(--primary-color);
+}
+
+.stat-info h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-text);
+}
+
+.recent-activity {
+    background: var(--secondary-background);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.recent-activity h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--primary-text);
+    margin-bottom: 16px;
+}
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.activity-item {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--secondary-background);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-icon .material-icons {
+    font-size: 20px;
+    color: var(--primary-color);
+}
+
+.activity-info {
+    flex: 1;
+}
+
+.activity-info h4 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--primary-text);
+    margin-bottom: 4px;
+}
+
+.activity-time {
+    font-size: 14px;
+    color: #666;
+}
+
+.activity-amount {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.activity-amount.positive {
+    color: var(--success-color);
+}
+
+.activity-amount.negative {
+    color: var(--error-color);
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+  .main-nav, .footer-content, .auth-container, .profile-section {
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .nav-links, .footer-column {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-picture, .logo {
+    width: 48px;
+    height: 48px;
+  }
+  /* Add more mobile-specific styles as needed */
+}
