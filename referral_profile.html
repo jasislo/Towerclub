@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="/styles/referral.css">
     <link rel="stylesheet" href="/styles/footer.css">
     <link rel="stylesheet" href="/styles/header.css">
+    <!-- Google Translate Element scripts should only be included once by header.js -->
     <script type="module" src="/scripts/referral.js"></script>
     <link rel="icon" type="image/png" href="/assets/images/towerclub_logo.png">
     <style>
@@ -250,84 +251,9 @@
             color: #9ca3af;
         }
 
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background for contrast */
-            padding: 15px 30px; /* Adjust padding for better spacing */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px; /* Adjust logo size */
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff; /* White text for contrast */
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff; /* White text for contrast */
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
-            border-color: #ffffff;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
+        :root {
+            --header-gradient-start: #22c55e;
+            --header-gradient-end: #a855f7;
         }
 
         .main-content {
@@ -336,57 +262,7 @@
             margin: 0 auto; /* Center the content horizontally */
         }
 
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-            cursor: pointer;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .logout-button {
-            margin-left: 15px;
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .logout-button:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
-        }
-
         @media (max-width: 768px) {
-            .nav-content {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
 
             .content-header {
                 align-items: flex-start; /* Align content to the left on smaller screens */
@@ -479,37 +355,6 @@
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="/pages/mainpage.html" class="nav-brand">
-                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-            </div>
-        </div>
-    </nav>
-
     <main class="main-content">
         <div class="content-header">
             <div class="header-left">
@@ -761,25 +606,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const profilePicture = document.getElementById('profilePicture');
-            const profilePictureInput = document.getElementById('profilePictureInput');
-
-            // Make the profile picture clickable to trigger file input
-            profilePicture.addEventListener('click', () => {
-                profilePictureInput.click();
-            });
-
-            // Handle the file input change event
-            profilePictureInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        profilePicture.src = e.target.result; // Update the profile picture preview
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
             
             // Initialize payment methods if there are saved ones
             initializePaymentMethods();
@@ -1344,34 +1170,6 @@
     document.addEventListener('DOMContentLoaded', () => {
         DarkMode.init();
     });
-</script>
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
-<script>
-(function() {
-    function checkGoogleBanner() {
-        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
-        if (bannerFrame && bannerFrame.style.display !== 'none') {
-            document.body.classList.add('has-google-banner');
-        } else {
-            document.body.classList.remove('has-google-banner');
-        }
-    }
-    window.addEventListener('load', function() {
-        setInterval(checkGoogleBanner, 1000);
-    });
-})();
 </script>
 </body>
 </html>

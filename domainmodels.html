@@ -15,6 +15,17 @@
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
     <link rel="icon" type="image/png" href="/assets/images/towerclub_logo.png">
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,zh-CN,fr,de,hi,id,it,ja,ko,pt,ru,es,tr,vi',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
         /* Header Styles */
         .main-nav {
@@ -119,6 +130,45 @@
             color: #22c55e;
         }
 
+        /* Google Translate Styles */
+        #google_translate_element {
+            margin-left: 10px;
+        }
+
+        #google_translate_element .goog-te-gadget {
+            font-family: 'Lexend', sans-serif;
+        }
+
+        #google_translate_element .goog-te-gadget-simple {
+            background-color: transparent;
+            border: none;
+            padding: 5px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        #google_translate_element .goog-te-gadget-simple img {
+            display: none;
+        }
+
+        #google_translate_element .goog-te-gadget-simple .goog-te-menu-value {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        #google_translate_element .goog-te-gadget-simple .goog-te-menu-value span {
+            color: white !important;
+            border: none !important;
+            font-size: 14px;
+        }
+
+        #google_translate_element .goog-te-gadget-simple:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
         /* Main Content Styles */
         .main-content {
             padding: 80px 20px;
@@ -137,37 +187,6 @@
         }
 
         .content-header p {
-            font-size: 1rem;
-            color: #6b7280;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 30px;
-        }
-
-        .stat-card {
-            background: #f9fafb;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .stat-icon {
-            font-size: 2.5rem;
-            color: #4f46e5;
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 500;
-            color: #111827;
-        }
-
-        .stat-label {
             font-size: 1rem;
             color: #6b7280;
         }
@@ -265,17 +284,16 @@
     <!-- Header -->
     <nav class="main-nav">
         <div class="nav-content">
-            <a href="/pages/mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="company-logo">
-                <span class="brand-name">TowerClub</span>
-            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="/pages/mainpage.html" class="nav-brand">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="company-logo">
+                    <span class="brand-name">TowerClub</span>
+                </a>
+                <div id="google_translate_element"></div>
+            </div>
             
             <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
+                <!-- Navigation links removed for privacy policy page -->
             </div>
             
             <div class="nav-actions">
@@ -288,29 +306,6 @@
     <main class="main-content">
         <div class="content-header">
             <h1>Privacy Policy & Terms of Service</h1>
-        </div>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">architecture</span>
-                </div>
-                <div class="stat-value">12</div>
-                <div class="stat-label">Active Models</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">update</span>
-                </div>
-                <div class="stat-value">5</div>
-                <div class="stat-label">Pending Updates</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">
-                    <span class="material-icons">check_circle</span>
-                </div>
-                <div class="stat-value">20</div>
-                <div class="stat-label">Completed Models</div>
-            </div>
         </div>
 
         <!-- Privacy Policy Section -->
@@ -397,12 +392,6 @@
             <!-- Additional sections of the Privacy Policy can be added here -->
         </section>
         
-        <!-- Back to Registration button -->
-        <div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
-            <a href="/pages/register.html" style="display: inline-block; padding: 12px 24px; background: linear-gradient(90deg, #22c55e, #a855f7); color: white; text-decoration: none; border-radius: 8px; font-weight: 500; transition: transform 0.3s ease, box-shadow 0.3s ease;">
-                Back to Registration
-            </a>
-        </div>
     </main>
 
     <footer class="main-footer">

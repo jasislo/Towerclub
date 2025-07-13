@@ -7,7 +7,7 @@
     <title data-i18n="page-title">Notifications Settings – TowerClub</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Outfit:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="../styles/header.css">
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
@@ -44,33 +44,7 @@
             min-height: 100vh;
         }
 
-        .main-nav {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: white;
-        }
+        /* Header styles moved to header.css */
 
         .nav-brand img {
             height: 40px;
@@ -389,37 +363,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav" style="background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white;">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="mainpage.html" class="nav-brand" style="color: white;">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
-                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link" style="color: white;" data-i18n="nav-dashboard">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link" style="color: white;">Wallet</a>
-                <a href="add-transaction.html" class="nav-link" style="color: white;" data-i18n="nav-transfer">Transfer</a>
-                <a href="activities.html" class="nav-link" style="color: white;" data-i18n="nav-activities">Activities</a>
-                <a href="settings.html" class="nav-link" style="color: white;">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline" style="color: white; border: 2px solid white;">Log out</a>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </div>
-        </div>
-    </nav>
+    <div id="google_translate_element"></div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -564,8 +508,8 @@
             }
         });
     </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
+    <script src="../scripts/header.js"></script>
+    <script src="../scripts/profile-picture-sync.js"></script>
+    <script src="../scripts/sync.js"></script>
 </body>
 </html>

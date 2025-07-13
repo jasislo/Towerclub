@@ -6,7 +6,9 @@
     <title>Add Money to Account</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/header.css">
+    <link rel="stylesheet" href="../styles/analytics.css">
     <style>
         :root {
             --primary-color: #4A90E2;
@@ -30,111 +32,7 @@
             padding-top: 80px; /* Add padding for fixed nav */
         }
 
-        /* Updated Navigation Bar */
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff;
-            color: #22c55e;
-            border-color: #ffffff;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: #ffffff;
-            color: #22c55e;
-        }
+        /* Navigation styles are now in header.css */
 
         .container {
             width: 100%;
@@ -424,30 +322,28 @@
     <nav class="main-nav">
         <div class="nav-content">
             <!-- Brand Section -->
-            <a href="/pages/mainpage.html" class="nav-brand">
+            <a href="/" class="nav-brand">
                 <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo">
                 <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
+                <div id="google_translate_element"></div>
             </a>
 
             <!-- Navigation Links -->
             <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
+                <a href="../pages/dashboard.html" class="nav-link">Dashboard</a>
+                <a href="../pages/my_card.html" class="nav-link">Wallet</a>
+                <a href="../pages/transfer.html" class="nav-link">Transfer</a>
+                <a href="../pages/activities.html" class="nav-link">Activities</a>
+                <a href="../pages/settings.html" class="nav-link">Settings</a>
             </div>
 
             <!-- Navigation Actions -->
             <div class="nav-actions">
-                <!-- Profile Picture -->
                 <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
+                    <img id="profilePicture" src="/assets/images/default-profile.png" alt="Profile Picture">
                     <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
                 </div>
-                <!-- Log Out Button -->
-                    <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <a href="/pages/login.html" class="btn btn-outline">Log out</a>
             </div>
         </div>
     </nav>
@@ -563,13 +459,10 @@
 
             // Load and display current balance
             function loadCurrentBalance() {
-                // In a real application, you would fetch this from your API
-                // For demo purposes, we'll use localStorage
-                const balance = parseFloat(localStorage.getItem('userBalance') || '0');
-                currentBalanceElement.textContent = '$' + balance.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
+                // Always start with zero balance for new users
+                localStorage.setItem('userBalance', '0');
+                const balance = 0;
+                currentBalanceElement.textContent = '$0.00';
                 
                 // Set last updated time
                 const lastUpdated = localStorage.getItem('balanceLastUpdated') || new Date().toISOString();
@@ -635,14 +528,15 @@
                     // Simulate API call (remove this in production)
                     await new Promise(resolve => setTimeout(resolve, 1500));
 
-                    // Update the user's balance in local storage (just for demo)
-                    let currentBalance = parseFloat(localStorage.getItem('userBalance') || '0');
-                    const newBalance = currentBalance + parseFloat(amount);
+                    // Update the user's balance in local storage
+                    let currentBalance = 0; // Start from zero
+                    const newBalance = parseFloat(amount);
                     localStorage.setItem('userBalance', newBalance.toString());
                     localStorage.setItem('balanceLastUpdated', new Date().toISOString());
                     
-                    // Update transaction history (demo)
-                    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                    // Clear any existing transactions and start fresh
+                    localStorage.removeItem('transactions');
+                    const transactions = [];
                     transactions.unshift({
                         id: Date.now().toString(),
                         type: 'deposit',
@@ -717,9 +611,9 @@
             }
         });
     </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
+    <script src="../scripts/profile-picture-sync.js"></script>
+    <script src="../scripts/sync.js"></script>
+    <script src="../scripts/header.js"></script>
     <!-- Remove lang.js and related functionalities
     <script src="/scripts/lang.js"></script>
     -->

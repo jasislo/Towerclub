@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
     <style>
-        /* Root Variables */
+        /* Keep these root variables for the colors */
         :root {
             --primary-color: #4A90E2;
             --secondary-color: #22c55e;
@@ -22,6 +22,9 @@
             --chat-background: #ffffff;
             --chat-border: #e5e7eb;
             --chat-hover: #f9fafb;
+            /* Custom header colors */
+            --header-gradient-start: var(--primary-color);
+            --header-gradient-end: var(--secondary-color);
         }
 
         * {
@@ -39,11 +42,10 @@
             min-height: 100vh;
         }
 
-        /* Navigation Bar */
+        /* Header */
         .main-nav {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: var(--primary-color);
+            color: white;
             position: fixed;
             top: 0;
             left: 0;
@@ -54,27 +56,28 @@
         .nav-content {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 16px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
         }
 
         .nav-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
             text-decoration: none;
+            color: white;
         }
 
         .nav-brand img {
             height: 40px;
             width: auto;
+            margin-right: 10px;
         }
 
         .brand-name {
             font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
+            font-weight: 500;
         }
 
         .nav-links {
@@ -83,66 +86,63 @@
         }
 
         .nav-link {
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 1rem;
             text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
+            color: white;
+            font-weight: 400;
+            transition: color 0.3s;
         }
 
         .nav-link:hover {
-            background: #ffffff;
-            color: var(--primary-color);
-            border-color: #ffffff;
+            color: #22c55e;
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #22c55e;
+            bottom: -4px;
+            left: 0;
         }
 
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 15px;
-        }
-
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            gap: 20px;
         }
 
         .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
+            background: none;
+            border: 2px solid white;
+            color: white;
             padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
             transition: background 0.3s, color 0.3s;
         }
 
         .btn-outline:hover {
-            background: #ffffff;
+            background: white;
             color: var(--primary-color);
+        }
+
+        .profile-picture-container {
+            position: relative;
+            cursor: pointer;
+        }
+
+        #profilePicture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid white;
         }
 
         /* Main Content */
@@ -198,6 +198,11 @@
 
         .chat-item:hover {
             background-color: var(--chat-hover);
+        }
+
+        .chat-item.selected {
+            background-color: #f0f7ff;
+            border-left: 3px solid var(--primary-color);
         }
 
         .chat-avatar {
@@ -433,6 +438,30 @@
             color: #9ca3af;
         }
 
+        /* Add a style for messages */
+        .message {
+            max-width: 80%;
+            margin-bottom: 12px;
+            word-wrap: break-word;
+        }
+
+        .message.sent {
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message-content {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 16px;
+            background: #f0f0f0;
+        }
+
+        .message.sent .message-content {
+            background: var(--primary-color);
+            color: white;
+        }
+
         @media (max-width: 768px) {
             .footer-top {
                 grid-template-columns: 1fr;
@@ -447,31 +476,33 @@
     <script type="module">
         import translationManager from '../scripts/translation-manager.js';
     </script>
+    <script src="../scripts/header.js"></script>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <a href="mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link">Transfer</a>
-                <a href="activities.html" class="nav-link">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
+    <header class="main-nav" style="background: linear-gradient(90deg, #22c55e, #a855f7); padding: 15px 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.15); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;">
+        <div class="nav-content" style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="/pages/mainpage.html" class="nav-brand" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" style="height: 40px; width: auto;">
+                    <span class="brand-name" style="font-size: 1.5rem; font-weight: 600; color: #ffffff;">TowerClub</span>
+                </a>
             </div>
-            <div class="nav-actions">
-                <div class="profile-picture-container">
-                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture">
+            <div class="nav-links" style="display: flex; gap: 20px;">
+                <a href="/pages/dashboard.html" class="nav-link" style="color: #ffffff; font-weight: 500; font-size: 1rem; text-decoration: none; padding: 8px 16px; border: 2px solid transparent; border-radius: 5px; transition: background 0.3s, color 0.3s, border-color 0.3s;">Dashboard</a>
+                <a href="/pages/wallet.html" class="nav-link" style="color: #ffffff; font-weight: 500; font-size: 1rem; text-decoration: none; padding: 8px 16px; border: 2px solid transparent; border-radius: 5px; transition: background 0.3s, color 0.3s, border-color 0.3s;">Wallet</a>
+                <a href="/pages/transfer.html" class="nav-link" style="color: #ffffff; font-weight: 500; font-size: 1rem; text-decoration: none; padding: 8px 16px; border: 2px solid transparent; border-radius: 5px; transition: background 0.3s, color 0.3s, border-color 0.3s;">Transfer</a>
+                <a href="/pages/activities.html" class="nav-link" style="color: #ffffff; font-weight: 500; font-size: 1rem; text-decoration: none; padding: 8px 16px; border: 2px solid transparent; border-radius: 5px; transition: background 0.3s, color 0.3s, border-color 0.3s;">Activities</a>
+                <a href="/pages/settings.html" class="nav-link" style="color: #ffffff; font-weight: 500; font-size: 1rem; text-decoration: none; padding: 8px 16px; border: 2px solid transparent; border-radius: 5px; transition: background 0.3s, color 0.3s, border-color 0.3s;">Settings</a>
+            </div>
+            <div class="nav-actions" style="display: flex; align-items: center; gap: 15px;">
+                <div class="profile-picture-container" style="width: 40px; height: 40px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; transition: box-shadow 0.3s ease, transform 0.3s ease;">
+                    <img id="profilePicture" src="/assets/images/default-avatar.png" alt="Profile Picture" style="width: 100%; height: 100%; object-fit: cover;">
+                    <input id="profilePictureInput" type="file" accept="image/*" style="display: none;">
                 </div>
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <button id="logoutButton" class="btn-outline" style="background: transparent; border: 2px solid #ffffff; color: #ffffff; padding: 8px 32px; border-radius: 5px; font-size: 1rem; transition: background 0.3s, color 0.3s;">Log out</button>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -482,47 +513,35 @@
                 <a href="Chatssection.html" class="chat-list-header">
                     Messages
                 </a>
-                <div class="chat-item">
-                    <div class="chat-avatar" onclick="redirectToProfile('John Doe')">
-                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                    </div>
-                    <div class="chat-info">
-                        <p class="chat-name" onclick="redirectToChat()">John Doe</p>
-                        <p class="chat-message">Hey, how are you?</p>
-                    </div>
+                <div style="padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: #fafbfc;">
+                    <input
+                        id="contactSearchInput"
+                        type="text"
+                        placeholder="Search contacts..."
+                        style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; font-size: 15px;"
+                    />
+                    <button
+                        id="startNewMessageBtn"
+                        title="Start new message"
+                        style="margin-top: 8px; width: 100%; background: #4A90E2; color: #fff; border: none; border-radius: 8px; padding: 8px 0; font-size: 15px; cursor: pointer;"
+                    >
+                        New Message
+                    </button>
                 </div>
-                <div class="chat-item">
-                    <div class="chat-avatar" onclick="redirectToProfile('Jane Smith')">
-                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                    </div>
-                    <div class="chat-info">
-                        <p class="chat-name" onclick="redirectToChat()">Jane Smith</p>
-                        <p class="chat-message">Let's catch up later!</p>
-                    </div>
-                </div>
-                <div class="chat-item">
-                    <div class="chat-avatar" onclick="redirectToProfile('Mike Johnson')">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                    </div>
-                    <div class="chat-info">
-                        <p class="chat-name" onclick="redirectToChat()">Mike Johnson</p>
-                        <p class="chat-message">Got it, thanks!</p>
-                    </div>
-                </div>
+                <!-- Chat items will be loaded dynamically -->
             </div>
 
             <!-- Chat Interface -->
             <div class="chat-interface">
-                <div class="chat-interface-header" onclick="redirectToProfile('John Doe')">John Doe</div>
+                <div class="chat-interface-header" onclick="redirectToProfile('Select a chat')">Select a chat</div>
                 <div class="chat-messages">
-                    <div class="message received">
-                        <div class="message-content">Hey, how are you?</div>
-                    </div>
-                    <div class="message sent">
-                        <div class="message-content">I'm good, thanks! How about you?</div>
+                    <div class="select-conversation" style="text-align:center; padding:50px 20px;">
+                        <div style="font-size:70px; margin-bottom:20px; color:#ddd;">💬</div>
+                        <h3 style="margin-bottom:10px; color:#666;">Welcome to TowerClub Messages</h3>
+                        <p style="color:#888;">Select a conversation or start a new one.</p>
                     </div>
                 </div>
-                <div class="chat-input-container">
+                <div class="chat-input-container" style="display:none;">
                     <input type="text" class="chat-input" placeholder="Type a message...">
                     <button class="send-button">Send</button>
                 </div>
@@ -535,17 +554,17 @@
                 <h1>Crypto Dashboard</h1>
             </header>
             <div class="cards">
-                <div class="card" onclick="redirectToCrypto('bitcoin')">
+                <div class="card crypto-card" data-crypto="bitcoin">
                     <h3>Bitcoin (BTC)</h3>
                     <div class="amount" id="btcPrice">$0.00</div>
                     <div class="percentage" id="btcChange">Loading...</div>
                 </div>
-                <div class="card" onclick="redirectToCrypto('ethereum')">
+                <div class="card crypto-card" data-crypto="ethereum">
                     <h3>Ethereum (ETH)</h3>
                     <div class="amount" id="ethPrice">$0.00</div>
                     <div class="percentage" id="ethChange">Loading...</div>
                 </div>
-                <div class="card" onclick="redirectToCrypto('litecoin')">
+                <div class="card crypto-card" data-crypto="litecoin">
                     <h3>Litecoin (LTC)</h3>
                     <div class="amount" id="ltcPrice">$0.00</div>
                     <div class="percentage" id="ltcChange">Loading...</div>
@@ -612,251 +631,501 @@
         </div>
     </footer>
 
-    <script>
-        async function fetchMessages(senderId, receiverId) {
-            const response = await fetch(`/api/messages?senderId=${senderId}&receiverId=${receiverId}`);
-            const messages = await response.json();
-            displayMessages(messages);
-        }
-
-        function displayMessages(messages) {
-            const chatMessages = document.querySelector('.chat-messages');
-            chatMessages.innerHTML = ''; // Clear existing messages
-            messages.forEach(msg => {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message', msg.senderId === 'user1' ? 'sent' : 'received');
-                messageElement.innerHTML = `<div class="message-content">${msg.message}</div>`;
-                chatMessages.appendChild(messageElement);
-            });
-        }
-
-        async function sendMessage(senderId, receiverId, message) {
-            const response = await fetch('/api/messages', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ senderId, receiverId, message })
-            });
-            const result = await response.json();
-            if (result.success) {
-                fetchMessages(senderId, receiverId); // Refresh messages
-            } else {
-                alert('Failed to send message.');
-            }
-        }
-
-        document.querySelector('.send-button').addEventListener('click', () => {
-            const messageInput = document.querySelector('.chat-input');
-            const message = messageInput.value.trim();
-            if (message) {
-                sendMessage('user1', 'user2', message); // Replace with actual sender and receiver IDs
-                messageInput.value = ''; // Clear input
-            }
-        });
-
-        async function fetchUsers() {
-            const response = await fetch('/api/users');
-            const users = await response.json();
-            const userList = document.querySelector('.chat-list');
-            users.forEach(user => {
-                const userItem = document.createElement('div');
-                userItem.classList.add('chat-item');
-                userItem.innerHTML = `
-                    <div class="chat-avatar">
-                        <img src="${user.avatar}" alt="${user.name}">
-                    </div>
-                    <div class="chat-info">
-                        <p class="chat-name">${user.name}</p>
-                    </div>
-                `;
-                userItem.addEventListener('click', () => {
-                    fetchMessages('user1', user.id); // Replace 'user1' with the logged-in user's ID
-                });
-                userList.appendChild(userItem);
-            });
-        }
-
-        fetchUsers();
-
-        // Redirect to crypto.html with the selected cryptocurrency as a query parameter
-        function redirectToCrypto(crypto) {
-            window.location.href = `crypto.html?currency=${crypto}`;
-        }
-
-        // Redirect to user's profile page
-        function redirectToProfile(userName) {
-            // Convert the user name to a URL-friendly format
-            const profileUrl = userName.toLowerCase().replace(/\s+/g, '_') + '_profile.html';
-            window.location.href = profileUrl;
-        }
-
-        // Redirect to chat section
-        function redirectToChat() {
-            window.location.href = 'Chatssection.html';
-        }
-
-        // Update chat interface when a chat item is clicked
-        function updateChatInterface(userName) {
-            const chatHeader = document.querySelector('.chat-interface-header');
-            chatHeader.textContent = userName;
-            chatHeader.onclick = () => redirectToProfile(userName);
-        }
-
-        // Fetch cryptocurrency data from the API
-        async function fetchMarketData() {
+    <script type="module">
+        import messagingService from '/scripts/messaging-service.js';
+        
+        let selectedContactId = null;
+        let currentUser = null;
+        
+        // Load all user contacts in the chat list
+        async function loadContacts(searchQuery = '') {
             try {
-                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd&include_24hr_change=true');
-                const data = await response.json();
-
-                // Update the UI with fetched data
-                document.getElementById('btcPrice').textContent = `$${data.bitcoin.usd.toFixed(2)}`;
-                document.getElementById('btcChange').textContent = `${data.bitcoin.usd_24h_change.toFixed(2)}%`;
-
-                document.getElementById('ethPrice').textContent = `$${data.ethereum.usd.toFixed(2)}`;
-                document.getElementById('ethChange').textContent = `${data.ethereum.usd_24h_change.toFixed(2)}%`;
-
-                document.getElementById('ltcPrice').textContent = `$${data.litecoin.usd.toFixed(2)}`;
-                document.getElementById('ltcChange').textContent = `${data.litecoin.usd_24h_change.toFixed(2)}%`;
-            } catch (error) {
-                console.error('Error fetching market data:', error);
-            }
-        }
-
-        // Fetch market data on page load
-        document.addEventListener('DOMContentLoaded', fetchMarketData);
-
-        // Get the selected cryptocurrency from the query parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const currency = urlParams.get('currency');
-
-        // Display the selected cryptocurrency
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('.header h1').textContent = `Trade ${currency.toUpperCase()}`;
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Remove the old chat item click functionality since we now have separate handlers
-            // for profile pictures and names
-            console.log('Social media page loaded with new click behaviors');
-        });
-
-        // Sync profile picture everywhere on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedPic = localStorage.getItem('profilePicture');
-            if (savedPic) {
-                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.src = savedPic;
-                });
-            }
-        });
-
-        // Fetch and display the top 10 recent messages in the chat list
-        async function fetchRecentMessages() {
-            try {
-                // Replace with your actual API endpoint for fetching recent messages
-                const response = await fetch('/api/messages/recent?limit=10', { credentials: 'include' });
-                const messages = await response.json();
-
+                const contacts = await messagingService.getUserContacts();
                 const chatList = document.querySelector('.chat-list');
-                // Remove all chat-item elements except the header
-                chatList.querySelectorAll('.chat-item').forEach(item => item.remove());
-
-                messages.forEach(msg => {
-                    const chatItem = document.createElement('div');
-                    chatItem.classList.add('chat-item');
-                    chatItem.innerHTML = `
-                        <div class="chat-avatar" onclick="redirectToProfile('${msg.senderName}')">
-                            <img src="${msg.senderAvatar || 'https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png'}" alt="${msg.senderName}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                        </div>
-                        <div class="chat-info">
-                            <p class="chat-name" onclick="redirectToChat()">${msg.senderName}</p>
-                            <p class="chat-message">${msg.message}</p>
+                
+                // Save the header and search elements
+                const headerElements = chatList.querySelectorAll(':not(.chat-item)');
+                const headerHTML = Array.from(headerElements).map(el => el.outerHTML).join('');
+                
+                // Clear current list items
+                chatList.innerHTML = headerHTML;
+                
+                // Filter contacts if there's a search query
+                const filteredContacts = searchQuery 
+                    ? contacts.filter(c => 
+                        c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                        (c.email && c.email.toLowerCase().includes(searchQuery.toLowerCase())))
+                    : contacts;
+                
+                // Show empty state if no contacts
+                if (filteredContacts.length === 0) {
+                    const emptyState = document.createElement('div');
+                    emptyState.className = 'empty-state';
+                    emptyState.innerHTML = `
+                        <div style="text-align:center; padding:30px 20px;">
+                            <div style="font-size:50px; margin-bottom:10px; color:#ccc;">💬</div>
+                            <h3 style="margin-bottom:10px; color:#666;">No conversations yet</h3>
+                            <p style="color:#888;">Select a conversation or start a new one.</p>
                         </div>
                     `;
+                    
+                    chatList.appendChild(emptyState);
+                    
+                    return;
+                }
+                
+                // Create chat items for each contact
+                for (const contact of filteredContacts) {
+                    // Create basic chat item
+                    const chatItem = document.createElement('div');
+                    chatItem.className = 'chat-item';
+                    chatItem.dataset.contactId = contact.contactId;
+                    
+                    // Initial content without last message
+                    chatItem.innerHTML = `
+                        <div class="chat-avatar" onclick="redirectToProfile('${contact.name}')">
+                            <img src="${contact.avatar || '/assets/images/default-avatar.png'}" 
+                                 alt="${contact.name}" 
+                                 style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+                        </div>
+                        <div class="chat-info">
+                            <p class="chat-name">${contact.name}</p>
+                            <p class="chat-message">Loading...</p>
+                        </div>
+                    `;
+                    
                     chatList.appendChild(chatItem);
-                });
+                    
+                    // Add click handler for opening chat
+                    chatItem.addEventListener('click', () => openChat(contact));
+                    
+                    // Fetch last message asynchronously
+                    try {
+                        const conversation = await messagingService.getConversation(contact.contactId);
+                        const lastMessage = conversation.length > 0 ? 
+                            conversation[conversation.length - 1].message : 
+                            'No messages yet';
+                            
+                        // Update the message text
+                        const msgElement = chatItem.querySelector('.chat-message');
+                        if (msgElement) {
+                            msgElement.textContent = lastMessage;
+                            
+                            // Add styling if there are no messages
+                            if (lastMessage === 'No messages yet') {
+                                msgElement.style.fontStyle = 'italic';
+                                msgElement.style.color = '#999';
+                            }
+                        }
+                    } catch (error) {
+                        console.error(`Error loading messages for ${contact.name}:`, error);
+                        const msgElement = chatItem.querySelector('.chat-message');
+                        if (msgElement) {
+                            msgElement.textContent = 'Error loading messages';
+                            msgElement.style.color = '#f44336';
+                        }
+                    }
+                }
             } catch (error) {
-                console.error('Error fetching recent messages:', error);
+                console.error('Error loading contacts:', error);
+                document.querySelector('.chat-list').innerHTML += `
+                    <div style="padding:20px; text-align:center; color:#f44336;">
+                        Failed to load contacts
+                        <button onclick="loadContacts()" style="display:block; margin:10px auto; padding:5px 10px; background:#4A90E2; color:white; border:none; border-radius:4px; cursor:pointer;">
+                            Retry
+                        </button>
+                    </div>
+                `;
             }
         }
-
-        // Call fetchRecentMessages on page load
-        document.addEventListener('DOMContentLoaded', fetchRecentMessages);
-
-        // Fetch and display conversation messages with the selected user/contact
-        async function fetchConversationMessages(contactId) {
+        
+        // Load messages for a specific conversation
+        async function loadMessages(contactId) {
             try {
-                // Replace with your actual API endpoint for fetching conversation messages
-                const response = await fetch(`/api/messages/conversation/${contactId}?limit=50`, { credentials: 'include' });
-                if (!response.ok) throw new Error('Failed to fetch conversation');
-                const messages = await response.json();
-
                 const chatMessages = document.querySelector('.chat-messages');
-                chatMessages.innerHTML = ''; // Clear previous messages
-
-                messages.forEach(msg => {
+                chatMessages.innerHTML = `
+                    <div class="loading-messages" style="text-align:center; padding:30px 20px;">
+                        <div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid #f3f3f3; border-top:3px solid #4A90E2; border-radius:50%; animation:spin 1s linear infinite;"></div>
+                        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+                        <p style="margin-top:15px; color:#666;">Loading messages...</p>
+                    </div>
+                `;
+                
+                // Get conversation from messaging service
+                const conversation = await messagingService.getConversation(contactId);
+                
+                chatMessages.innerHTML = ''; // Clear loading message
+                
+                // Show empty conversation state if no messages
+                if (conversation.length === 0) {
+                    chatMessages.innerHTML = `
+                        <div class="empty-conversation" style="text-align:center; padding:40px 20px;">
+                            <div style="font-size:60px; margin-bottom:15px; color:#ccc;">💬</div>
+                            <h3 style="margin-bottom:10px; color:#666;">No messages yet</h3>
+                            <p style="color:#888; margin-bottom:5px;">This is the beginning of your conversation.</p>
+                            <p style="color:#888;">Type a message below to get started!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Get current user ID
+                const currentUserId = messagingService.getCurrentUserId();
+                
+                // Group messages by date
+                let lastDate = null;
+                
+                conversation.forEach(msg => {
+                    // Check if we need to add a date separator
+                    const messageDate = new Date(msg.timestamp);
+                    const dateStr = messageDate.toLocaleDateString();
+                    
+                    if (dateStr !== lastDate) {
+                        const dateSeparator = document.createElement('div');
+                        dateSeparator.className = 'date-separator';
+                        dateSeparator.style.textAlign = 'center';
+                        dateSeparator.style.margin = '20px 0';
+                        dateSeparator.style.color = '#888';
+                        dateSeparator.style.fontSize = '14px';
+                        dateSeparator.textContent = dateStr;
+                        chatMessages.appendChild(dateSeparator);
+                        lastDate = dateStr;
+                    }
+                    
+                    // Create message element
+                    const isOwnMessage = msg.senderId === currentUserId;
                     const msgDiv = document.createElement('div');
-                    msgDiv.className = msg.isOwnMessage ? 'message sent' : 'message received';
-                    msgDiv.innerHTML = `<div class="message-content">${msg.message}</div>`;
+                    msgDiv.className = isOwnMessage ? 'message sent' : 'message received';
+                    
+                    // Format the time
+                    const timeStr = messageDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    msgDiv.innerHTML = `
+                        <div class="message-content">
+                            ${msg.message}
+                            <span class="message-time" style="font-size:11px; opacity:0.7; margin-left:8px; display:inline-block;">${timeStr}</span>
+                        </div>
+                    `;
                     chatMessages.appendChild(msgDiv);
                 });
-
-                // Optionally, scroll to the bottom
+                
+                // Scroll to bottom
                 chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                // Mark conversation as read
+                messagingService.markConversationAsRead(contactId);
             } catch (error) {
-                console.error('Error fetching conversation messages:', error);
+                console.error('Error loading messages:', error);
+                const chatMessages = document.querySelector('.chat-messages');
+                chatMessages.innerHTML = `
+                    <div style="text-align:center; padding:30px 20px; color:#f44336;">
+                        <p style="margin-bottom:15px;">Error loading messages</p>
+                        <button onclick="loadMessages('${contactId}')" style="padding:5px 15px; background:#4A90E2; color:white; border:none; border-radius:4px; cursor:pointer;">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
+        
+        // Set up real-time updates for messages
+        function setupMessageListener(contactId) {
+            // Clean up any existing listeners
+            if (window.currentMessageListener) {
+                window.currentMessageListener();
+            }
+            
+            // Set up new listener
+            window.currentMessageListener = messagingService.subscribeToConversation(
+                contactId,
+                () => {
+                    // Reload messages when updates come in
+                    loadMessages(contactId);
+                    
+                    // Also refresh the contacts list to show updated last message
+                    loadContacts();
+                }
+            );
+        }
+        
+        // Set up the send button
+        function setupSendButton(contactId) {
+            const sendButton = document.querySelector('.send-button');
+            const chatInput = document.querySelector('.chat-input');
+            
+            // Remove old event listeners
+            const newSendButton = sendButton.cloneNode(true);
+            sendButton.parentNode.replaceChild(newSendButton, sendButton);
+            
+            // Add new event listener
+            newSendButton.addEventListener('click', async () => {
+                const message = chatInput.value.trim();
+                if (!message) return;
+                
+                try {
+                    chatInput.value = ''; // Clear input immediately for better UX
+                    
+                    // Add optimistic UI update
+                    const chatMessages = document.querySelector('.chat-messages');
+                    const emptyConversation = chatMessages.querySelector('.empty-conversation');
+                    if (emptyConversation) {
+                        emptyConversation.remove(); // Remove empty state if present
+                    }
+                    
+                    const msgDiv = document.createElement('div');
+                    msgDiv.className = 'message sent';
+                    
+                    // Format the time
+                    const now = new Date();
+                    const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    msgDiv.innerHTML = `
+                        <div class="message-content">
+                            ${message}
+                            <span class="message-time" style="font-size:11px; opacity:0.7; margin-left:8px; display:inline-block;">${timeStr}</span>
+                        </div>
+                    `;
+                    
+                    chatMessages.appendChild(msgDiv);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    
+                    // Actually send the message
+                    await messagingService.sendMessage(contactId, message);
+                    
+                    // Reload messages to get server-side confirmation
+                    await loadMessages(contactId);
+                    
+                    // Refresh contact list
+                    await loadContacts();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    
+                    // Show error toast
+                    const toast = document.createElement('div');
+                    toast.style.position = 'fixed';
+                    toast.style.bottom = '20px';
+                    toast.style.left = '50%';
+                    toast.style.transform = 'translateX(-50%)';
+                    toast.style.background = '#f44336';
+                    toast.style.color = 'white';
+                    toast.style.padding = '10px 20px';
+                    toast.style.borderRadius = '4px';
+                    toast.style.zIndex = '9999';
+                    toast.textContent = 'Failed to send message. Please try again.';
+                    
+                    document.body.appendChild(toast);
+                    
+                    // Remove toast after 3 seconds
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 3000);
+                    
+                    // Put the message back in the input
+                    chatInput.value = message;
+                }
+            });
+            
+            // Handle Enter key
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    newSendButton.click();
+                }
+            });
+            
+            // Focus the input field
+            chatInput.focus();
+        }
+        
+        // Open a chat with a specific contact
+        function openChat(contact) {
+            // Save selected contact ID
+            selectedContactId = contact.contactId;
+            
+            // Update chat header
+            const chatHeader = document.querySelector('.chat-interface-header');
+            chatHeader.textContent = contact.name;
+            
+            // Set up click handler for profile redirect
+            chatHeader.onclick = () => redirectToProfile(contact.name);
+            
+            // Load messages
+            loadMessages(contact.contactId);
+            
+            // Set up real-time updates
+            setupMessageListener(contact.contactId);
+            
+            // Set up send button
+            setupSendButton(contact.contactId);
+            
+            // Highlight selected chat
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('selected');
+                if (item.dataset.contactId === contact.contactId) {
+                    item.classList.add('selected');
+                }
+            });
+            
+            // Show the input field and send button
+            document.querySelector('.chat-input-container').style.display = 'flex';
+            
+            // Change placeholder text to be more specific
+            document.querySelector('.chat-input').placeholder = `Message ${contact.name}...`;
+        }
+        
+        // Initialize chat section
+        async function initializeChat() {
+            try {
+                // Set up current user
+                currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                
+                // Initialize chat interface to empty state
+                const chatInterface = document.querySelector('.chat-interface');
+                if (chatInterface) {
+                    const header = chatInterface.querySelector('.chat-interface-header');
+                    if (header) header.textContent = 'Select a conversation';
+                    
+                    const messages = chatInterface.querySelector('.chat-messages');
+                    if (messages) {
+                        messages.innerHTML = `
+                            <div class="select-conversation" style="text-align:center; padding:50px 20px;">
+                                <div style="font-size:70px; margin-bottom:20px; color:#ddd;">💬</div>
+                                <h3 style="margin-bottom:10px; color:#666;">Welcome to TowerClub Messages</h3>
+                                <p style="color:#888;">Select a conversation or start a new one.</p>
+                            </div>
+                        `;
+                    }
+                    
+                    // Hide input field and send button initially
+                    const inputContainer = chatInterface.querySelector('.chat-input-container');
+                    if (inputContainer) inputContainer.style.display = 'none';
+                }
+                
+                // Load contacts
+                await loadContacts();
+                
+                // Set up search functionality
+                const searchInput = document.getElementById('contactSearchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('input', () => {
+                        loadContacts(searchInput.value);
+                    });
+                }
+                
+                // Set up new message button
+                const newMessageBtn = document.getElementById('startNewMessageBtn');
+                if (newMessageBtn) {
+                    newMessageBtn.addEventListener('click', async () => {
+                        const query = prompt('Enter name or email to search:');
+                        if (!query) return;
+                        
+                        try {
+                            // Show loading state
+                            newMessageBtn.textContent = 'Creating...';
+                            newMessageBtn.disabled = true;
+                            
+                            // Mock implementation - in a real app, you'd search users first
+                            const newContact = {
+                                userId: 'user_' + Date.now(),
+                                fullName: query,
+                                email: query.toLowerCase().replace(/\s+/g, '.') + '@example.com',
+                                profilePicture: '/assets/images/default-avatar.png'
+                            };
+                            
+                            await messagingService.addContact(newContact);
+                            
+                            // Refresh contacts and open new chat
+                            await loadContacts();
+                            
+                            // Find the newly added contact
+                            const contacts = await messagingService.getUserContacts();
+                            const addedContact = contacts.find(c => c.email === newContact.email);
+                            
+                            if (addedContact) {
+                                openChat(addedContact);
+                            }
+                        } catch (error) {
+                            console.error('Error adding contact:', error);
+                            alert('Failed to add contact. Please try again.');
+                        } finally {
+                            // Reset button
+                            newMessageBtn.textContent = 'New Message';
+                            newMessageBtn.disabled = false;
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error initializing chat:', error);
+            }
+        }
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeChat();
+        });
+    </script>
+
+    <!-- Profile picture functionality & Log out button -->
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const profilePicture = document.getElementById('profilePicture');
+        const profilePictureInput = document.getElementById('profilePictureInput');
+        const logoutButton = document.getElementById('logoutButton');
+
+        if (profilePicture && profilePictureInput) {
+            // Make profile picture clickable to upload new one
+            profilePicture.addEventListener('click', () => {
+                profilePictureInput.click();
+            });
+
+            // Handle file selection
+            profilePictureInput.addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const imageData = e.target.result;
+                        profilePicture.src = imageData;
+                        localStorage.setItem('profilePicture', imageData);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Load saved profile picture if exists
+            const savedPic = localStorage.getItem('profilePicture');
+            if (savedPic) {
+                profilePicture.src = savedPic;
             }
         }
 
-        // Example usage: call this when a chat/contact is selected
-        // fetchConversationMessages(selectedContactId);
-
-        // To wire up chat selection:
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.chat-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    // You should have a way to get the contactId for this chat
-                    const contactId = this.getAttribute('data-contact-id'); // Set this attribute when rendering chat items
-                    if (contactId) {
-                        fetchConversationMessages(contactId);
-
-                        // Optionally update chat header
-                        const userName = this.querySelector('.chat-name').textContent;
-                        const chatHeader = document.querySelector('.chat-interface-header');
-                        chatHeader.textContent = userName;
-                        chatHeader.onclick = () => redirectToProfile(userName);
-                    }
-                });
+        // Log out functionality
+        if (logoutButton) {
+            logoutButton.addEventListener('click', () => {
+                // Clear user session data
+                localStorage.removeItem('currentUser');
+                localStorage.removeItem('profilePicture');
+                // Add any other session cleanup here
+                // Redirect to login page
+                window.location.href = '/pages/login.html';
             });
-        });
+        }
+    });
+    </script>
 
-        // ...existing code...
-    </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
-    </script>
-    <script type="module">
-        import DarkMode from '/scripts/dark-mode.js';
-        document.addEventListener('DOMContentLoaded', () => {
-            DarkMode.init();
-        });
-    </script>
+    <!-- Google Translate -->
     <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,ar,zh-CN,es,fr',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ar,zh-CN,es,fr',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
     </script>
-    <script 
-      type="text/javascript" 
-      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Google Translate Banner Check -->
     <script>
     (function() {
         // Helper to check if Google Translate banner iframe is present
@@ -873,6 +1142,59 @@
             setInterval(checkGoogleBanner, 1000);
         });
     })();
+    </script>
+
+    <!-- Crypto Dashboard API Integration & Card Redirects -->
+    <script>
+    async function updateCryptoDashboard() {
+        const apiUrl = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,litecoin&vs_currencies=usd&include_24hr_change=true';
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+
+            // Bitcoin
+            const btcPrice = data.bitcoin.usd;
+            const btcChange = data.bitcoin.usd_24h_change;
+            document.getElementById('btcPrice').textContent = `$${btcPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('btcChange').textContent = `${btcChange >= 0 ? '+' : ''}${btcChange.toFixed(2)}%`;
+            document.getElementById('btcChange').style.color = btcChange >= 0 ? '#22c55e' : '#f44336';
+
+            // Ethereum
+            const ethPrice = data.ethereum.usd;
+            const ethChange = data.ethereum.usd_24h_change;
+            document.getElementById('ethPrice').textContent = `$${ethPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('ethChange').textContent = `${ethChange >= 0 ? '+' : ''}${ethChange.toFixed(2)}%`;
+            document.getElementById('ethChange').style.color = ethChange >= 0 ? '#22c55e' : '#f44336';
+
+            // Litecoin
+            const ltcPrice = data.litecoin.usd;
+            const ltcChange = data.litecoin.usd_24h_change;
+            document.getElementById('ltcPrice').textContent = `$${ltcPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('ltcChange').textContent = `${ltcChange >= 0 ? '+' : ''}${ltcChange.toFixed(2)}%`;
+            document.getElementById('ltcChange').style.color = ltcChange >= 0 ? '#22c55e' : '#f44336';
+        } catch (error) {
+            document.getElementById('btcPrice').textContent = 'Error';
+            document.getElementById('btcChange').textContent = '';
+            document.getElementById('ethPrice').textContent = 'Error';
+            document.getElementById('ethChange').textContent = '';
+            document.getElementById('ltcPrice').textContent = 'Error';
+            document.getElementById('ltcChange').textContent = '';
+        }
+    }
+
+    function redirectToCrypto() {
+        window.location.href = '/pages/crypto.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        updateCryptoDashboard();
+        setInterval(updateCryptoDashboard, 60000); // Update every 60 seconds
+
+        // Add click event to all crypto cards
+        document.querySelectorAll('.crypto-card').forEach(card => {
+            card.addEventListener('click', redirectToCrypto);
+        });
+    });
     </script>
 </body>
 </html>

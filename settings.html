@@ -48,6 +48,7 @@
             padding: 70px 0;
         }
 
+        /* Navigation Bar styles */
         .main-nav {
             background: var(--header-bg);
             padding: 15px 30px;
@@ -334,6 +335,39 @@
             color: #9ca3af;
         }
 
+        /* Google Translate Element Styles */
+        #google_translate_element {
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        #google_translate_element .goog-te-gadget {
+            font-family: 'Lexend', sans-serif;
+            color: white;
+        }
+
+        #google_translate_element .goog-te-gadget-simple {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 5px 8px;
+            border-radius: 4px;
+            margin-top: 2px;
+        }
+
+        #google_translate_element .goog-te-gadget-simple img {
+            display: none;
+        }
+
+        #google_translate_element .goog-te-gadget-simple span {
+            color: white !important;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        #google_translate_element .goog-te-gadget-simple > span > a {
+            color: white !important;
+        }
+
         @media (max-width: 768px) {
             .footer-top {
                 grid-template-columns: 1fr;
@@ -375,13 +409,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="mainpage.html" class="nav-brand">
                 <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" data-i18n="logo-alt">
                 <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
             </a>
+            <div id="google_translate_element" style="margin-left: 15px; margin-right: auto;"></div>
 
             <!-- Navigation Links -->
             <div class="nav-links">
                 <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
+                <a href="my_card.html" class="nav-link">Wallet</a>
                 <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
                 <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
                 <a href="settings.html" class="nav-link active" data-i18n="nav-settings">Settings</a>
@@ -395,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <input type="file" id="profilePictureInput" accept="image/*" data-i18n="profile-picture-input-alt">
                 </div>
                 <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
+                <button onclick="handleLogout()" class="btn btn-outline">Log out</button>
             </div>
         </div>
     </nav>
@@ -781,6 +815,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+
+        // Handle logout
+        function handleLogout() {
+            // Clear all user-related data from localStorage
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userUsername');
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('profilePicture');
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('userToken'); // If you're using authentication tokens
+            
+            // Any additional cleanup needed
+            
+            // Redirect to login page
+            window.location.href = '/pages/login.html';
+        }
     </script>
 
     <!-- Google Translate Script -->

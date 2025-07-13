@@ -163,30 +163,6 @@
             max-width: 900px; /* Limit the width for better centering */
         }
 
-        .header {
-            padding: 20px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo {
-            width: 140px;
-            height: auto;
-            object-fit: contain;
-            display: block;
-        }
-
-        .logo-text {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary-text);
-        }
-
         .content {
             padding: 24px;
         }
@@ -480,45 +456,10 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link">Transfer</a>
-                <a href="activities.html" class="nav-link">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <div class="profile-picture-container">
-                    <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                </div>
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-            </div>
-        </div>
-    </nav>
-
+    <!-- Header will be dynamically inserted by header.js -->
     <!-- Main Content -->
     <div class="container">
         <div class="profile-container">
-            <div class="header">
-                <div class="logo-container">
-                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
-                    <span class="logo-text">TowerClub</span>
-                </div>
-            </div>
-            
             <div class="content">
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                     <h1 class="title" style="margin: 0;">Chats</h1>
@@ -561,51 +502,20 @@
                                 New Message
                             </button>
                         </div>
-                        <div class="chat-item">
-                            <div class="chat-avatar" onclick="redirectToProfile('John Doe')">
-                                <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="John Doe" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                            </div>
-                            <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToChat()">John Doe</p>
-                                <p class="chat-message">Hey, how are you?</p>
-                            </div>
-                        </div>
-                        <div class="chat-item">
-                            <div class="chat-avatar" onclick="redirectToProfile('Jane Smith')">
-                                <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" alt="Jane Smith" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                            </div>
-                            <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToChat()">Jane Smith</p>
-                                <p class="chat-message">Let's catch up later!</p>
-                            </div>
-                        </div>
-                        <div class="chat-item">
-                            <div class="chat-avatar" onclick="redirectToProfile('Mike Johnson')">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" alt="Mike Johnson" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; cursor: pointer;">
-                            </div>
-                            <div class="chat-info">
-                                <p class="chat-name" onclick="redirectToChat()">Mike Johnson</p>
-                                <p class="chat-message">Got it, thanks!</p>
-                            </div>
-                        </div>
+                        <!-- Chat items will be loaded dynamically by JS -->
                     </div>
 
                     <!-- Chat Interface -->
-                    <div class="chat-interface">
-                        <div class="chat-interface-header" onclick="redirectToProfile('John Doe')">John Doe</div>
-                        <div class="chat-messages">
-                            <div class="message received">
-                                <div class="message-content">Hey, how are you?</div>
+                        <div class="chat-interface">
+                            <div class="chat-interface-header">Select a chat</div>
+                            <div class="chat-messages">
+                                <div class="no-messages">Select a conversation or start a new one.</div>
                             </div>
-                            <div class="message sent">
-                                <div class="message-content">I'm good, thanks! How about you?</div>
+                            <div class="chat-input-container" style="display:none;">
+                                <input type="text" class="chat-input" placeholder="Type a message...">
+                                <button class="send-button">Send</button>
                             </div>
                         </div>
-                        <div class="chat-input-container">
-                            <input type="text" class="chat-input" placeholder="Type a message...">
-                            <button class="send-button">Send</button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -718,7 +628,8 @@
         </div>
     </footer>
 
-    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="../scripts/header.js"></script>
+    <script src="../scripts/profile-picture-sync.js"></script>
     <script type="module">
         import messagingService from '/scripts/messaging-service.js';
         
@@ -1115,8 +1026,7 @@
             setInterval(updateUnreadCounts, 30000);
         });
     </script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
+    <script src="../scripts/sync.js"></script>
     <script type="module">
     import DarkMode from '/scripts/dark-mode.js';
     document.addEventListener('DOMContentLoaded', () => {
@@ -1139,19 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
     </script>
-    <script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
+    
 <script>
 (function() {
     // Helper to check if Google Translate banner iframe is present
@@ -1203,5 +1101,16 @@ async function fetchConversationMessages(contactId) {
 // Example usage: call this when a chat/contact is selected
 // fetchConversationMessages(selectedContactId);
 </script>
+<!-- Google Translate -->
+<script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,ar,zh-CN,es,fr',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+    }
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

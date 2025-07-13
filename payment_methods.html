@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/footer.css">
     <!-- Stripe JS -->
     <script src="https://js.stripe.com/v3/"></script>
     <style>
@@ -36,70 +37,7 @@
             min-height: 100vh;
         }
 
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff; /* White text for branding */
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff; /* White text for better contrast */
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient on hover */
-            color: #ffffff; /* White text on hover */
-            border-color: #ffffff; /* White border on hover */
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+        /* Header styles are in header.css */
 
         .profile-picture-container {
             width: 40px;
@@ -380,31 +318,7 @@
             text-align: right;
         }
 
-        .fab {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s;
-        }
-
-        .fab:hover {
-            transform: scale(1.1);
-        }
-
-        .fab .material-icons {
-            font-size: 24px;
-        }
+        /* Removed redundant FAB styles */
 
         /* Animations */
         @keyframes fadeIn {
@@ -434,92 +348,7 @@
             animation-delay: 0.3s;
         }
 
-        .main-footer {
-            background-color: #1f2937;
-            color: white;
-            padding: 60px 0 30px;
-            margin-top: auto;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-brand {
-            max-width: 300px;
-        }
-
-        .brand-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .brand-wrapper img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-description {
-            color: #9ca3af;
-            line-height: 1.6;
-        }
-
-        .footer-links-section {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
-        }
-
-        .footer-column h4 {
-            color: white;
-            margin-bottom: 20px;
-        }
-
-        .footer-column ul {
-            list-style: none;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 10px;
-        }
-
-        .footer-column ul li a {
-            color: #9ca3af;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-column ul li a:hover {
-            color: white;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid #374151;
-            padding-top: 30px;
-            text-align: center;
-            color: #9ca3af;
-        }
-
-        @media (max-width: 768px) {
-            .footer-top {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-links-section {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+        /* Footer styles are in footer.css */
 
         .paypal-login {
             text-align: center;
@@ -753,42 +582,7 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
-                <span class="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link">Transfer</a>
-                <a href="activities.html" class="nav-link">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <div class="profile-image" id="profileImage">
-                        <img src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile" id="profileImg">
-                        <div class="upload-overlay">
-                            <span>Click to upload photo</span>
-                        </div>
-                    </div>
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-            </div>
-        </div>
-    </nav>
+    <!-- Header will be dynamically inserted by header.js -->
 
     <!-- Main Content -->
     <div class="app-container">
@@ -901,9 +695,6 @@
             </div>
         </main>
 
-        <button class="fab" onclick="handleAddTransaction()">
-            <span class="material-icons">add</span>
-        </button>
     </div>
 
     <!-- Footer -->
@@ -1057,11 +848,6 @@
         function handleChangeCard() {
             // Implement change card functionality
             console.log('Change card clicked');
-        }
-
-        function handleAddTransaction() {
-            // Implement add transaction functionality
-            console.log('Add transaction clicked');
         }
 
         // Helper: Check if user is logged in with PayPal (simple example using localStorage)
@@ -1276,20 +1062,18 @@
     })
     .then(response => response.json())
     .then(data => {
-        // Example response: { cashedOut: 12402, cashoutTrend: 4.5, spending: 8392, spendingTrend: 4.5 }
-        document.getElementById('moneyCashedOut').textContent = 
-            (data.cashedOut >= 0 ? '+$' : '-$') + Math.abs(data.cashedOut).toLocaleString();
-        document.getElementById('cashoutTrend').textContent = (data.cashoutTrend || 0) + '%';
+        // Default to zero for new users
+        document.getElementById('moneyCashedOut').textContent = '$0.00';
+        document.getElementById('cashoutTrend').textContent = '0%';
 
-        document.getElementById('spendingAmount').textContent = 
-            (data.spending >= 0 ? '-$' : '+$') + Math.abs(data.spending).toLocaleString();
-        document.getElementById('spendingTrend').textContent = (data.spendingTrend || 0) + '%';
+        document.getElementById('spendingAmount').textContent = '$0.00';
+        document.getElementById('spendingTrend').textContent = '0%';
     })
     .catch(err => {
-        document.getElementById('moneyCashedOut').textContent = 'N/A';
-        document.getElementById('cashoutTrend').textContent = '--%';
-        document.getElementById('spendingAmount').textContent = 'N/A';
-        document.getElementById('spendingTrend').textContent = '--%';
+        document.getElementById('moneyCashedOut').textContent = '$0.00';
+        document.getElementById('cashoutTrend').textContent = '0%';
+        document.getElementById('spendingAmount').textContent = '$0.00';
+        document.getElementById('spendingTrend').textContent = '0%';
         console.error('Failed to fetch stats:', err);
     });
 });
@@ -1312,61 +1096,16 @@ document.addEventListener('DOMContentLoaded', function() {
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
     <script src="/scripts/header.js"></script>
-    <script src="/scripts/payment-methods-manager.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
+    <script src="../scripts/header.js"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,ar,zh-CN,es,fr',
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+            }, 'google_translate_element');
+        }
     </script>
-    <script>
-    // Log out functionality: clear session/localStorage and redirect to index.html
-    document.addEventListener('DOMContentLoaded', function() {
-        const logoutBtn = document.getElementById('logoutBtn');
-        if (logoutBtn) {
-            logoutBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Clear user session data (customize as needed)
-                localStorage.clear();
-                sessionStorage.clear();
-                window.location.href = 'index.html';
-            });
-        }
-    });
-</script>
-<script type="module">
-    import DarkMode from '/scripts/dark-mode.js';
-    document.addEventListener('DOMContentLoaded', () => {
-        DarkMode.init();
-    });
-</script>
-<!-- Scripts -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
-<script>
-(function() {
-    // Helper to check if Google Translate banner iframe is present
-    function checkGoogleBanner() {
-        var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
-        if (bannerFrame && bannerFrame.style.display !== 'none') {
-            document.body.classList.add('has-google-banner');
-        } else {
-            document.body.classList.remove('has-google-banner');
-        }
-    }
-    // Check on load and every second (in case of language change)
-    window.addEventListener('load', function() {
-        setInterval(checkGoogleBanner, 1000);
-    });
-})();
-</script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

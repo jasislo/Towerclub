@@ -417,6 +417,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
+        /* Responsive styles */
+        
         @media (min-width: 768px) {
             .collection-item {
                 display: flex;
@@ -656,35 +658,9 @@
     </script>
 </head>
 <body>
-    <!-- Header -->
-    <!-- Updated Header -->
-<nav class="main-nav">
-    <div class="nav-content">
-        <!-- Brand Section -->
-        <a href="/pages/mainpage.html" class="nav-brand">
-            <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="brand-logo" data-i18n="logo-alt">
-            <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-            <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-        </a>
-        <!-- Navigation Links -->
-        <div class="nav-links">
-            <a href="/pages/dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
-            <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-            <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
-            <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
-            <a href="/pages/settings.html" class="nav-link">Settings</a>
-        </div>
-        <!-- Navigation Actions -->
-        <div class="nav-actions">
-            <!-- Profile Picture -->
-            <div class="profile-picture-container">
-                <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-            </div>
-            <!-- Log Out Button -->
-            <a href="/pages/logout.html" class="btn btn-outline logout-button">Log Out</a>
-        </div>
-    </div>
+    <div id="google_translate_element"></div>
+
+    <!-- Header will be loaded by header.js -->
 </nav>
 
     <!-- Main Content -->
@@ -1143,6 +1119,8 @@
             } catch (error) {
                 console.error('Failed to import follow system:', error);
             }
+            
+            // Get profile user ID from URL or page data
             
             // Get profile user ID from URL or page data
             const profileUserId = window.location.pathname.split('/').pop().replace('_profile.html', '') || 'john_doe';

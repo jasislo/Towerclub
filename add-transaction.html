@@ -545,35 +545,8 @@
     </style>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="/pages/mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
-                <span class="brand-name">TowerClub</span>
-            </a>
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
-            </div>
-            <!-- Navigation Actions -->
-            <div class="nav-actions" style="display: flex; align-items: center; gap: 16px;">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-                <!-- Google Translate Selector -->
-                <div id="google_translate_element"></div>
-            </div>
-        </div>
-    </nav>
+    <!-- Header will be dynamically inserted by header.js -->
+    <div id="google_translate_element" style="position: fixed; top: 10px; right: 150px; z-index: 2000;"></div>
 
     <div class="app-container">
         <main class="main-content">
@@ -690,7 +663,7 @@
     <script type="module" src="/scripts/add-transaction.js"></script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
-    <script src="/netlify/functions/header.js"></script>
+    <script src="/scripts/header.js"></script>
     <script type="module">
         import DarkMode from '/scripts/dark-mode.js';
         document.addEventListener('DOMContentLoaded', () => {
@@ -757,11 +730,10 @@
         }
 
         function updateBalanceDisplay() {
-            // This would typically load from an API
-            // For now, using static data
-            const moneyIn = 12340.00;
-            const moneyOut = 8120.00;
-            const totalBalance = moneyIn - moneyOut;
+            // Initialize with zero balances for new users
+            const moneyIn = 0.00;
+            const moneyOut = 0.00;
+            const totalBalance = 0.00;
 
             document.getElementById('moneyIn').textContent = `$${moneyIn.toFixed(2)}`;
             document.getElementById('moneyOut').textContent = `$${moneyOut.toFixed(2)}`;
@@ -810,39 +782,18 @@
     import profilePictureManager from '/scripts/profile-picture-manager.js';
     // No need to call anything, the manager auto-initializes and syncs on DOMContentLoaded
 </script>
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      {pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-      'google_translate_element'
-    );
-  }
-</script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <script type="module">
     import transferService from '/scripts/transfer-service.js';
 
     // Update balance display
     function updateBalanceDisplay() {
-        // Get transactions from transfer service
-        const transactions = transferService.getTransactions();
+        // Initialize all values to zero for new users
+        const moneyIn = 0;
+        const moneyOut = 0;
+        const totalBalance = 0;
         
-        // Calculate money in and money out
-        let moneyIn = 0;
-        let moneyOut = 0;
-        
-        transactions.forEach(transaction => {
-            if (transaction.type === 'income') {
-                moneyIn += transaction.amount;
-            } else if (transaction.type === 'expense') {
-                moneyOut += transaction.amount;
-            }
-        });
-        
-        // Get current balance
-        const totalBalance = transferService._getUserBalance();
-        
-        // Update UI
+        // Update UI with zero values
         document.getElementById('moneyIn').textContent = `$${moneyIn.toFixed(2)}`;
         document.getElementById('moneyOut').textContent = `$${moneyOut.toFixed(2)}`;
         document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;

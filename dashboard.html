@@ -34,112 +34,7 @@
             color: var(--text-color);
         }
 
-        /* Navigation Bar */
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7);
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
 
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff;
-            color: #22c55e;
-            border-color: #ffffff;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: #ffffff;
-            color: #22c55e;
-            border-color: #22c55e; /* Optional: border color change */
-        }
 
         .main-content {
             padding-top: 80px;
@@ -544,38 +439,6 @@
     </script>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="/pages/mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
-                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="/pages/dashboard.html" class="nav-link active" data-i18n="nav-dashboard">Dashboard</a>
-                <a href="/pages/my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="/pages/add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
-                <a href="/pages/activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
-                <a href="/pages/settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </div>
-        </div>
-    </nav>
-
     <!-- Main Content -->
     <div class="main-content">
         <div class="dashboard-header">
@@ -1028,5 +891,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ...existing navigation and profile picture sync code...
 });
 </script>
+<script type="module" src="../scripts/feature-access.js"></script>
 </body>
 </html>

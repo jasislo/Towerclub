@@ -40,111 +40,7 @@
             min-height: 100vh;
         }
 
-        /* Navigation Bar */
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7);
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
 
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff;
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff;
-            color: #22c55e;
-            border-color: #ffffff;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #ffffff;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-            transform: scale(1.1);
-            cursor: pointer;
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: #ffffff;
-            color: #22c55e;
-        }
 
         /* Existing styles */
         .container {
@@ -301,32 +197,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
-                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
-                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-            </div>
-        </div>
-    </nav>
-
     <!-- Main Content -->
     <div class="container">
         <!-- Add Payment Methods -->
@@ -686,27 +556,39 @@
         }
 
         function selectPaymentMethod(method) {
-            // Remove previous selection
-            ['creditCard', 'debitCard', 'bankAccount', 'paypal'].forEach(function(id) {
-                const container = document.getElementById(id + 'Container');
-                if (container) {
-                    container.classList.remove('selected-payment-method');
-                    container.removeAttribute('title');
-                }
-            });
-
-            // Mark selected
-            const selected = document.getElementById(method + 'Container');
-            if (selected) {
-                selected.classList.add('selected-payment-method');
-                selected.setAttribute('title', 'Selected');
+            // Show confirmation dialog
+            let methodName;
+            switch(method) {
+                case 'creditCard': methodName = 'Credit Card'; break;
+                case 'debitCard': methodName = 'Debit Card'; break;
+                case 'bankAccount': methodName = 'Bank Account'; break;
+                case 'paypal': methodName = 'PayPal'; break;
+                default: methodName = method;
             }
 
-            // Store selection in localStorage
-            localStorage.setItem('selectedPaymentMethod', method);
+            if (confirm(`Would you like to select ${methodName} as your payment method?`)) {
+                // Remove previous selection
+                ['creditCard', 'debitCard', 'bankAccount', 'paypal'].forEach(function(id) {
+                    const container = document.getElementById(id + 'Container');
+                    if (container) {
+                        container.classList.remove('selected-payment-method');
+                        container.removeAttribute('title');
+                    }
+                });
 
-            // Redirect to payment_methods.html
-            window.location.href = 'payment_methods.html';
+                // Mark selected
+                const selected = document.getElementById(method + 'Container');
+                if (selected) {
+                    selected.classList.add('selected-payment-method');
+                    selected.setAttribute('title', 'Selected');
+                }
+
+                // Store selection in localStorage
+                localStorage.setItem('selectedPaymentMethod', method);
+
+                // Redirect to payment_methods.html
+                window.location.href = 'payment_methods.html';
+            }
         }
 
         // On page load, restore selection and show tooltip
@@ -720,19 +602,6 @@
                 }
             }
         });
-    </script>
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,ar,zh-CN,es,fr',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    <script 
-      type="text/javascript" 
-      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
 </body>
 </html>

@@ -10,117 +10,66 @@
     <link rel="stylesheet" href="/styles/main.css">
     <link rel="stylesheet" href="/styles/transactions.css">
     <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="/styles/footer.css">
     <style>
+        :root {
+            --header-gradient-start: #22c55e;
+            --header-gradient-end: #a855f7;
+            --background-color: #F5F5F5;
+            --text-color: #333333;
+        }
+        
         body {
             padding-top: 70px; /* Add padding to prevent content from hiding behind fixed nav */
-        }
-
-        /* Updated Navigation Bar */
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Gradient background for contrast */
-            padding: 15px 30px; /* Adjust padding for better spacing */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Add shadow for depth */
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        .nav-brand {
+        .text-gray-400 {
+            color: #9ca3af;
+        }
+
+        /* Center-align the content header */
+        .content-header {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-        }
-
-        .nav-brand img {
-            height: 40px; /* Adjust logo size */
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff; /* White text for contrast */
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff; /* White text for contrast */
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
-            border-color: #ffffff;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .profile-picture-container {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-right: 15px;
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            border: 2px solid #ffffff; /* Optional border for better visibility */
-            transition: box-shadow 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        .profile-picture-container:hover {
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect */
-            transform: scale(1.1); /* Slightly enlarge the profile picture */
-            cursor: pointer; /* Change cursor to pointer */
-        }
-
-        .profile-picture-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .btn-outline {
+        .content-header .btn-icon {
+            margin-bottom: 10px; /* Add spacing between the back button and the text */
             background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s, color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #4f46e5; /* Optional: Add a color for the back button */
+            transition: transform 0.2s ease;
         }
 
-        .btn-outline:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
+        .content-header .btn-icon:hover {
+            transform: scale(1.1); /* Slightly enlarge on hover */
         }
 
+        .content-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .content-header p {
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        /* Footer styles */
         .main-footer {
             background-color: #1f2937;
             color: white;
@@ -198,42 +147,6 @@
             color: #9ca3af;
         }
 
-        /* Center-align the content header */
-        .content-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .content-header .btn-icon {
-            margin-bottom: 10px; /* Add spacing between the back button and the text */
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 24px;
-            color: #4f46e5; /* Optional: Add a color for the back button */
-            transition: transform 0.2s ease;
-        }
-
-        .content-header .btn-icon:hover {
-            transform: scale(1.1); /* Slightly enlarge on hover */
-        }
-
-        .content-header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: #1f2937;
-            margin-bottom: 5px;
-        }
-
-        .content-header p {
-            font-size: 1rem;
-            color: #6b7280;
-        }
-
         @media (max-width: 768px) {
             .footer-top {
                 grid-template-columns: 1fr;
@@ -251,37 +164,6 @@
     </script>
 </head>
 <body>
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <a href="mainpage.html" class="nav-brand">
-                <img src="/assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo" data-i18n="logo-alt">
-                <span class="brand-name" data-i18n="brand-name">TowerClub</span>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </a>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link" data-i18n="nav-dashboard">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link" data-i18n="nav-transfer">Transfer</a>
-                <a href="activities.html" class="nav-link" data-i18n="nav-activities">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <!-- Profile Picture -->
-                <div class="profile-picture-container">
-                    <img id="profilePicture" src="https://storage.googleapis.com/flutterflow-io-6f20.appspot.com/projects/finance-app-sample-kugwu4/assets/ijvuhvqbvns6/uiAvatar@2x.png" alt="Profile Picture" class="profile-picture">
-                    <input type="file" id="profilePictureInput" accept="image/*" style="display: none;">
-                </div>
-                <!-- Log Out Button -->
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-            </div>
-        </div>
-    </nav>
-
     <div class="app-container">
         <!-- Main Content -->
         <main class="main-content">
@@ -376,6 +258,99 @@
         </main>
     </div>
 
+    <!-- Include header.js -->
+    <script src="/scripts/header.js"></script>
+    <script type="module" src="/scripts/transactions/edit-transaction.js"></script>
+    <script src="/scripts/profile-picture-sync.js"></script>
+    <script src="/scripts/sync.js"></script>
+    <!-- Transfer functionality -->
+    <script type="module">
+    import transferService from '/scripts/transfer-service.js';
+
+    document.getElementById('makeTransferBtn').addEventListener('click', async () => {
+        try {
+            // Show loading indicator
+            document.getElementById('makeTransferBtn').disabled = true;
+            document.getElementById('makeTransferBtn').innerHTML = 'Processing...';
+            
+            // Get form values
+            const recipientType = document.getElementById('recipientType').value;
+            const recipientEmail = document.getElementById('recipientEmail').value;
+            const bankName = document.getElementById('bankName')?.value || '';
+            const accountNumber = document.getElementById('accountNumber')?.value || '';
+            const routingNumber = document.getElementById('routingNumber')?.value || '';
+            const amount = parseFloat(document.getElementById('amount').value);
+            const currency = document.getElementById('currency').value;
+            const transferSpeed = document.getElementById('transferSpeed').value;
+            const purpose = document.getElementById('purpose').value;
+            const notes = document.getElementById('notes').value;
+
+            // Basic validation
+            if (!recipientType || !recipientEmail || !amount || !currency || !transferSpeed || !purpose) {
+                alert('Please fill in all required fields.');
+                document.getElementById('makeTransferBtn').disabled = false;
+                document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+                return;
+            }
+            if (recipientType === 'bank' && (!bankName || !accountNumber || !routingNumber)) {
+                alert('Please fill in all bank details.');
+                document.getElementById('makeTransferBtn').disabled = false;
+                document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+                return;
+            }
+
+            // Prepare transfer data
+            const transferData = {
+                recipientType,
+                recipientEmail,
+                bankName,
+                accountNumber,
+                routingNumber,
+                amount,
+                currency,
+                transferSpeed,
+                purpose,
+                notes,
+                paymentMethod: 'virtual_card' // This should ideally come from a payment method selection
+            };
+
+            // Process the transfer
+            const result = await transferService.transferMoney(transferData);
+
+            if (result.success) {
+                // Show success message
+                alert(`Transfer successful! ${result.message}`);
+                
+                // Redirect to transactions page
+                window.location.href = 'activities.html';
+            } else {
+                // Show error message
+                alert(`Transfer failed: ${result.message}`);
+                
+                // Reset button
+                document.getElementById('makeTransferBtn').disabled = false;
+                document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+            }
+        } catch (error) {
+            console.error('Error during transfer:', error);
+            alert('An error occurred while processing the transfer.');
+            
+            // Reset button
+            document.getElementById('makeTransferBtn').disabled = false;
+            document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
+        }
+    });
+    
+    // Show/hide bank details fields based on recipient type
+    document.getElementById('recipientType').addEventListener('change', function() {
+        const isBank = this.value === 'bank';
+        document.querySelectorAll('.bank-details').forEach(el => {
+            el.style.display = isBank ? 'block' : 'none';
+        });
+    });
+</script>
+
+    <!-- Footer -->
     <footer class="main-footer">
         <div class="footer-content">
             <div class="footer-top">
@@ -433,208 +408,8 @@
         </div>
     </footer>
 
-    <!-- Include header.js -->
-    <script src="/scripts/header.js"></script>
-    <script type="module" src="/scripts/transactions/edit-transaction.js"></script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
-    <script>
-        const profilePicture = document.getElementById('profilePicture');
-        const profilePictureInput = document.getElementById('profilePictureInput');
-
-        // Make the profile picture clickable
-        profilePicture.addEventListener('click', () => {
-            profilePictureInput.click();
-        });
-
-        // Handle the file input change event
-        profilePictureInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    profilePicture.src = e.target.result; // Update the profile picture preview
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        document.getElementById('makeTransferBtn').addEventListener('click', async () => {
-            // Get form values
-            const recipientType = document.getElementById('recipientType').value;
-            const recipientUsername = document.getElementById('recipientEmail').value;
-            const bankName = document.getElementById('bankName')?.value || '';
-            const accountNumber = document.getElementById('accountNumber')?.value || '';
-            const routingNumber = document.getElementById('routingNumber')?.value || '';
-            const amount = parseFloat(document.getElementById('amount').value);
-            const currency = document.getElementById('currency').value;
-            const transferSpeed = document.getElementById('transferSpeed').value;
-            const purpose = document.getElementById('purpose').value;
-            const notes = document.getElementById('notes').value;
-
-            // Basic validation
-            if (!recipientType || !recipientUsername || !amount || !currency || !transferSpeed || !purpose) {
-                alert('Please fill in all required fields.');
-                return;
-            }
-            if (recipientType === 'bank' && (!bankName || !accountNumber || !routingNumber)) {
-                alert('Please fill in all bank details.');
-                return;
-            }
-
-            // Prepare API payload
-            const payload = {
-                recipientType,
-                recipientUsername,
-                bankName,
-                accountNumber,
-                routingNumber,
-                amount,
-                currency,
-                transferSpeed,
-                purpose,
-                notes
-            };
-
-            try {
-                // Example API endpoint for transfer
-                const response = await fetch('https://api.example.com/transfer', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        // 'Authorization': 'Bearer ' + localStorage.getItem('authToken') // if needed
-                    },
-                    body: JSON.stringify(payload),
-                });
-
-                if (response.ok) {
-                    alert('Transfer successful!');
-                    window.location.href = 'mainpage.html'; // Redirect to main page or confirmation
-                } else {
-                    const error = await response.json();
-                    alert(`Transfer failed: ${error.message}`);
-                }
-            } catch (error) {
-                console.error('Error during transfer:', error);
-                alert('An error occurred while processing the transfer.');
-            }
-        });
-
-        // Show/hide bank details fields based on recipient type
-        document.getElementById('recipientType').addEventListener('change', function() {
-            const isBank = this.value === 'bank';
-            document.querySelectorAll('.bank-details').forEach(el => {
-                el.style.display = isBank ? 'block' : 'none';
-            });
-        });
-
-        // Sync profile picture everywhere on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedPic = localStorage.getItem('profilePicture');
-            if (savedPic) {
-                ['profilePicture', 'profileImage', 'profileImg'].forEach(id => {
-                    const el = document.getElementById(id);
-                    if (el) el.src = savedPic;
-                });
-            }
-        });
-    </script>
-
-    <!-- Add this script before the existing script at the bottom -->
-    <script type="module">
-    import transferService from '/scripts/transfer-service.js';
-
-    document.getElementById('makeTransferBtn').addEventListener('click', async () => {
-        try {
-            // Show loading indicator
-            document.getElementById('makeTransferBtn').disabled = true;
-            document.getElementById('makeTransferBtn').innerHTML = 'Processing...';
-            
-            // Get form values
-            const recipientType = document.getElementById('recipientType').value;
-            const recipientUsername = document.getElementById('recipientEmail').value;
-            const bankName = document.getElementById('bankName')?.value || '';
-            const accountNumber = document.getElementById('accountNumber')?.value || '';
-            const routingNumber = document.getElementById('routingNumber')?.value || '';
-            const amount = parseFloat(document.getElementById('amount').value);
-            const currency = document.getElementById('currency').value;
-            const transferSpeed = document.getElementById('transferSpeed').value;
-            const purpose = document.getElementById('purpose').value;
-            const notes = document.getElementById('notes').value;
-
-            // Prepare transfer data
-            const transferData = {
-                recipientType,
-                recipientUsername,
-                bankName,
-                accountNumber,
-                routingNumber,
-                amount,
-                currency,
-                transferSpeed,
-                purpose,
-                notes,
-                paymentMethod: 'virtual_card'
-            };
-
-            // Process the transfer
-            const result = await transferService.transferMoney(transferData);
-
-            if (result.success) {
-                // Show success message
-                alert(`Transfer successful! ${result.message}`);
-                
-                // Redirect to transactions page
-                window.location.href = 'activities.html';
-            } else {
-                // Show error message
-                alert(`Transfer failed: ${result.message}`);
-                
-                // Reset button
-                document.getElementById('makeTransferBtn').disabled = false;
-                document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
-            }
-        } catch (error) {
-            console.error('Error during transfer:', error);
-            alert('An error occurred while processing the transfer.');
-            
-            // Reset button
-            document.getElementById('makeTransferBtn').disabled = false;
-            document.getElementById('makeTransferBtn').innerHTML = 'Send Money';
-        }
-    });
-</script>
-
-    <!-- Scripts -->
-    <script type="text/javascript">
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,ar,zh-CN,es,fr',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'google_translate_element');
-      }
-    </script>
-    <script 
-      type="text/javascript" 
-      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-    </script>
-    <script>
-    (function() {
-        // Helper to check if Google Translate banner iframe is present
-        function checkGoogleBanner() {
-            var bannerFrame = document.querySelector('iframe.goog-te-banner-frame');
-            if (bannerFrame && bannerFrame.style.display !== 'none') {
-                document.body.classList.add('has-google-banner');
-            } else {
-                document.body.classList.remove('has-google-banner');
-            }
-        }
-        // Check on load and every second (in case of language change)
-        window.addEventListener('load', function() {
-            setInterval(checkGoogleBanner, 1000);
-        });
-    })();
-    </script>
+    <script src="/scripts/header.js"></script>
 </body>
 </html>

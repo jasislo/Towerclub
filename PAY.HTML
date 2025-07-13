@@ -1608,18 +1608,62 @@
                 return code.startsWith('#') && code.length >= 4;
             }
 
+            // This function would typically call your API to validate the referral code
+            async function validateReferralCodeWithServer(code) {
+                // In a production environment, this should be replaced with an actual API call
+                // For example:
+                // const response = await fetch('/api/validate-referral', {
+                //    method: 'POST',
+                //    headers: { 'Content-Type': 'application/json' },
+                //    body: JSON.stringify({ code })
+                // });
+                // return response.ok;
+                
+                // For demonstration, we're simulating a successful validation
+                // with a 500ms delay to mimic network request
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // In production, return true only if the code exists in your database
+                return true;
+            }
+
             referralForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const code = referralInput.value.trim();
 
+                // Disable button and show loading state
+                const submitBtn = referralForm.querySelector('.referral-btn');
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.textContent = 'Validating...';
+                submitBtn.disabled = true;
+                
+                // First validate the format
                 if (!isValidReferralFormat(code)) {
                     referralMessage.textContent = 'Invalid format. Code must start with # and be at least 4 characters.';
                     referralMessage.style.color = '#ff4444';
                     referralMessage.style.display = 'block';
+                    
+                    // Reset button
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
                     return;
                 }
 
                 try {
+                    // Validate with server (or simulated validation)
+                    const isValidCode = await validateReferralCodeWithServer(code);
+                    
+                    if (!isValidCode) {
+                        referralMessage.textContent = 'Invalid referral code. This code does not exist in our system.';
+                        referralMessage.style.color = '#ff4444';
+                        referralMessage.style.display = 'block';
+                        
+                        // Reset button
+                        submitBtn.textContent = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    
                     // Store referral data
                     const referralData = {
                         referralCode: code,
@@ -1638,10 +1682,11 @@
 
                     // Disable input after successful application
                     referralInput.disabled = true;
-                    referralForm.querySelector('.referral-btn').textContent = 'Applied';
-                    referralForm.querySelector('.referral-btn').style.backgroundColor = '#22c55e';
+                    submitBtn.textContent = 'Applied';
+                    submitBtn.style.backgroundColor = '#22c55e';
 
                 } catch (error) {
+                    console.error('Referral validation error:', error);
                     referralMessage.textContent = 'Error applying referral code. Please try again.';
                     referralMessage.style.color = '#ff4444';
                     referralMessage.style.display = 'block';
@@ -1771,33 +1816,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const referralForm = document.getElementById('referralCodeForm');
-    const referralInput = document.getElementById('referralCodeInput');
-    const referralMsg = document.getElementById('referralCodeMsg');
-
-    referralForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const code = referralInput.value.trim();
-        // Replace this with your real referral code validation logic/API call
-        const isValid = await validateReferralCode(code); // returns true if valid
-
-        if (isValid) {
-            referralMsg.textContent = "Referral code Applied Successfully!";
-            referralMsg.style.color = "green";
-        } else {
-            referralMsg.textContent = "Invalid referral code. Please try again.";
-            referralMsg.style.color = "red";
-        }
-    });
-
-    // Dummy validation function, replace with real API call
-    async function validateReferralCode(code) {
-        // Example: simulate API delay and check for a sample code
-        await new Promise(res => setTimeout(res, 300));
-        return code === "YOUR_VALID_CODE"; // Replace with your logic
-    }
-});
+// Referral code handling is now managed by the main implementation above
+// This section is removed to avoid duplication and conflicts
 </script>
 <script>
 document.getElementById('makePaypalPayment').addEventListener('click', function() {

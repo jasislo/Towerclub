@@ -3,120 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TowerClub Onboarding">
     <title>Onboarding - TowerClub</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&family=Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/styles/header.css">
     <link rel="stylesheet" href="../styles/onboarding.css">
-    <!-- Stripe JS -->
-    <script src="https://js.stripe.com/v3/"></script>
-    <!-- Stripe JS -->
     <script src="https://js.stripe.com/v3/"></script>
     <style>
-        /* Header Styles */
-        .main-nav {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
-            padding: 15px 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
+        :root {
+            --primary-color: #00968A;
+            --secondary-color: #F2A384;
+            --background-color: #F5F5F5;
+            --card-background: #FFFFFF;
+            --text-color: #333333;
+            --positive-color: #39D2C0;
+            --negative-color: #F06A6A;
         }
 
-        .nav-content {
-            max-width: 1200px;
-            margin: 0 auto;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .brand-link {
-            display: flex;
-            align-items: center;
-            text-decoration: none; /* Remove underline */
-        }
-
-        .nav-brand img {
-            height: 40px;
-            width: auto;
-        }
-
-        .brand-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #ffffff; /* White text for branding */
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .nav-link {
-            color: #ffffff; /* White text for better contrast */
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            padding: 8px 16px;
-            border: 2px solid transparent;
-            border-radius: 5px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .nav-link:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
-            border-color: #ffffff; /* White border on hover */
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #ffffff;
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            text-align: center;
-            display: inline-block;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        .btn-outline:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
-            border-color: transparent; /* Transparent border on hover */
-        }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #22c55e, #a855f7); /* Green to Fuchsia gradient */
-            color: #ffffff;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            text-align: center;
-            display: inline-block;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #ffffff; /* White background on hover */
-            color: #22c55e; /* Green text on hover */
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         /* Footer Styles */
@@ -631,27 +548,28 @@
 
 /* Modal Styles */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-content {
     background-color: #fefefe;
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    width: 80%;
     max-width: 500px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease-out;
 }
 
 .close {
@@ -687,33 +605,6 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <!-- Brand Section -->
-            <div class="nav-brand">
-                <a href="index.html" class="brand-link">
-                    <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo" class="logo">
-                    <span class="brand-name">TowerClub</span>
-                    <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-                </a>
-            </div>
-
-            <!-- Navigation Links -->
-            <div class="nav-links">
-                <a href="index.html#features" class="nav-link">Features</a>
-                <a href="index.html#pricing" class="nav-link">Pricing</a>
-                <a href="index.html#about" class="nav-link">About</a>
-            </div>
-
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <a href="login.html" class="btn btn-outline">Login</a>
-                <a href="index.html#register" class="btn btn-primary">Get Started</a>
-            </div>
-        </div>
-    </nav>
-
     <!-- Main Content -->
     <div class="app-container">
         <!-- Complete Profile Section -->
@@ -956,7 +847,9 @@
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { registerUser } from '../scripts/auth-api.js';
+        import { storeAuthData } from '../scripts/aut-utils.js';
         // Function to check and handle data from pay.html
         function checkPaymentDataFromPay() {
             // Check if we're coming from pay.html by looking for a special flag or payload
@@ -1286,7 +1179,7 @@
     // Handle Complete Profile Form Submission
     const profileForm = document.getElementById('profileForm');
     if (profileForm) {
-        profileForm.addEventListener('submit', function (event) {
+        profileForm.addEventListener('submit', async function (event) {
             event.preventDefault();
             // Collect profile info
             const name = document.getElementById('name')?.value || '';
@@ -1313,12 +1206,32 @@
                 flow: 'pay.html -> register.html -> onboarding.html -> mainpage.html'
             };
             localStorage.setItem('memberProfile', JSON.stringify(updatedProfile));
-            
             // Set a flag that we're coming from the onboarding flow
             localStorage.setItem('comingFrom', 'onboarding');
-            
-            // Navigate to mainpage.html
-            window.location.href = 'mainpage.html';
+
+            // --- AUTO-LOGIN AND REMEMBER USER ---
+            try {
+                // Register the user (simulate registration)
+                const regResult = await registerUser({
+                    email,
+                    password: 'onboarding-temp', // You may want to collect/set a real password earlier in the flow
+                    username,
+                    phone,
+                    fullName: name,
+                    age,
+                    profilePicture
+                });
+                if (regResult.success && regResult.token && regResult.user) {
+                    // Store authentication data and set rememberMe=true
+                    storeAuthData(regResult.token, regResult.user, true);
+                    // Redirect to mainpage.html
+                    window.location.href = 'mainpage.html';
+                } else {
+                    alert('Registration failed: ' + (regResult.message || 'Unknown error'));
+                }
+            } catch (err) {
+                alert('Registration error: ' + (err.message || err));
+            }
         });
     }
 
@@ -1957,6 +1870,7 @@
                 // Update the helper text below the heading
                 const paymentSectionDescription = paymentHeader.nextElementSibling;
                 if (paymentSectionDescription) {
+
                     paymentSectionDescription.textContent = 'PayPal account connected. You can now create your budget.';
                 }
             }
@@ -2020,22 +1934,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
     </script>
-    <script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
+    <script src="/scripts/header.js"></script>
     <script src="/scripts/profile-picture-sync.js"></script>
     <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
     <script src="/scripts/stripe-api.js"></script>
 </body>
 </html>

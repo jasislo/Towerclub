@@ -6,7 +6,8 @@
     <title>Crypto Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/header.css">
+    <link rel="stylesheet" href="../styles/header.css">
+    <script type="text/javascript" src="../scripts/header.js" defer></script>
     <style>
         :root {
             --primary-color: #22c55e;
@@ -280,27 +281,8 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <nav class="main-nav">
-        <div class="nav-content">
-            <a href="mainpage.html" class="nav-brand">
-                <img src="../assets/images/towerclub_logo.png" alt="TowerClub Logo">
-                <span class="brand-name">TowerClub</span>
-            </a>
-            <div class="nav-links">
-                <a href="dashboard.html" class="nav-link">Dashboard</a>
-                <a href="my_virtualcard.html" class="nav-link">Wallet</a>
-                <a href="add-transaction.html" class="nav-link">Transfer</a>
-                <a href="activities.html" class="nav-link">Activities</a>
-                <a href="settings.html" class="nav-link">Settings</a>
-            </div>
-            <!-- Navigation Actions -->
-            <div class="nav-actions">
-                <a href="/pages/logout.html" class="btn btn-outline">Log out</a>
-                <div id="google_translate_element" style="display:inline-block; vertical-align:middle; margin-left:10px;"></div>
-            </div>
-        </div>
-    </nav>
+    <!-- The header.js script will insert the header and Google Translate element -->
+    <div id="google_translate_element"></div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -352,6 +334,14 @@
         <div class="crypto-message">
             Crypto features are available only with PayPal services.
         </div>
+    </div>
+
+    <div data-feature="cryptocurrency">
+        <!-- Crypto content -->
+    </div>
+
+    <div data-feature="bitcoin">
+        <!-- Bitcoin content -->
     </div>
 
     <footer class="main-footer">
@@ -533,7 +523,7 @@
                 // Portfolio balance (sum of all, for demo just sum prices)
                 let total = btcPrice + ethPrice + ltcPrice;
                 document.getElementById('portfolioBalance').textContent = `$${total.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('portfolioChange').textContent = 'Live prices from CoinGecko API';
+                document.getElementById('portfolioChange').textContent = ''; // Removed the CoinGecko API text
             } catch (error) {
                 console.error('Error fetching crypto prices:', error);
             }
@@ -589,31 +579,15 @@
             }
         }
     </script>
-    <script src="/scripts/profile-picture-sync.js"></script>
-    <script src="/scripts/sync.js"></script>
-    <script src="/scripts/header.js"></script>
-    <script>
-      applyTranslations(); // Call this on page load
-    </script>
+    <script src="../scripts/header.js"></script>
+    <script src="../scripts/profile-picture-sync.js"></script>
+    <script src="../scripts/sync.js"></script>
     <script type="module">
-    import DarkMode from '/scripts/dark-mode.js';
+    import DarkMode from '../scripts/dark-mode.js';
     document.addEventListener('DOMContentLoaded', () => {
         DarkMode.init();
     });
 </script>
-<!-- Add these scripts before the closing </body> tag -->
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,ar,zh-CN,es,fr',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-    }, 'google_translate_element');
-  }
-</script>
-<script 
-  type="text/javascript" 
-  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
-</script>
+<script type="module" src="../scripts/feature-access.js"></script>
 </body>
 </html>
